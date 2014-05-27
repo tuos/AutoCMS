@@ -272,11 +272,11 @@ else
   echo -n "SKIM_TEST: Ending at "; date
   exit $DELETE_TEST_RESULT
   rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/CMSSW_4_4_2_patch5
+  rm -r /tmp/$PBS_JOBID/CMSSW_5_3_16
 fi
 
 echo "SKIM_TEST: ALL TESTS SUCCESSFUL"
 echo -n "timestamp_end="; date +%s
 echo -n "SKIM_TEST: Ending at "; date
 rm /tmp/$PBS_JOBID/tmpfs_test
-rm -r /tmp/$PBS_JOBID/CMSSW_4_4_2_patch5
+rm -r /tmp/$PBS_JOBID/CMSSW_5_3_16
