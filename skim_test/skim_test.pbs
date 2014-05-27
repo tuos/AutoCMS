@@ -1,0 +1,282 @@
+#!/bin/bash
+#PBS -W group_list=cms_stage2
+#PBS -l nodes=1
+#PBS -l mem=2000mb
+#PBS -l walltime=4:00:00
+#PBS -j oe
+
+echo -n "timestamp_begin="; date +%s
+echo -n "SKIM_TEST: Beginning at "
+date
+echo "SKIM_TEST: Running on node $HOSTNAME"  
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Setting up environment"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+AUTODIR=/home/appelte1/autocms
+cd $AUTODIR/skim_test/
+export SCRAM_ARCH=slc5_amd64_gcc472
+setpkgs -a lio
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Checking Input File"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+if [ -n "$INPUTFILE" ]; then
+  echo "-------------------------------------"
+  echo "Running lio-inspection on $INPUTFILE"
+  #lio_inspect -i 20 ${INPUTFILE/file:/}
+  lio_inspect -i 20 -d 20 -log /tmp/inspect.${PBS_JOBID} ${INPUTFILE/file:/} | tee /tmp/check.${PBS_JOBID}
+  [ "$(grep 'Submitted: 0' /tmp/check.${PBS_JOBID})" == "" ] && rm /tmp/inspect.${PBS_JOBID}
+  /bin/rm /tmp/check.${PBS_JOBID}
+  echo "-------------------------------------"
+
+else
+  echo "SKIM_TEST: WARNING: no input file specified, using default"
+fi
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Setting up SCRAM environment"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+source /gpfs21/grid/grid-app/cmssoft/cms/cmsset_default.sh
+SCRAM_TEST_RESULT=$?
+if [ $SCRAM_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: SCRAM Enviornment setup OK"
+else
+  echo "SKIM_TEST: SCRAM Enviornment setup ERROR $SCRAM_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  exit $SCRAM_TEST_RESULT
+fi
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Testing tmpfs area"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+cd /tmp/$PBS_JOBID
+
+touch tmpfs_test
+TEMPFS_TEST_RESULT=$?
+if [ $TEMPFS_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID OK"
+else
+  echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID ERROR $TEMPFS_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  exit $TEMPFS_TEST_RESULT
+fi
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Setting up CMSSW project area"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+scram p CMSSW CMSSW_5_3_16
+PROJECT_TEST_RESULT=$?
+if [ $PROJECT_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: CMSSW project area setup OK"
+else
+  echo "SKIM_TEST: CMSSW project area setup ERROR $PROJECT_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  rm -r /tmp/$PBS_JOBID/CMSSW_4_4_2_patch5
+  exit $PROJECT_TEST_RESULT
+fi
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Initializing CMSSW runtime environment and copying input file"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+cd CMSSW_5_3_16
+eval `scramv1 runtime -sh`
+cp $AUTODIR/skim_test/skimTestIvars.py .
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Running CMSSW Skim Job"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+echo 
+echo
+echo -n "BEGIN CMSSW EXECUTION: "
+date
+echo 
+echo
+
+if [ -z "$INPUTFILE" ]; then
+  cmsRun skimTestIvars.py
+  CMSSW_TEST_RESULT=$?
+else
+  cmsRun skimTestIvars.py inputFiles=$INPUTFILE
+  CMSSW_TEST_RESULT=$?
+fi
+
+echo 
+echo 
+echo -n "END CMSSW EXECUTION: "
+date
+echo
+echo
+
+
+if [ $CMSSW_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: CMSSW execution OK"
+else
+  echo "SKIM_TEST: CMSSW execution ERROR $CMSSW_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  rm -r /tmp/$PBS_JOBID/CMSSW_5_3_16
+  exit $CMSSW_TEST_RESULT
+fi
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Checking output file and stageout scripts"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+
+echo "Checking output file:"
+ls -l hiHighPt.root
+
+#echo "-------------------------"
+#echo "Checking Stageout scripts"
+echo "-------------------------"
+#echo "Running: ls -lh /usr/local/cms-stageout/"
+#ls -lh /usr/local/cms-stageout/
+#echo "-------------------------"
+#echo "Running: md5sum /usr/local/cms-stageout/vandy.cfg"
+#md5sum /usr/local/cms-stageout/vandy.cfg
+#echo "Running: md5sum /usr/local/cms-stageout/vandyCp.sh"
+#md5sum /usr/local/cms-stageout/vandyCp.sh
+#echo "Running: md5sum /usr/local/cms-stageout/vandyRm.sh"
+#md5sum /usr/local/cms-stageout/vandyRm.sh
+#echo "-------------------------"
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Uploading output file to /lio/lfs"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+#export USER_DN=autocms
+export X509_USER_CERT=/home/appelte1/.globus/usercert.pem
+
+echo "construct output file name for upload"
+#export DFILE=testoutput_`date +%s`_hiHighPt.root
+export DFILE=testoutput_${PBS_JOBID}_hiHighPt.root
+echo "Uploading to /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE"
+lio_cp -d 20 -log /tmp/cp.${PBS_JOBID}  hiHighPt.root /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+UPLOAD_TEST_RESULT=$?
+if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: lio Upload OK"
+  rm /tmp/cp.${PBS_JOBID}
+else
+  echo "SKIM_TEST: lio Upload ERROR $UPLOAD_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  exit $UPLOAD_TEST_RESULT
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  rm -r /tmp/$PBS_JOBID/CMSSW_5_3_16
+fi
+
+export DN=`/usr/bin/openssl x509 -noout -in $X509_USER_CERT -subject 2>/dev/null | /usr/bin/cut -d' ' -f2- | sed -e 's/=/-/g' | sed -e 's/ /_/g'`
+echo $DN
+
+lio_setattr -as user.cms_user_x509=${DN} /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+SET_ATT_RESULT=$?
+if [ $SET_ATT_RESULT -eq 0 ]; then
+echo "Set attribute successful"
+else echo "Set attribute fail ERROR $SET_ATT_RESULT"
+fi
+
+OUTFILE_DN=`lio_getattr -al user.cms_user_x509 /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE | grep cms_user_x509 | cut -d'=' -f 2-`
+#lio_getattr -al user.cms_user_x509 /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+GET_ATT_RESULT=$?
+if [ $GET_ATT_RESULT -eq 0 ]; then
+echo "Get attribute successful"
+else echo "Get attribute fail ERROR $GET_ATT_RESULT"
+fi
+echo "OUTFILE_DN is: $OUTFILE_DN"
+
+if [ $DN=$OUTFILE_DN ]; then echo "File has correct DN" ; 
+else echo "File has INCORRECT DN" ;
+fi
+
+
+echo "Running stat on uploaded file via BFS"
+echo "====================================="
+time stat /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+echo "====================================="
+
+echo -e "\n\n\n"
+echo "*****************************************************"
+echo "*"
+echo "* Deleting output file from /lio/lfs"
+echo "*"
+echo "*****************************************************"
+echo -e "\n\n\n"
+
+echo "-------------------------------------"
+echo "run lio-inspection on the output file before deleting it"
+  lio_inspect -i 20 /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+echo "-------------------------------------"
+
+echo "remove the output if the attributes match and check that it is gone"
+
+if [ $DN=$OUTFILE_DN ]; then 
+lio_rm  /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/$DFILE
+fi 
+
+DELETE_TEST_RESULT=$?
+if [ $DELETE_TEST_RESULT -eq 0 ]; then
+  echo "SKIM_TEST: /lio/lfs file delete OK"
+else
+  echo "SKIM_TEST: /lio/lfs file delete ERROR $DELETE_TEST_RESULT"
+  echo -n "timestamp_end="; date +%s
+  echo -n "SKIM_TEST: Ending at "; date
+  exit $DELETE_TEST_RESULT
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  rm -r /tmp/$PBS_JOBID/CMSSW_4_4_2_patch5
+fi
+
+echo "SKIM_TEST: ALL TESTS SUCCESSFUL"
+echo -n "timestamp_end="; date +%s
+echo -n "SKIM_TEST: Ending at "; date
+rm /tmp/$PBS_JOBID/tmpfs_test
+rm -r /tmp/$PBS_JOBID/CMSSW_4_4_2_patch5
