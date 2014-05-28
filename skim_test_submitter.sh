@@ -40,7 +40,7 @@ cd $AUTODIR/skim_test
 #SUBID=`/usr/scheduler/torque/bin/qsub -D /chroot/centos5 $AUTODIR/skim_test/skim_test.pbs -v INPUTFILE="$INFILE"`
 # centos6
 
-    SUBID=`/usr/scheduler/torque/bin/qsub  $AUTODIR/skim_test/skim_test.pbs -v INPUTFILE="$INFILE"`
+    SUBID=`/usr/scheduler/torque/bin/qsub  $AUTODIR/skim_test/skim_test.pbs -v INPUTFILE="$INFILE",CONFIGFILE="$AUTODIR/autocms.cfg"`
     SUBMIT_STATUS=$?
     if [ ! $SUBMIT_STATUS -eq 0 ]; then
        NOW=`date`
