@@ -5,6 +5,9 @@
 #PBS -l walltime=4:00:00
 #PBS -j oe
 
+# run the AutoCMS Configuration File
+source $CONFIGFILE
+
 echo -n "timestamp_begin="; date +%s
 echo -n "SKIM_TEST: Beginning at "
 date
