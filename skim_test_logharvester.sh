@@ -1,6 +1,9 @@
 #!/bin/bash
 
-AUTODIR=/home/appelte1/autocms
+# read configuration file
+source `pwd`/autocms.cfg
+
+AUTODIR=$AUTOCMS_BASEDIR
 cd $AUTODIR
 
 #
