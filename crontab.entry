@@ -1,4 +1,6 @@
+# set HOME to AutoCMS base directory
+HOME=/home/appelte1/autocms_dev
 MAILTO=""
-*/1 * * * * /home/appelte1/autocms/skim_test_submitter.sh
-*/30 * * * * /home/appelte1/autocms/skim_test_logharvester.sh
-47 * * * * /home/appelte1/autocms/skim_test_reporter.sh
+*/1 * * * * /home/appelte1/autocms_dev/skim_test_submitter.sh
+*/30 * * * * /home/appelte1/autocms_dev/skim_test_logharvester.sh
+47 * * * * /home/appelte1/autocms_dev/skim_test_reporter.sh
