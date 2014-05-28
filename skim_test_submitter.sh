@@ -1,17 +1,19 @@
 #!/bin/bash
-AUTODIR=/home/appelte1/autocms
+
+# read configuration file
+source `pwd`/autocms.cfg
+
+
+AUTODIR=$AUTOCMS_BASEDIR
 export MOABHOMEDIR=/usr/scheduler/config/moab
 
 #
 # Determine number of jobs in the queue
 #
 
-NUMJOBS=`/usr/scheduler/moab/bin/showq -w group=cms_stage2 | grep -c appelte1`
-#NUMJOBS=`/usr/scheduler/moab/bin/showq | grep -c appelte1`
+NUMJOBS=`/usr/scheduler/moab/bin/showq -w group=$AUTOCMS_GNAME | grep -c $AUTOCMS_UNAME`
 
-
-
-if [ $NUMJOBS -lt 20 ]; then
+if [ $NUMJOBS -lt $AUTOCMS_MAXENQUEUE ]; then
 
     cd $AUTODIR
 #
