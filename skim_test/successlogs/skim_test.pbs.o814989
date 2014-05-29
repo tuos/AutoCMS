@@ -1,0 +1,846 @@
+timestamp_begin=1401314276
+SKIM_TEST: Beginning at Wed May 28 16:57:56 CDT 2014
+SKIM_TEST: Running on node vmp1037
+
+
+
+
+*****************************************************
+*
+* Setting up environment
+*
+*****************************************************
+
+
+
+
+
+
+
+
+*****************************************************
+*
+* Checking Input File
+*
+*****************************************************
+
+
+
+
+-------------------------------------
+Running lio-inspection on file:/lio/lfs/cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+9129830822575415894: Inspecting file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+9129830822575415894: Cache segment maps to child 6856183783947196458
+6856183783947196458: jerase segment maps to child 409078603475027235
+6856183783947196458: segment information: method=cauchy_good data_devs=6 parity_devs=3 chunk_size=16384  used_size=25871129244 mode=1
+6856183783947196458: Inspecting child segment...
+409078603475027235: segment information: n_devices=9 n_shift=0 chunk_size=16388  used_size=25871129244 total_size=25871129244 mode=1
+409078603475027235: Checking row: (0, 9663675839, 9663675840)   Stripe: (0, 65519)
+409078603475027235:     dev=0 rcap=ibp://cms-depot29.vampire:6714/2515#rGzWfyPuD-Xe42WlcImbKXl-0UOocuef/7795790583381623489/READ
+409078603475027235:     dev=1 rcap=ibp://cms-depot1.vampire:6714/1505#PQ44ALP0NvtpQv8EJ0tUi2KWCqExqCZ-/8353897035863358335/READ
+409078603475027235:     dev=2 rcap=ibp://cms-depot38.vampire:6714/2848#fZujywQbZq+WWuVkn2O-T84+5uL1uyus/759635061621308214/READ
+409078603475027235:     dev=3 rcap=ibp://cms-depot17.vampire:6714/2099#c9w0piR3mjVhx0VIgmXV9EZg8WX2R3-N/2365658826100938614/READ
+409078603475027235:     dev=4 rcap=ibp://cms-depot35.vampire:6714/2734#0wVWrSCW98C17bJI4KrjgiDPbPKlr36y/9173268512159800643/READ
+409078603475027235:     dev=5 rcap=ibp://cms-depot8.vampire:6714/1767#yGA+Uk3XU8MotkrmRhrUFxqWuo76J5ZF/2509638407745009586/READ
+409078603475027235:     dev=6 rcap=ibp://cms-depot39.vampire:6714/2886#L4ushzhwz+D8yFm-ZfW4cHYyxEm3e4TM/12177555172573487969/READ
+409078603475027235:     dev=7 rcap=ibp://cms-depot30.vampire:6714/2577#07kxhsnzca6C0escU9gzitQGG8ays-1T/3942017203552485066/READ
+409078603475027235:     dev=8 rcap=ibp://cms-depot14.vampire:6714/1997#sIaanH78xYjcwNo7SrkQCzynz9wFRhHV/1426464334878026078/READ
+409078603475027235:     slun_row_size_check: 0 0 0 0 0 0 0 0 0
+409078603475027235:     slun_row_placement_check: 0 0 0 0 0 0 0 0 0
+409078603475027235: Checking row: (9663675840, 19327351679, 9663675840)   Stripe: (65520, 131039)
+409078603475027235:     dev=0 rcap=ibp://cms-depot29.vampire:6714/2535#jsng0xzpiTm0sQSQkmo6DWuoM-s-Lmyc/9216969941567424234/READ
+409078603475027235:     dev=1 rcap=ibp://cms-depot39.vampire:6714/2901#6GGg0mO3Fh2vFbi6io5SfHGwys6b3j8b/10361754922863277914/READ
+409078603475027235:     dev=2 rcap=ibp://cms-depot14.vampire:6714/1969#nb1nm+9xpamVZblcD7-gDXZmk8g23PPa/8193589306849367368/READ
+409078603475027235:     dev=3 rcap=ibp://cms-depot5.vampire:6714/1663#ymS9UM2zN57tJ5IXamE7iAXYNOpCCzWJ/16443619985993661082/READ
+409078603475027235:     dev=4 rcap=ibp://cms-depot21.vampire:6714/2250#p45PuCMs5mHaN0-GXfltqOtwbLZAmdVH/730623625111034955/READ
+409078603475027235:     dev=5 rcap=ibp://cms-depot2.vampire:6714/1540#jWQ-40-u5jAGhcmDxhdBavXZ+ceMknd5/17579611269179962893/READ
+409078603475027235:     dev=6 rcap=ibp://cms-depot12.vampire:6714/1910#HNKlGJNTvNKhczqiTUbbfYkV8oD3vi2N/17435275371138185259/READ
+409078603475027235:     dev=7 rcap=ibp://cms-depot28.vampire:6714/2491#AtzLg-1UeBc7RtuvUvuetp381tpmfrUj/1466014236171200421/READ
+409078603475027235:     dev=8 rcap=ibp://cms-depot37.vampire:6714/2820#swihlu5Z4t2Pzs0EN47Yqegfxjq0hwON/9667922340659547239/READ
+409078603475027235:     slun_row_size_check: 0 0 0 0 0 0 0 0 0
+409078603475027235:     slun_row_placement_check: 0 0 0 0 0 0 0 0 0
+409078603475027235: Checking row: (19327351680, 25871129243, 6543777564)   Stripe: (131040, 175406)
+409078603475027235:     dev=0 rcap=ibp://cms-depot33.vampire:6714/2658#PE7MWfuoELFs6ekaCzHEpwhZWbGdawoJ/8409656229854042502/READ
+409078603475027235:     dev=1 rcap=ibp://cms-depot15.vampire:6714/2033#JqJr1eT2VzoZAXL9xLOYztxroGCawMLz/5266944676065308682/READ
+409078603475027235:     dev=2 rcap=ibp://cms-depot35.vampire:6714/2728#9E-9czg1+qC4GRoytWP60yjrRrmMHeq-/3073542095359679244/READ
+409078603475027235:     dev=3 rcap=ibp://cms-depot11.vampire:6714/1896#idvkZIAoKtv6Xf-ZtPuepa8A7dyNz-+X/13007502723417223072/READ
+409078603475027235:     dev=4 rcap=ibp://cms-depot27.vampire:6714/2437#MJSMEiGJCBzNXcvmpflBKbWCCD2l6ss0/11148836255461201508/READ
+409078603475027235:     dev=5 rcap=ibp://cms-depot37.vampire:6714/2805#h3efcZcGGp+UTlS972Q9wB8Sp14b4KKm/10670119850328096316/READ
+409078603475027235:     dev=6 rcap=ibp://cms-depot17.vampire:6714/2088#-WmivYCgU8q5-inYsNAQVhtbU1SVp6IX/17840118218274773246/READ
+409078603475027235:     dev=7 rcap=ibp://cms-depot4.vampire:6714/1614#02UxK44ixQ-lV4v2ZI7M+mEKy3JVaaFK/3780361018677068675/READ
+409078603475027235:     dev=8 rcap=ibp://cms-depot22.vampire:6714/2269#d+50M28PgxvUTOcPKJWPfbWiGgRwCUcM/10062163765970137548/READ
+409078603475027235:     slun_row_size_check: 0 0 0 0 0 0 0 0 0
+409078603475027235:     slun_row_placement_check: 0 0 0 0 0 0 0 0 0
+409078603475027235: status: SUCCESS (0 max dev/row lost, 0 lost, 0 repaired, 0 need(s) moving, 0 moved)
+6856183783947196458: status: SUCCESS (0 devices, -1 stripes)
+Success with file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+--------------------------------------------------------------------
+Submitted: 1   Success: 1   Fail: 0
+-------------------------------------
+
+
+
+
+*****************************************************
+*
+* Setting up SCRAM environment
+*
+*****************************************************
+
+
+
+
+SKIM_TEST: SCRAM Enviornment setup OK
+
+
+
+
+*****************************************************
+*
+* Testing tmpfs area
+*
+*****************************************************
+
+
+
+
+SKIM_TEST: touch in directory /tmp/814989.vmpsched OK
+
+
+
+
+*****************************************************
+*
+* Setting up CMSSW project area
+*
+*****************************************************
+
+
+
+
+WARNING: Release CMSSW_5_3_16 is not available for architecture slc5_amd64_gcc472.
+         Developer's area is created for available architecture slc5_amd64_gcc462.
+WARNING: Developer's area is created for architecture slc5_amd64_gcc462 while your current OS is SLC6.
+SKIM_TEST: CMSSW project area setup OK
+
+
+
+
+*****************************************************
+*
+* Initializing CMSSW runtime environment and copying input file
+*
+*****************************************************
+
+
+
+
+
+
+
+
+*****************************************************
+*
+* Running CMSSW Skim Job
+*
+*****************************************************
+
+
+
+
+
+
+BEGIN CMSSW EXECUTION: Wed May 28 16:58:00 CDT 2014
+
+
+28-May-2014 16:58:02 CDT  Initiating request to open file file:/lio/lfs/cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+28-May-2014 16:58:06 CDT  Successfully opened file file:/lio/lfs/cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+Begin processing the 1st record. Run 182609, Event 22613960, LumiSection 542 at 28-May-2014 16:59:26.700 CDT
+Begin processing the 2nd record. Run 182609, Event 22615000, LumiSection 542 at 28-May-2014 16:59:26.702 CDT
+Begin processing the 3rd record. Run 182609, Event 22614992, LumiSection 542 at 28-May-2014 16:59:26.703 CDT
+Begin processing the 4th record. Run 182609, Event 22613568, LumiSection 542 at 28-May-2014 16:59:26.703 CDT
+Begin processing the 5th record. Run 182609, Event 22617608, LumiSection 542 at 28-May-2014 16:59:26.704 CDT
+Begin processing the 6th record. Run 182609, Event 22616712, LumiSection 542 at 28-May-2014 16:59:26.705 CDT
+Begin processing the 7th record. Run 182609, Event 22618360, LumiSection 542 at 28-May-2014 16:59:29.118 CDT
+Begin processing the 8th record. Run 182609, Event 22619424, LumiSection 542 at 28-May-2014 16:59:29.119 CDT
+Begin processing the 9th record. Run 182609, Event 22616560, LumiSection 542 at 28-May-2014 16:59:29.119 CDT
+Begin processing the 10th record. Run 182609, Event 22617560, LumiSection 542 at 28-May-2014 16:59:29.120 CDT
+Begin processing the 11th record. Run 182609, Event 22619136, LumiSection 542 at 28-May-2014 16:59:29.121 CDT
+Begin processing the 12th record. Run 182609, Event 22614392, LumiSection 542 at 28-May-2014 16:59:29.122 CDT
+Begin processing the 13th record. Run 182609, Event 22621080, LumiSection 542 at 28-May-2014 16:59:31.441 CDT
+Begin processing the 14th record. Run 182609, Event 22618872, LumiSection 542 at 28-May-2014 16:59:31.442 CDT
+Begin processing the 15th record. Run 182609, Event 22620648, LumiSection 542 at 28-May-2014 16:59:31.443 CDT
+Begin processing the 16th record. Run 182609, Event 22623032, LumiSection 542 at 28-May-2014 16:59:31.444 CDT
+Begin processing the 17th record. Run 182609, Event 22622056, LumiSection 542 at 28-May-2014 16:59:31.444 CDT
+Begin processing the 18th record. Run 182609, Event 22617384, LumiSection 542 at 28-May-2014 16:59:31.445 CDT
+Begin processing the 19th record. Run 182609, Event 22621016, LumiSection 542 at 28-May-2014 16:59:33.054 CDT
+Begin processing the 20th record. Run 182609, Event 22615552, LumiSection 542 at 28-May-2014 16:59:33.055 CDT
+Begin processing the 21st record. Run 182609, Event 22621728, LumiSection 542 at 28-May-2014 16:59:33.056 CDT
+Begin processing the 22nd record. Run 182609, Event 22624288, LumiSection 542 at 28-May-2014 17:00:30.599 CDT
+Begin processing the 23rd record. Run 182609, Event 22619016, LumiSection 542 at 28-May-2014 17:00:30.601 CDT
+Begin processing the 24th record. Run 182609, Event 22619232, LumiSection 542 at 28-May-2014 17:00:30.602 CDT
+Begin processing the 25th record. Run 182609, Event 22623608, LumiSection 542 at 28-May-2014 17:00:30.602 CDT
+Begin processing the 26th record. Run 182609, Event 22619296, LumiSection 542 at 28-May-2014 17:00:30.603 CDT
+Begin processing the 27th record. Run 182609, Event 22621456, LumiSection 542 at 28-May-2014 17:00:30.604 CDT
+Begin processing the 28th record. Run 182609, Event 22615592, LumiSection 542 at 28-May-2014 17:00:30.605 CDT
+Begin processing the 29th record. Run 182609, Event 22620488, LumiSection 542 at 28-May-2014 17:00:30.606 CDT
+Begin processing the 30th record. Run 182609, Event 22617056, LumiSection 542 at 28-May-2014 17:00:30.607 CDT
+Begin processing the 31st record. Run 182609, Event 22615872, LumiSection 542 at 28-May-2014 17:00:30.607 CDT
+Begin processing the 32nd record. Run 182609, Event 22626480, LumiSection 542 at 28-May-2014 17:00:30.608 CDT
+Begin processing the 33rd record. Run 182609, Event 22621736, LumiSection 542 at 28-May-2014 17:00:30.609 CDT
+Begin processing the 34th record. Run 182609, Event 22627880, LumiSection 542 at 28-May-2014 17:00:30.610 CDT
+Begin processing the 35th record. Run 182609, Event 22624472, LumiSection 542 at 28-May-2014 17:00:30.611 CDT
+Begin processing the 36th record. Run 182609, Event 22627384, LumiSection 542 at 28-May-2014 17:00:30.612 CDT
+Begin processing the 37th record. Run 182609, Event 22624096, LumiSection 542 at 28-May-2014 17:00:30.612 CDT
+Begin processing the 38th record. Run 182609, Event 22619840, LumiSection 542 at 28-May-2014 17:00:30.613 CDT
+Begin processing the 39th record. Run 182609, Event 22624264, LumiSection 542 at 28-May-2014 17:00:30.614 CDT
+Begin processing the 40th record. Run 182609, Event 22629584, LumiSection 542 at 28-May-2014 17:00:30.615 CDT
+Begin processing the 41st record. Run 182609, Event 22625208, LumiSection 542 at 28-May-2014 17:00:30.616 CDT
+Begin processing the 42nd record. Run 182609, Event 22629840, LumiSection 542 at 28-May-2014 17:00:30.617 CDT
+Begin processing the 43rd record. Run 182609, Event 22626712, LumiSection 542 at 28-May-2014 17:00:30.618 CDT
+Begin processing the 44th record. Run 182609, Event 22614832, LumiSection 542 at 28-May-2014 17:00:30.618 CDT
+Begin processing the 45th record. Run 182609, Event 22628696, LumiSection 542 at 28-May-2014 17:00:30.619 CDT
+Begin processing the 46th record. Run 182609, Event 22624632, LumiSection 542 at 28-May-2014 17:00:30.620 CDT
+Begin processing the 47th record. Run 182609, Event 22625344, LumiSection 542 at 28-May-2014 17:00:30.621 CDT
+Begin processing the 48th record. Run 182609, Event 22612880, LumiSection 542 at 28-May-2014 17:00:30.622 CDT
+Begin processing the 49th record. Run 182609, Event 22619600, LumiSection 542 at 28-May-2014 17:00:30.623 CDT
+Begin processing the 50th record. Run 182609, Event 22626720, LumiSection 542 at 28-May-2014 17:00:30.623 CDT
+Begin processing the 51st record. Run 182609, Event 22628048, LumiSection 542 at 28-May-2014 17:00:30.624 CDT
+Begin processing the 52nd record. Run 182609, Event 22618968, LumiSection 542 at 28-May-2014 17:00:30.625 CDT
+Begin processing the 53rd record. Run 182609, Event 22622128, LumiSection 542 at 28-May-2014 17:00:30.626 CDT
+Begin processing the 54th record. Run 182609, Event 22623192, LumiSection 542 at 28-May-2014 17:00:30.627 CDT
+Begin processing the 55th record. Run 182609, Event 22624464, LumiSection 542 at 28-May-2014 17:00:30.628 CDT
+Begin processing the 56th record. Run 182609, Event 22619416, LumiSection 542 at 28-May-2014 17:00:30.628 CDT
+Begin processing the 57th record. Run 182609, Event 22622720, LumiSection 542 at 28-May-2014 17:00:30.629 CDT
+Begin processing the 58th record. Run 182609, Event 22623680, LumiSection 542 at 28-May-2014 17:00:30.630 CDT
+Begin processing the 59th record. Run 182609, Event 22625784, LumiSection 542 at 28-May-2014 17:00:30.631 CDT
+Begin processing the 60th record. Run 182609, Event 22627024, LumiSection 542 at 28-May-2014 17:00:30.632 CDT
+Begin processing the 61st record. Run 182609, Event 22623648, LumiSection 542 at 28-May-2014 17:00:30.633 CDT
+Begin processing the 62nd record. Run 182609, Event 22627904, LumiSection 542 at 28-May-2014 17:00:30.633 CDT
+Begin processing the 63rd record. Run 182609, Event 22616392, LumiSection 542 at 28-May-2014 17:00:30.634 CDT
+Begin processing the 64th record. Run 182609, Event 22616880, LumiSection 542 at 28-May-2014 17:00:30.635 CDT
+Begin processing the 65th record. Run 182609, Event 22629312, LumiSection 542 at 28-May-2014 17:00:30.636 CDT
+Begin processing the 66th record. Run 182609, Event 22622408, LumiSection 542 at 28-May-2014 17:00:30.637 CDT
+Begin processing the 67th record. Run 182609, Event 22627296, LumiSection 542 at 28-May-2014 17:00:30.638 CDT
+Begin processing the 68th record. Run 182609, Event 22627136, LumiSection 542 at 28-May-2014 17:00:30.638 CDT
+Begin processing the 69th record. Run 182609, Event 22626240, LumiSection 542 at 28-May-2014 17:00:30.639 CDT
+Begin processing the 70th record. Run 182609, Event 22632624, LumiSection 542 at 28-May-2014 17:00:30.640 CDT
+Begin processing the 71st record. Run 182609, Event 22618712, LumiSection 542 at 28-May-2014 17:00:30.641 CDT
+Begin processing the 72nd record. Run 182609, Event 22629128, LumiSection 542 at 28-May-2014 17:00:30.642 CDT
+Begin processing the 73rd record. Run 182609, Event 22628032, LumiSection 542 at 28-May-2014 17:00:30.642 CDT
+Begin processing the 74th record. Run 182609, Event 22628472, LumiSection 542 at 28-May-2014 17:00:30.643 CDT
+Begin processing the 75th record. Run 182609, Event 22630784, LumiSection 542 at 28-May-2014 17:00:30.644 CDT
+Begin processing the 76th record. Run 182609, Event 22634048, LumiSection 542 at 28-May-2014 17:00:30.645 CDT
+Begin processing the 77th record. Run 182609, Event 22625984, LumiSection 542 at 28-May-2014 17:00:30.646 CDT
+Begin processing the 78th record. Run 182609, Event 22617752, LumiSection 542 at 28-May-2014 17:00:30.647 CDT
+Begin processing the 79th record. Run 182609, Event 22630776, LumiSection 542 at 28-May-2014 17:00:30.647 CDT
+Begin processing the 80th record. Run 182609, Event 22637384, LumiSection 542 at 28-May-2014 17:00:30.648 CDT
+Begin processing the 81st record. Run 182609, Event 22629784, LumiSection 542 at 28-May-2014 17:00:30.649 CDT
+Begin processing the 82nd record. Run 182609, Event 22629424, LumiSection 542 at 28-May-2014 17:00:30.650 CDT
+Begin processing the 83rd record. Run 182609, Event 22634032, LumiSection 542 at 28-May-2014 17:00:30.651 CDT
+Begin processing the 84th record. Run 182609, Event 22620656, LumiSection 542 at 28-May-2014 17:00:30.652 CDT
+Begin processing the 85th record. Run 182609, Event 22634960, LumiSection 542 at 28-May-2014 17:00:30.652 CDT
+Begin processing the 86th record. Run 182609, Event 22625040, LumiSection 542 at 28-May-2014 17:00:30.653 CDT
+Begin processing the 87th record. Run 182609, Event 22630064, LumiSection 542 at 28-May-2014 17:00:30.654 CDT
+Begin processing the 88th record. Run 182609, Event 22626416, LumiSection 542 at 28-May-2014 17:00:30.655 CDT
+Begin processing the 89th record. Run 182609, Event 22629568, LumiSection 542 at 28-May-2014 17:00:30.656 CDT
+Begin processing the 90th record. Run 182609, Event 22636752, LumiSection 542 at 28-May-2014 17:00:30.657 CDT
+Begin processing the 91st record. Run 182609, Event 22621416, LumiSection 542 at 28-May-2014 17:00:30.657 CDT
+Begin processing the 92nd record. Run 182609, Event 22641192, LumiSection 542 at 28-May-2014 17:00:30.658 CDT
+Begin processing the 93rd record. Run 182609, Event 22625488, LumiSection 542 at 28-May-2014 17:00:30.659 CDT
+Begin processing the 94th record. Run 182609, Event 22627632, LumiSection 542 at 28-May-2014 17:00:30.660 CDT
+Begin processing the 95th record. Run 182609, Event 22640960, LumiSection 542 at 28-May-2014 17:00:30.661 CDT
+Begin processing the 96th record. Run 182609, Event 22638040, LumiSection 542 at 28-May-2014 17:00:30.662 CDT
+Begin processing the 97th record. Run 182609, Event 22635472, LumiSection 542 at 28-May-2014 17:00:30.662 CDT
+Begin processing the 98th record. Run 182609, Event 22634768, LumiSection 542 at 28-May-2014 17:00:30.663 CDT
+Begin processing the 99th record. Run 182609, Event 22640424, LumiSection 542 at 28-May-2014 17:00:30.664 CDT
+Begin processing the 100th record. Run 182609, Event 22628768, LumiSection 542 at 28-May-2014 17:00:30.665 CDT
+Begin processing the 101st record. Run 182609, Event 22633400, LumiSection 542 at 28-May-2014 17:00:34.943 CDT
+Begin processing the 102nd record. Run 182609, Event 22637736, LumiSection 542 at 28-May-2014 17:00:34.944 CDT
+Begin processing the 103rd record. Run 182609, Event 22628960, LumiSection 542 at 28-May-2014 17:00:34.944 CDT
+Begin processing the 104th record. Run 182609, Event 22640240, LumiSection 542 at 28-May-2014 17:00:41.861 CDT
+Begin processing the 105th record. Run 182609, Event 22631416, LumiSection 542 at 28-May-2014 17:00:41.862 CDT
+Begin processing the 106th record. Run 182609, Event 22637584, LumiSection 542 at 28-May-2014 17:00:41.863 CDT
+Begin processing the 107th record. Run 182609, Event 22643984, LumiSection 542 at 28-May-2014 17:00:41.863 CDT
+Begin processing the 108th record. Run 182609, Event 22642288, LumiSection 542 at 28-May-2014 17:00:41.864 CDT
+Begin processing the 109th record. Run 182609, Event 22637832, LumiSection 542 at 28-May-2014 17:00:41.864 CDT
+Begin processing the 110th record. Run 182609, Event 22640656, LumiSection 542 at 28-May-2014 17:00:41.865 CDT
+Begin processing the 111th record. Run 182609, Event 22646264, LumiSection 542 at 28-May-2014 17:00:41.865 CDT
+Begin processing the 112th record. Run 182609, Event 22636840, LumiSection 542 at 28-May-2014 17:00:41.866 CDT
+Begin processing the 113th record. Run 182609, Event 22639064, LumiSection 542 at 28-May-2014 17:00:41.867 CDT
+Begin processing the 114th record. Run 182609, Event 22636384, LumiSection 542 at 28-May-2014 17:00:41.867 CDT
+Begin processing the 115th record. Run 182609, Event 22641256, LumiSection 542 at 28-May-2014 17:00:41.868 CDT
+Begin processing the 116th record. Run 182609, Event 22630880, LumiSection 542 at 28-May-2014 17:00:41.868 CDT
+Begin processing the 117th record. Run 182609, Event 22643408, LumiSection 542 at 28-May-2014 17:00:41.869 CDT
+Begin processing the 118th record. Run 182609, Event 22636768, LumiSection 542 at 28-May-2014 17:00:41.869 CDT
+Begin processing the 119th record. Run 182609, Event 22643400, LumiSection 542 at 28-May-2014 17:00:41.870 CDT
+Begin processing the 120th record. Run 182609, Event 22634016, LumiSection 542 at 28-May-2014 17:00:41.870 CDT
+Begin processing the 121st record. Run 182609, Event 22638224, LumiSection 542 at 28-May-2014 17:00:41.871 CDT
+Begin processing the 122nd record. Run 182609, Event 22644176, LumiSection 542 at 28-May-2014 17:00:41.871 CDT
+Begin processing the 123rd record. Run 182609, Event 22633864, LumiSection 542 at 28-May-2014 17:00:41.872 CDT
+Begin processing the 124th record. Run 182609, Event 22644752, LumiSection 542 at 28-May-2014 17:00:41.873 CDT
+Begin processing the 125th record. Run 182609, Event 22647632, LumiSection 542 at 28-May-2014 17:00:41.873 CDT
+Begin processing the 126th record. Run 182609, Event 22644688, LumiSection 542 at 28-May-2014 17:00:41.874 CDT
+Begin processing the 127th record. Run 182609, Event 22639216, LumiSection 542 at 28-May-2014 17:00:41.874 CDT
+Begin processing the 128th record. Run 182609, Event 22635776, LumiSection 542 at 28-May-2014 17:00:41.875 CDT
+Begin processing the 129th record. Run 182609, Event 22636280, LumiSection 542 at 28-May-2014 17:00:41.875 CDT
+Begin processing the 130th record. Run 182609, Event 22631472, LumiSection 542 at 28-May-2014 17:00:41.876 CDT
+Begin processing the 131st record. Run 182609, Event 22642432, LumiSection 542 at 28-May-2014 17:00:41.876 CDT
+Begin processing the 132nd record. Run 182609, Event 22638160, LumiSection 542 at 28-May-2014 17:00:41.877 CDT
+Begin processing the 133rd record. Run 182609, Event 22638664, LumiSection 542 at 28-May-2014 17:00:41.878 CDT
+Begin processing the 134th record. Run 182609, Event 22648376, LumiSection 542 at 28-May-2014 17:00:41.878 CDT
+Begin processing the 135th record. Run 182609, Event 22645264, LumiSection 542 at 28-May-2014 17:00:41.879 CDT
+Begin processing the 136th record. Run 182609, Event 22634288, LumiSection 542 at 28-May-2014 17:00:41.879 CDT
+Begin processing the 137th record. Run 182609, Event 22650040, LumiSection 542 at 28-May-2014 17:00:41.880 CDT
+Begin processing the 138th record. Run 182609, Event 22641976, LumiSection 542 at 28-May-2014 17:00:41.880 CDT
+Begin processing the 139th record. Run 182609, Event 22638640, LumiSection 542 at 28-May-2014 17:00:41.881 CDT
+Begin processing the 140th record. Run 182609, Event 22649512, LumiSection 542 at 28-May-2014 17:00:41.881 CDT
+Begin processing the 141st record. Run 182609, Event 22643280, LumiSection 542 at 28-May-2014 17:00:41.882 CDT
+Begin processing the 142nd record. Run 182609, Event 22649568, LumiSection 542 at 28-May-2014 17:00:41.882 CDT
+Begin processing the 143rd record. Run 182609, Event 22641968, LumiSection 542 at 28-May-2014 17:00:41.883 CDT
+Begin processing the 144th record. Run 182609, Event 22643136, LumiSection 542 at 28-May-2014 17:00:41.883 CDT
+Begin processing the 145th record. Run 182609, Event 22639336, LumiSection 542 at 28-May-2014 17:00:41.884 CDT
+Begin processing the 146th record. Run 182609, Event 22645088, LumiSection 542 at 28-May-2014 17:00:41.884 CDT
+Begin processing the 147th record. Run 182609, Event 22647568, LumiSection 542 at 28-May-2014 17:00:41.885 CDT
+Begin processing the 148th record. Run 182609, Event 22649008, LumiSection 542 at 28-May-2014 17:00:41.886 CDT
+Begin processing the 149th record. Run 182609, Event 22644360, LumiSection 542 at 28-May-2014 17:00:41.886 CDT
+Begin processing the 150th record. Run 182609, Event 22640024, LumiSection 542 at 28-May-2014 17:00:41.887 CDT
+Begin processing the 151st record. Run 182609, Event 22646032, LumiSection 542 at 28-May-2014 17:00:41.887 CDT
+Begin processing the 152nd record. Run 182609, Event 22644928, LumiSection 542 at 28-May-2014 17:00:41.888 CDT
+Begin processing the 153rd record. Run 182609, Event 22643872, LumiSection 542 at 28-May-2014 17:00:41.888 CDT
+Begin processing the 154th record. Run 182609, Event 22648456, LumiSection 542 at 28-May-2014 17:00:41.889 CDT
+Begin processing the 155th record. Run 182609, Event 22643776, LumiSection 542 at 28-May-2014 17:00:41.889 CDT
+Begin processing the 156th record. Run 182609, Event 22636152, LumiSection 542 at 28-May-2014 17:00:41.890 CDT
+Begin processing the 157th record. Run 182609, Event 22646712, LumiSection 542 at 28-May-2014 17:00:48.200 CDT
+Begin processing the 158th record. Run 182609, Event 22647560, LumiSection 542 at 28-May-2014 17:00:48.201 CDT
+Begin processing the 159th record. Run 182609, Event 22649528, LumiSection 542 at 28-May-2014 17:00:48.202 CDT
+Begin processing the 160th record. Run 182609, Event 22649384, LumiSection 542 at 28-May-2014 17:00:48.202 CDT
+Begin processing the 161st record. Run 182609, Event 22648728, LumiSection 542 at 28-May-2014 17:00:48.203 CDT
+Begin processing the 162nd record. Run 182609, Event 22649128, LumiSection 542 at 28-May-2014 17:00:48.203 CDT
+Begin processing the 163rd record. Run 182609, Event 22613782, LumiSection 542 at 28-May-2014 17:00:48.204 CDT
+Begin processing the 164th record. Run 182609, Event 22613294, LumiSection 542 at 28-May-2014 17:00:53.642 CDT
+Begin processing the 165th record. Run 182609, Event 22615918, LumiSection 542 at 28-May-2014 17:00:54.115 CDT
+Begin processing the 166th record. Run 182609, Event 22614910, LumiSection 542 at 28-May-2014 17:00:54.116 CDT
+Begin processing the 167th record. Run 182609, Event 22617334, LumiSection 542 at 28-May-2014 17:00:54.117 CDT
+Begin processing the 168th record. Run 182609, Event 22613190, LumiSection 542 at 28-May-2014 17:00:54.117 CDT
+Begin processing the 169th record. Run 182609, Event 22614782, LumiSection 542 at 28-May-2014 17:00:54.118 CDT
+Begin processing the 170th record. Run 182609, Event 22616702, LumiSection 542 at 28-May-2014 17:00:54.118 CDT
+Begin processing the 171st record. Run 182609, Event 22615590, LumiSection 542 at 28-May-2014 17:00:54.119 CDT
+Begin processing the 172nd record. Run 182609, Event 22617710, LumiSection 542 at 28-May-2014 17:00:54.119 CDT
+Begin processing the 173rd record. Run 182609, Event 22619022, LumiSection 542 at 28-May-2014 17:00:54.120 CDT
+Begin processing the 174th record. Run 182609, Event 22615318, LumiSection 542 at 28-May-2014 17:00:54.120 CDT
+Begin processing the 175th record. Run 182609, Event 22616342, LumiSection 542 at 28-May-2014 17:00:54.121 CDT
+Begin processing the 176th record. Run 182609, Event 22615038, LumiSection 542 at 28-May-2014 17:00:54.121 CDT
+Begin processing the 177th record. Run 182609, Event 22619262, LumiSection 542 at 28-May-2014 17:00:54.122 CDT
+Begin processing the 178th record. Run 182609, Event 22622302, LumiSection 542 at 28-May-2014 17:00:54.122 CDT
+Begin processing the 179th record. Run 182609, Event 22619014, LumiSection 542 at 28-May-2014 17:00:54.123 CDT
+Begin processing the 180th record. Run 182609, Event 22614542, LumiSection 542 at 28-May-2014 17:00:54.123 CDT
+Begin processing the 181st record. Run 182609, Event 22616566, LumiSection 542 at 28-May-2014 17:00:54.124 CDT
+Begin processing the 182nd record. Run 182609, Event 22614014, LumiSection 542 at 28-May-2014 17:00:54.124 CDT
+Begin processing the 183rd record. Run 182609, Event 22620854, LumiSection 542 at 28-May-2014 17:00:54.125 CDT
+Begin processing the 184th record. Run 182609, Event 22625870, LumiSection 542 at 28-May-2014 17:00:54.125 CDT
+Begin processing the 185th record. Run 182609, Event 22619654, LumiSection 542 at 28-May-2014 17:00:54.126 CDT
+Begin processing the 186th record. Run 182609, Event 22619110, LumiSection 542 at 28-May-2014 17:00:54.126 CDT
+Begin processing the 187th record. Run 182609, Event 22623654, LumiSection 542 at 28-May-2014 17:00:54.127 CDT
+Begin processing the 188th record. Run 182609, Event 22625366, LumiSection 542 at 28-May-2014 17:00:54.127 CDT
+Begin processing the 189th record. Run 182609, Event 22613790, LumiSection 542 at 28-May-2014 17:00:54.128 CDT
+Begin processing the 190th record. Run 182609, Event 22625014, LumiSection 542 at 28-May-2014 17:00:54.129 CDT
+Begin processing the 191st record. Run 182609, Event 22619358, LumiSection 542 at 28-May-2014 17:00:54.129 CDT
+Begin processing the 192nd record. Run 182609, Event 22622182, LumiSection 542 at 28-May-2014 17:00:54.130 CDT
+Begin processing the 193rd record. Run 182609, Event 22616614, LumiSection 542 at 28-May-2014 17:00:54.130 CDT
+Begin processing the 194th record. Run 182609, Event 22622326, LumiSection 542 at 28-May-2014 17:00:54.131 CDT
+Begin processing the 195th record. Run 182609, Event 22620806, LumiSection 542 at 28-May-2014 17:00:54.131 CDT
+Begin processing the 196th record. Run 182609, Event 22620070, LumiSection 542 at 28-May-2014 17:00:54.132 CDT
+Begin processing the 197th record. Run 182609, Event 22621798, LumiSection 542 at 28-May-2014 17:00:54.132 CDT
+Begin processing the 198th record. Run 182609, Event 22621934, LumiSection 542 at 28-May-2014 17:00:54.133 CDT
+Begin processing the 199th record. Run 182609, Event 22618806, LumiSection 542 at 28-May-2014 17:00:54.133 CDT
+Begin processing the 200th record. Run 182609, Event 22627782, LumiSection 542 at 28-May-2014 17:00:54.134 CDT
+Begin processing the 201st record. Run 182609, Event 22624662, LumiSection 542 at 28-May-2014 17:00:54.134 CDT
+Begin processing the 202nd record. Run 182609, Event 22628102, LumiSection 542 at 28-May-2014 17:00:54.135 CDT
+Begin processing the 203rd record. Run 182609, Event 22626374, LumiSection 542 at 28-May-2014 17:00:54.135 CDT
+Begin processing the 204th record. Run 182609, Event 22616118, LumiSection 542 at 28-May-2014 17:00:59.802 CDT
+Begin processing the 205th record. Run 182609, Event 22622070, LumiSection 542 at 28-May-2014 17:00:59.803 CDT
+Begin processing the 206th record. Run 182609, Event 22617582, LumiSection 542 at 28-May-2014 17:00:59.803 CDT
+Begin processing the 207th record. Run 182609, Event 22622758, LumiSection 542 at 28-May-2014 17:00:59.804 CDT
+Begin processing the 208th record. Run 182609, Event 22628254, LumiSection 542 at 28-May-2014 17:00:59.804 CDT
+Begin processing the 209th record. Run 182609, Event 22623830, LumiSection 542 at 28-May-2014 17:00:59.805 CDT
+Begin processing the 210th record. Run 182609, Event 22624822, LumiSection 542 at 28-May-2014 17:00:59.805 CDT
+Begin processing the 211th record. Run 182609, Event 22617798, LumiSection 542 at 28-May-2014 17:00:59.806 CDT
+Begin processing the 212th record. Run 182609, Event 22628574, LumiSection 542 at 28-May-2014 17:00:59.806 CDT
+Begin processing the 213th record. Run 182609, Event 22618870, LumiSection 542 at 28-May-2014 17:01:04.810 CDT
+Begin processing the 214th record. Run 182609, Event 22622478, LumiSection 542 at 28-May-2014 17:01:04.811 CDT
+Begin processing the 215th record. Run 182609, Event 22625822, LumiSection 542 at 28-May-2014 17:01:04.812 CDT
+Begin processing the 216th record. Run 182609, Event 22626214, LumiSection 542 at 28-May-2014 17:01:04.812 CDT
+Begin processing the 217th record. Run 182609, Event 22617182, LumiSection 542 at 28-May-2014 17:01:04.813 CDT
+Begin processing the 218th record. Run 182609, Event 22627710, LumiSection 542 at 28-May-2014 17:01:04.813 CDT
+Begin processing the 219th record. Run 182609, Event 22625726, LumiSection 542 at 28-May-2014 17:01:07.557 CDT
+Begin processing the 220th record. Run 182609, Event 22627494, LumiSection 542 at 28-May-2014 17:01:07.558 CDT
+Begin processing the 221st record. Run 182609, Event 22629718, LumiSection 542 at 28-May-2014 17:01:07.558 CDT
+Begin processing the 222nd record. Run 182609, Event 22618518, LumiSection 542 at 28-May-2014 17:01:07.559 CDT
+Begin processing the 223rd record. Run 182609, Event 22619246, LumiSection 542 at 28-May-2014 17:01:07.559 CDT
+Begin processing the 224th record. Run 182609, Event 22627022, LumiSection 542 at 28-May-2014 17:01:07.560 CDT
+Begin processing the 225th record. Run 182609, Event 22625886, LumiSection 542 at 28-May-2014 17:01:07.560 CDT
+Begin processing the 226th record. Run 182609, Event 22620734, LumiSection 542 at 28-May-2014 17:01:07.561 CDT
+Begin processing the 227th record. Run 182609, Event 22622822, LumiSection 542 at 28-May-2014 17:01:07.561 CDT
+Begin processing the 228th record. Run 182609, Event 22633094, LumiSection 542 at 28-May-2014 17:01:07.562 CDT
+Begin processing the 229th record. Run 182609, Event 22628494, LumiSection 542 at 28-May-2014 17:01:07.562 CDT
+Begin processing the 230th record. Run 182609, Event 22630326, LumiSection 542 at 28-May-2014 17:01:07.563 CDT
+Begin processing the 231st record. Run 182609, Event 22629046, LumiSection 542 at 28-May-2014 17:01:07.563 CDT
+Begin processing the 232nd record. Run 182609, Event 22627038, LumiSection 542 at 28-May-2014 17:01:07.564 CDT
+Begin processing the 233rd record. Run 182609, Event 22627334, LumiSection 542 at 28-May-2014 17:01:07.565 CDT
+Begin processing the 234th record. Run 182609, Event 22626526, LumiSection 542 at 28-May-2014 17:01:07.565 CDT
+Begin processing the 235th record. Run 182609, Event 22628166, LumiSection 542 at 28-May-2014 17:01:07.566 CDT
+Begin processing the 236th record. Run 182609, Event 22623862, LumiSection 542 at 28-May-2014 17:01:07.566 CDT
+Begin processing the 237th record. Run 182609, Event 22623710, LumiSection 542 at 28-May-2014 17:01:07.567 CDT
+Begin processing the 238th record. Run 182609, Event 22631742, LumiSection 542 at 28-May-2014 17:01:07.567 CDT
+Begin processing the 239th record. Run 182609, Event 22628974, LumiSection 542 at 28-May-2014 17:01:07.568 CDT
+Begin processing the 240th record. Run 182609, Event 22626614, LumiSection 542 at 28-May-2014 17:01:07.568 CDT
+Begin processing the 241st record. Run 182609, Event 22632262, LumiSection 542 at 28-May-2014 17:01:07.569 CDT
+Begin processing the 242nd record. Run 182609, Event 22616062, LumiSection 542 at 28-May-2014 17:01:07.569 CDT
+Begin processing the 243rd record. Run 182609, Event 22632086, LumiSection 542 at 28-May-2014 17:01:07.570 CDT
+Begin processing the 244th record. Run 182609, Event 22634798, LumiSection 542 at 28-May-2014 17:01:07.570 CDT
+Begin processing the 245th record. Run 182609, Event 22632590, LumiSection 542 at 28-May-2014 17:01:07.571 CDT
+Begin processing the 246th record. Run 182609, Event 22630158, LumiSection 542 at 28-May-2014 17:01:07.571 CDT
+Begin processing the 247th record. Run 182609, Event 22626190, LumiSection 542 at 28-May-2014 17:01:07.572 CDT
+Begin processing the 248th record. Run 182609, Event 22635846, LumiSection 542 at 28-May-2014 17:01:07.572 CDT
+Begin processing the 249th record. Run 182609, Event 22630502, LumiSection 542 at 28-May-2014 17:01:07.573 CDT
+Begin processing the 250th record. Run 182609, Event 22633422, LumiSection 542 at 28-May-2014 17:01:07.573 CDT
+Begin processing the 251st record. Run 182609, Event 22628822, LumiSection 542 at 28-May-2014 17:01:07.574 CDT
+Begin processing the 252nd record. Run 182609, Event 22634214, LumiSection 542 at 28-May-2014 17:01:07.574 CDT
+Begin processing the 253rd record. Run 182609, Event 22630814, LumiSection 542 at 28-May-2014 17:01:07.575 CDT
+Begin processing the 254th record. Run 182609, Event 22633294, LumiSection 542 at 28-May-2014 17:01:07.575 CDT
+Begin processing the 255th record. Run 182609, Event 22630574, LumiSection 542 at 28-May-2014 17:01:07.576 CDT
+Begin processing the 256th record. Run 182609, Event 22631478, LumiSection 542 at 28-May-2014 17:01:07.576 CDT
+Begin processing the 257th record. Run 182609, Event 22631614, LumiSection 542 at 28-May-2014 17:01:07.577 CDT
+Begin processing the 258th record. Run 182609, Event 22643230, LumiSection 542 at 28-May-2014 17:01:07.578 CDT
+Begin processing the 259th record. Run 182609, Event 22634886, LumiSection 542 at 28-May-2014 17:01:07.578 CDT
+Begin processing the 260th record. Run 182609, Event 22643430, LumiSection 542 at 28-May-2014 17:01:07.579 CDT
+Begin processing the 261st record. Run 182609, Event 22624718, LumiSection 542 at 28-May-2014 17:01:07.579 CDT
+Begin processing the 262nd record. Run 182609, Event 22644214, LumiSection 542 at 28-May-2014 17:01:07.580 CDT
+Begin processing the 263rd record. Run 182609, Event 22634102, LumiSection 542 at 28-May-2014 17:01:07.580 CDT
+Begin processing the 264th record. Run 182609, Event 22637182, LumiSection 542 at 28-May-2014 17:01:07.581 CDT
+Begin processing the 265th record. Run 182609, Event 22632974, LumiSection 542 at 28-May-2014 17:01:07.581 CDT
+Begin processing the 266th record. Run 182609, Event 22627966, LumiSection 542 at 28-May-2014 17:01:07.582 CDT
+Begin processing the 267th record. Run 182609, Event 22628918, LumiSection 542 at 28-May-2014 17:01:07.582 CDT
+Begin processing the 268th record. Run 182609, Event 22634998, LumiSection 542 at 28-May-2014 17:01:07.583 CDT
+Begin processing the 269th record. Run 182609, Event 22641238, LumiSection 542 at 28-May-2014 17:01:07.583 CDT
+Begin processing the 270th record. Run 182609, Event 22643014, LumiSection 542 at 28-May-2014 17:01:07.584 CDT
+Begin processing the 271st record. Run 182609, Event 22632734, LumiSection 542 at 28-May-2014 17:01:07.584 CDT
+Begin processing the 272nd record. Run 182609, Event 22627550, LumiSection 542 at 28-May-2014 17:01:07.585 CDT
+Begin processing the 273rd record. Run 182609, Event 22633318, LumiSection 542 at 28-May-2014 17:01:07.585 CDT
+Begin processing the 274th record. Run 182609, Event 22635654, LumiSection 542 at 28-May-2014 17:01:07.586 CDT
+Begin processing the 275th record. Run 182609, Event 22646998, LumiSection 542 at 28-May-2014 17:01:07.586 CDT
+Begin processing the 276th record. Run 182609, Event 22630486, LumiSection 542 at 28-May-2014 17:01:07.587 CDT
+Begin processing the 277th record. Run 182609, Event 22646238, LumiSection 542 at 28-May-2014 17:01:07.587 CDT
+Begin processing the 278th record. Run 182609, Event 22642814, LumiSection 542 at 28-May-2014 17:01:07.588 CDT
+Begin processing the 279th record. Run 182609, Event 22634982, LumiSection 542 at 28-May-2014 17:01:07.588 CDT
+Begin processing the 280th record. Run 182609, Event 22628934, LumiSection 542 at 28-May-2014 17:01:11.502 CDT
+Begin processing the 281st record. Run 182609, Event 22638302, LumiSection 542 at 28-May-2014 17:01:11.502 CDT
+Begin processing the 282nd record. Run 182609, Event 22647798, LumiSection 542 at 28-May-2014 17:01:11.503 CDT
+Begin processing the 283rd record. Run 182609, Event 22644774, LumiSection 542 at 28-May-2014 17:01:11.504 CDT
+Begin processing the 284th record. Run 182609, Event 22645334, LumiSection 542 at 28-May-2014 17:01:11.504 CDT
+Begin processing the 285th record. Run 182609, Event 22637742, LumiSection 542 at 28-May-2014 17:01:11.505 CDT
+Begin processing the 286th record. Run 182609, Event 22637342, LumiSection 542 at 28-May-2014 17:01:11.505 CDT
+Begin processing the 287th record. Run 182609, Event 22647702, LumiSection 542 at 28-May-2014 17:01:11.506 CDT
+Begin processing the 288th record. Run 182609, Event 22635782, LumiSection 542 at 28-May-2014 17:01:11.506 CDT
+Begin processing the 289th record. Run 182609, Event 22635126, LumiSection 542 at 28-May-2014 17:01:11.507 CDT
+Begin processing the 290th record. Run 182609, Event 22641518, LumiSection 542 at 28-May-2014 17:01:11.507 CDT
+Begin processing the 291st record. Run 182609, Event 22642574, LumiSection 542 at 28-May-2014 17:01:11.508 CDT
+Begin processing the 292nd record. Run 182609, Event 22643238, LumiSection 542 at 28-May-2014 17:01:11.508 CDT
+Begin processing the 293rd record. Run 182609, Event 22639086, LumiSection 542 at 28-May-2014 17:01:11.509 CDT
+Begin processing the 294th record. Run 182609, Event 22641846, LumiSection 542 at 28-May-2014 17:01:11.509 CDT
+Begin processing the 295th record. Run 182609, Event 22647006, LumiSection 542 at 28-May-2014 17:01:11.510 CDT
+Begin processing the 296th record. Run 182609, Event 22642430, LumiSection 542 at 28-May-2014 17:01:11.511 CDT
+Begin processing the 297th record. Run 182609, Event 22643838, LumiSection 542 at 28-May-2014 17:01:11.511 CDT
+Begin processing the 298th record. Run 182609, Event 22635726, LumiSection 542 at 28-May-2014 17:01:11.512 CDT
+Begin processing the 299th record. Run 182609, Event 22643454, LumiSection 542 at 28-May-2014 17:01:11.512 CDT
+Begin processing the 300th record. Run 182609, Event 22645166, LumiSection 542 at 28-May-2014 17:01:11.513 CDT
+Begin processing the 301st record. Run 182609, Event 22634414, LumiSection 542 at 28-May-2014 17:01:11.513 CDT
+Begin processing the 302nd record. Run 182609, Event 22647150, LumiSection 542 at 28-May-2014 17:01:16.916 CDT
+Begin processing the 303rd record. Run 182609, Event 22641862, LumiSection 542 at 28-May-2014 17:01:16.916 CDT
+Begin processing the 304th record. Run 182609, Event 22642638, LumiSection 542 at 28-May-2014 17:01:16.917 CDT
+Begin processing the 305th record. Run 182609, Event 22646550, LumiSection 542 at 28-May-2014 17:01:16.918 CDT
+Begin processing the 306th record. Run 182609, Event 22648454, LumiSection 542 at 28-May-2014 17:01:16.918 CDT
+Begin processing the 307th record. Run 182609, Event 22639118, LumiSection 542 at 28-May-2014 17:01:16.919 CDT
+Begin processing the 308th record. Run 182609, Event 22645702, LumiSection 542 at 28-May-2014 17:01:16.919 CDT
+Begin processing the 309th record. Run 182609, Event 22645182, LumiSection 542 at 28-May-2014 17:01:16.920 CDT
+Begin processing the 310th record. Run 182609, Event 22638462, LumiSection 542 at 28-May-2014 17:01:16.920 CDT
+Begin processing the 311th record. Run 182609, Event 22642958, LumiSection 542 at 28-May-2014 17:01:16.921 CDT
+Begin processing the 312th record. Run 182609, Event 22648150, LumiSection 542 at 28-May-2014 17:01:16.921 CDT
+Begin processing the 313th record. Run 182609, Event 22646630, LumiSection 542 at 28-May-2014 17:01:16.922 CDT
+Begin processing the 314th record. Run 182609, Event 22649222, LumiSection 542 at 28-May-2014 17:01:16.922 CDT
+Begin processing the 315th record. Run 182609, Event 22642494, LumiSection 542 at 28-May-2014 17:01:16.923 CDT
+Begin processing the 316th record. Run 182609, Event 22647310, LumiSection 542 at 28-May-2014 17:01:16.923 CDT
+Begin processing the 317th record. Run 182609, Event 22646558, LumiSection 542 at 28-May-2014 17:01:16.924 CDT
+Begin processing the 318th record. Run 182609, Event 22646470, LumiSection 542 at 28-May-2014 17:01:16.924 CDT
+Begin processing the 319th record. Run 182609, Event 22644678, LumiSection 542 at 28-May-2014 17:01:16.925 CDT
+Begin processing the 320th record. Run 182609, Event 22647886, LumiSection 542 at 28-May-2014 17:01:16.925 CDT
+Begin processing the 321st record. Run 182609, Event 22646230, LumiSection 542 at 28-May-2014 17:01:16.926 CDT
+Begin processing the 322nd record. Run 182609, Event 22647814, LumiSection 542 at 28-May-2014 17:01:16.926 CDT
+Begin processing the 323rd record. Run 182609, Event 22645046, LumiSection 542 at 28-May-2014 17:01:16.927 CDT
+Begin processing the 324th record. Run 182609, Event 22648062, LumiSection 542 at 28-May-2014 17:01:16.927 CDT
+Begin processing the 325th record. Run 182609, Event 22643614, LumiSection 542 at 28-May-2014 17:01:16.928 CDT
+Begin processing the 326th record. Run 182609, Event 22646190, LumiSection 542 at 28-May-2014 17:01:16.929 CDT
+Begin processing the 327th record. Run 182609, Event 22648766, LumiSection 542 at 28-May-2014 17:01:16.929 CDT
+Begin processing the 328th record. Run 182609, Event 22647230, LumiSection 542 at 28-May-2014 17:01:21.804 CDT
+Begin processing the 329th record. Run 182609, Event 22612802, LumiSection 542 at 28-May-2014 17:01:21.805 CDT
+Begin processing the 330th record. Run 182609, Event 22615978, LumiSection 542 at 28-May-2014 17:01:21.805 CDT
+Begin processing the 331st record. Run 182609, Event 22614834, LumiSection 542 at 28-May-2014 17:01:21.806 CDT
+Begin processing the 332nd record. Run 182609, Event 22618170, LumiSection 542 at 28-May-2014 17:01:21.806 CDT
+Begin processing the 333rd record. Run 182609, Event 22618050, LumiSection 542 at 28-May-2014 17:01:21.807 CDT
+Begin processing the 334th record. Run 182609, Event 22614146, LumiSection 542 at 28-May-2014 17:01:21.808 CDT
+Begin processing the 335th record. Run 182609, Event 22613962, LumiSection 542 at 28-May-2014 17:01:21.808 CDT
+Begin processing the 336th record. Run 182609, Event 22613650, LumiSection 542 at 28-May-2014 17:01:21.809 CDT
+Begin processing the 337th record. Run 182609, Event 22613386, LumiSection 542 at 28-May-2014 17:01:21.809 CDT
+Begin processing the 338th record. Run 182609, Event 22617186, LumiSection 542 at 28-May-2014 17:01:21.810 CDT
+Begin processing the 339th record. Run 182609, Event 22613018, LumiSection 542 at 28-May-2014 17:01:21.810 CDT
+Begin processing the 340th record. Run 182609, Event 22613738, LumiSection 542 at 28-May-2014 17:01:21.811 CDT
+Begin processing the 341st record. Run 182609, Event 22616106, LumiSection 542 at 28-May-2014 17:01:21.812 CDT
+Begin processing the 342nd record. Run 182609, Event 22614786, LumiSection 542 at 28-May-2014 17:01:21.812 CDT
+Begin processing the 343rd record. Run 182609, Event 22614730, LumiSection 542 at 28-May-2014 17:01:21.813 CDT
+Begin processing the 344th record. Run 182609, Event 22621234, LumiSection 542 at 28-May-2014 17:01:21.813 CDT
+Begin processing the 345th record. Run 182609, Event 22624330, LumiSection 542 at 28-May-2014 17:01:21.814 CDT
+Begin processing the 346th record. Run 182609, Event 22621698, LumiSection 542 at 28-May-2014 17:01:21.814 CDT
+Begin processing the 347th record. Run 182609, Event 22623562, LumiSection 542 at 28-May-2014 17:01:21.815 CDT
+Begin processing the 348th record. Run 182609, Event 22620418, LumiSection 542 at 28-May-2014 17:01:21.816 CDT
+Begin processing the 349th record. Run 182609, Event 22626722, LumiSection 542 at 28-May-2014 17:01:21.816 CDT
+Begin processing the 350th record. Run 182609, Event 22618346, LumiSection 542 at 28-May-2014 17:01:21.817 CDT
+Begin processing the 351st record. Run 182609, Event 22619282, LumiSection 542 at 28-May-2014 17:01:21.817 CDT
+Begin processing the 352nd record. Run 182609, Event 22620146, LumiSection 542 at 28-May-2014 17:01:21.818 CDT
+Begin processing the 353rd record. Run 182609, Event 22628498, LumiSection 542 at 28-May-2014 17:01:21.818 CDT
+Begin processing the 354th record. Run 182609, Event 22623074, LumiSection 542 at 28-May-2014 17:01:21.819 CDT
+Begin processing the 355th record. Run 182609, Event 22629410, LumiSection 542 at 28-May-2014 17:01:21.820 CDT
+Begin processing the 356th record. Run 182609, Event 22619762, LumiSection 542 at 28-May-2014 17:01:21.820 CDT
+Begin processing the 357th record. Run 182609, Event 22625994, LumiSection 542 at 28-May-2014 17:01:21.821 CDT
+Begin processing the 358th record. Run 182609, Event 22613258, LumiSection 542 at 28-May-2014 17:01:21.821 CDT
+Begin processing the 359th record. Run 182609, Event 22626898, LumiSection 542 at 28-May-2014 17:01:28.233 CDT
+Begin processing the 360th record. Run 182609, Event 22630146, LumiSection 542 at 28-May-2014 17:01:28.234 CDT
+Begin processing the 361st record. Run 182609, Event 22616186, LumiSection 542 at 28-May-2014 17:01:28.234 CDT
+Begin processing the 362nd record. Run 182609, Event 22626642, LumiSection 542 at 28-May-2014 17:01:28.235 CDT
+Begin processing the 363rd record. Run 182609, Event 22619930, LumiSection 542 at 28-May-2014 17:01:28.235 CDT
+Begin processing the 364th record. Run 182609, Event 22622082, LumiSection 542 at 28-May-2014 17:01:28.236 CDT
+Begin processing the 365th record. Run 182609, Event 22619794, LumiSection 542 at 28-May-2014 17:01:28.236 CDT
+Begin processing the 366th record. Run 182609, Event 22621994, LumiSection 542 at 28-May-2014 17:01:28.237 CDT
+Begin processing the 367th record. Run 182609, Event 22626658, LumiSection 542 at 28-May-2014 17:01:28.237 CDT
+Begin processing the 368th record. Run 182609, Event 22619666, LumiSection 542 at 28-May-2014 17:01:28.238 CDT
+Begin processing the 369th record. Run 182609, Event 22632866, LumiSection 542 at 28-May-2014 17:01:28.238 CDT
+Begin processing the 370th record. Run 182609, Event 22624018, LumiSection 542 at 28-May-2014 17:01:28.239 CDT
+Begin processing the 371st record. Run 182609, Event 22622002, LumiSection 542 at 28-May-2014 17:01:28.240 CDT
+Begin processing the 372nd record. Run 182609, Event 22627098, LumiSection 542 at 28-May-2014 17:01:28.240 CDT
+Begin processing the 373rd record. Run 182609, Event 22625954, LumiSection 542 at 28-May-2014 17:01:28.241 CDT
+Begin processing the 374th record. Run 182609, Event 22625562, LumiSection 542 at 28-May-2014 17:01:28.241 CDT
+Begin processing the 375th record. Run 182609, Event 22634458, LumiSection 542 at 28-May-2014 17:01:28.242 CDT
+Begin processing the 376th record. Run 182609, Event 22625306, LumiSection 542 at 28-May-2014 17:01:28.242 CDT
+Begin processing the 377th record. Run 182609, Event 22628026, LumiSection 542 at 28-May-2014 17:01:28.243 CDT
+Begin processing the 378th record. Run 182609, Event 22631866, LumiSection 542 at 28-May-2014 17:01:28.243 CDT
+Begin processing the 379th record. Run 182609, Event 22623058, LumiSection 542 at 28-May-2014 17:01:28.244 CDT
+Begin processing the 380th record. Run 182609, Event 22623122, LumiSection 542 at 28-May-2014 17:01:28.244 CDT
+Begin processing the 381st record. Run 182609, Event 22631682, LumiSection 542 at 28-May-2014 17:01:28.245 CDT
+Begin processing the 382nd record. Run 182609, Event 22625418, LumiSection 542 at 28-May-2014 17:01:28.245 CDT
+Begin processing the 383rd record. Run 182609, Event 22619690, LumiSection 542 at 28-May-2014 17:01:28.246 CDT
+Begin processing the 384th record. Run 182609, Event 22633450, LumiSection 542 at 28-May-2014 17:01:28.247 CDT
+Begin processing the 385th record. Run 182609, Event 22632346, LumiSection 542 at 28-May-2014 17:01:28.247 CDT
+Begin processing the 386th record. Run 182609, Event 22624826, LumiSection 542 at 28-May-2014 17:01:28.248 CDT
+Begin processing the 387th record. Run 182609, Event 22635682, LumiSection 542 at 28-May-2014 17:01:28.248 CDT
+Begin processing the 388th record. Run 182609, Event 22623234, LumiSection 542 at 28-May-2014 17:01:28.249 CDT
+Begin processing the 389th record. Run 182609, Event 22627706, LumiSection 542 at 28-May-2014 17:01:28.249 CDT
+Begin processing the 390th record. Run 182609, Event 22634178, LumiSection 542 at 28-May-2014 17:01:28.250 CDT
+Begin processing the 391st record. Run 182609, Event 22622506, LumiSection 542 at 28-May-2014 17:01:28.563 CDT
+Begin processing the 392nd record. Run 182609, Event 22636962, LumiSection 542 at 28-May-2014 17:01:28.564 CDT
+Begin processing the 393rd record. Run 182609, Event 22633314, LumiSection 542 at 28-May-2014 17:01:28.564 CDT
+Begin processing the 394th record. Run 182609, Event 22620514, LumiSection 542 at 28-May-2014 17:01:28.565 CDT
+Begin processing the 395th record. Run 182609, Event 22631570, LumiSection 542 at 28-May-2014 17:01:28.565 CDT
+Begin processing the 396th record. Run 182609, Event 22634170, LumiSection 542 at 28-May-2014 17:01:28.566 CDT
+Begin processing the 397th record. Run 182609, Event 22623794, LumiSection 542 at 28-May-2014 17:01:28.566 CDT
+Begin processing the 398th record. Run 182609, Event 22633058, LumiSection 542 at 28-May-2014 17:01:28.567 CDT
+Begin processing the 399th record. Run 182609, Event 22639922, LumiSection 542 at 28-May-2014 17:01:28.567 CDT
+Begin processing the 400th record. Run 182609, Event 22624362, LumiSection 542 at 28-May-2014 17:01:29.248 CDT
+Begin processing the 401st record. Run 182609, Event 22630658, LumiSection 542 at 28-May-2014 17:01:29.249 CDT
+Begin processing the 402nd record. Run 182609, Event 22630834, LumiSection 542 at 28-May-2014 17:01:29.250 CDT
+Begin processing the 403rd record. Run 182609, Event 22640298, LumiSection 542 at 28-May-2014 17:01:29.251 CDT
+Begin processing the 404th record. Run 182609, Event 22639890, LumiSection 542 at 28-May-2014 17:01:29.252 CDT
+Begin processing the 405th record. Run 182609, Event 22628714, LumiSection 542 at 28-May-2014 17:01:32.461 CDT
+Begin processing the 406th record. Run 182609, Event 22625658, LumiSection 542 at 28-May-2014 17:01:32.461 CDT
+Begin processing the 407th record. Run 182609, Event 22639586, LumiSection 542 at 28-May-2014 17:01:38.888 CDT
+Begin processing the 408th record. Run 182609, Event 22638290, LumiSection 542 at 28-May-2014 17:01:38.889 CDT
+Begin processing the 409th record. Run 182609, Event 22635554, LumiSection 542 at 28-May-2014 17:01:38.889 CDT
+Begin processing the 410th record. Run 182609, Event 22625106, LumiSection 542 at 28-May-2014 17:01:38.890 CDT
+Begin processing the 411th record. Run 182609, Event 22641722, LumiSection 542 at 28-May-2014 17:01:38.890 CDT
+Begin processing the 412th record. Run 182609, Event 22636538, LumiSection 542 at 28-May-2014 17:01:38.891 CDT
+Begin processing the 413th record. Run 182609, Event 22639882, LumiSection 542 at 28-May-2014 17:01:38.891 CDT
+Begin processing the 414th record. Run 182609, Event 22628530, LumiSection 542 at 28-May-2014 17:01:38.892 CDT
+Begin processing the 415th record. Run 182609, Event 22634834, LumiSection 542 at 28-May-2014 17:01:38.892 CDT
+Begin processing the 416th record. Run 182609, Event 22638818, LumiSection 542 at 28-May-2014 17:01:38.893 CDT
+Begin processing the 417th record. Run 182609, Event 22644754, LumiSection 542 at 28-May-2014 17:01:38.894 CDT
+Begin processing the 418th record. Run 182609, Event 22642962, LumiSection 542 at 28-May-2014 17:01:38.894 CDT
+Begin processing the 419th record. Run 182609, Event 22643346, LumiSection 542 at 28-May-2014 17:01:38.895 CDT
+Begin processing the 420th record. Run 182609, Event 22637706, LumiSection 542 at 28-May-2014 17:01:38.895 CDT
+Begin processing the 421st record. Run 182609, Event 22643602, LumiSection 542 at 28-May-2014 17:01:38.896 CDT
+Begin processing the 422nd record. Run 182609, Event 22642490, LumiSection 542 at 28-May-2014 17:01:38.896 CDT
+Begin processing the 423rd record. Run 182609, Event 22634826, LumiSection 542 at 28-May-2014 17:01:38.897 CDT
+Begin processing the 424th record. Run 182609, Event 22635778, LumiSection 542 at 28-May-2014 17:01:38.897 CDT
+Begin processing the 425th record. Run 182609, Event 22643546, LumiSection 542 at 28-May-2014 17:01:38.898 CDT
+Begin processing the 426th record. Run 182609, Event 22639642, LumiSection 542 at 28-May-2014 17:01:38.898 CDT
+Begin processing the 427th record. Run 182609, Event 22647490, LumiSection 542 at 28-May-2014 17:01:38.899 CDT
+Begin processing the 428th record. Run 182609, Event 22634154, LumiSection 542 at 28-May-2014 17:01:38.900 CDT
+Begin processing the 429th record. Run 182609, Event 22635138, LumiSection 542 at 28-May-2014 17:01:38.900 CDT
+Begin processing the 430th record. Run 182609, Event 22629354, LumiSection 542 at 28-May-2014 17:01:38.901 CDT
+Begin processing the 431st record. Run 182609, Event 22640106, LumiSection 542 at 28-May-2014 17:01:38.901 CDT
+Begin processing the 432nd record. Run 182609, Event 22633682, LumiSection 542 at 28-May-2014 17:01:38.902 CDT
+Begin processing the 433rd record. Run 182609, Event 22638650, LumiSection 542 at 28-May-2014 17:01:38.902 CDT
+Begin processing the 434th record. Run 182609, Event 22646690, LumiSection 542 at 28-May-2014 17:01:38.903 CDT
+Begin processing the 435th record. Run 182609, Event 22633882, LumiSection 542 at 28-May-2014 17:01:38.903 CDT
+Begin processing the 436th record. Run 182609, Event 22634618, LumiSection 542 at 28-May-2014 17:01:38.904 CDT
+Begin processing the 437th record. Run 182609, Event 22648274, LumiSection 542 at 28-May-2014 17:01:38.904 CDT
+Begin processing the 438th record. Run 182609, Event 22640130, LumiSection 542 at 28-May-2014 17:01:38.905 CDT
+Begin processing the 439th record. Run 182609, Event 22648170, LumiSection 542 at 28-May-2014 17:01:38.905 CDT
+Begin processing the 440th record. Run 182609, Event 22636874, LumiSection 542 at 28-May-2014 17:01:38.906 CDT
+Begin processing the 441st record. Run 182609, Event 22647618, LumiSection 542 at 28-May-2014 17:01:38.906 CDT
+Begin processing the 442nd record. Run 182609, Event 22642002, LumiSection 542 at 28-May-2014 17:01:38.907 CDT
+Begin processing the 443rd record. Run 182609, Event 22644370, LumiSection 542 at 28-May-2014 17:01:38.908 CDT
+Begin processing the 444th record. Run 182609, Event 22645266, LumiSection 542 at 28-May-2014 17:01:38.908 CDT
+Begin processing the 445th record. Run 182609, Event 22639714, LumiSection 542 at 28-May-2014 17:01:38.909 CDT
+Begin processing the 446th record. Run 182609, Event 22644914, LumiSection 542 at 28-May-2014 17:01:38.909 CDT
+Begin processing the 447th record. Run 182609, Event 22645554, LumiSection 542 at 28-May-2014 17:01:38.910 CDT
+Begin processing the 448th record. Run 182609, Event 22647050, LumiSection 542 at 28-May-2014 17:01:38.910 CDT
+Begin processing the 449th record. Run 182609, Event 22637874, LumiSection 542 at 28-May-2014 17:01:38.911 CDT
+Begin processing the 450th record. Run 182609, Event 22645650, LumiSection 542 at 28-May-2014 17:01:38.911 CDT
+Begin processing the 451st record. Run 182609, Event 22642466, LumiSection 542 at 28-May-2014 17:01:38.912 CDT
+Begin processing the 452nd record. Run 182609, Event 22644170, LumiSection 542 at 28-May-2014 17:01:38.912 CDT
+Begin processing the 453rd record. Run 182609, Event 22640378, LumiSection 542 at 28-May-2014 17:01:38.913 CDT
+Begin processing the 454th record. Run 182609, Event 22640442, LumiSection 542 at 28-May-2014 17:01:38.913 CDT
+Begin processing the 455th record. Run 182609, Event 22637034, LumiSection 542 at 28-May-2014 17:01:38.914 CDT
+Begin processing the 456th record. Run 182609, Event 22646418, LumiSection 542 at 28-May-2014 17:01:38.914 CDT
+Begin processing the 457th record. Run 182609, Event 22649202, LumiSection 542 at 28-May-2014 17:01:38.915 CDT
+Begin processing the 458th record. Run 182609, Event 22645690, LumiSection 542 at 28-May-2014 17:01:38.916 CDT
+Begin processing the 459th record. Run 182609, Event 22641418, LumiSection 542 at 28-May-2014 17:01:38.916 CDT
+Begin processing the 460th record. Run 182609, Event 22648410, LumiSection 542 at 28-May-2014 17:01:38.917 CDT
+Begin processing the 461st record. Run 182609, Event 22647018, LumiSection 542 at 28-May-2014 17:01:38.917 CDT
+Begin processing the 462nd record. Run 182609, Event 22646778, LumiSection 542 at 28-May-2014 17:01:38.918 CDT
+Begin processing the 463rd record. Run 182609, Event 22649194, LumiSection 542 at 28-May-2014 17:01:38.918 CDT
+Begin processing the 464th record. Run 182609, Event 22646498, LumiSection 542 at 28-May-2014 17:01:38.919 CDT
+Begin processing the 465th record. Run 182609, Event 22646306, LumiSection 542 at 28-May-2014 17:01:38.919 CDT
+Begin processing the 466th record. Run 182609, Event 22616316, LumiSection 542 at 28-May-2014 17:01:38.920 CDT
+Begin processing the 467th record. Run 182609, Event 22616892, LumiSection 542 at 28-May-2014 17:01:38.921 CDT
+Begin processing the 468th record. Run 182609, Event 22614804, LumiSection 542 at 28-May-2014 17:01:38.921 CDT
+Begin processing the 469th record. Run 182609, Event 22618220, LumiSection 542 at 28-May-2014 17:01:38.922 CDT
+Begin processing the 470th record. Run 182609, Event 22614620, LumiSection 542 at 28-May-2014 17:01:38.922 CDT
+Begin processing the 471st record. Run 182609, Event 22617700, LumiSection 542 at 28-May-2014 17:01:38.923 CDT
+Begin processing the 472nd record. Run 182609, Event 22619700, LumiSection 542 at 28-May-2014 17:01:38.923 CDT
+Begin processing the 473rd record. Run 182609, Event 22620156, LumiSection 542 at 28-May-2014 17:01:38.924 CDT
+Begin processing the 474th record. Run 182609, Event 22613260, LumiSection 542 at 28-May-2014 17:01:38.924 CDT
+Begin processing the 475th record. Run 182609, Event 22616540, LumiSection 542 at 28-May-2014 17:01:38.925 CDT
+Begin processing the 476th record. Run 182609, Event 22617036, LumiSection 542 at 28-May-2014 17:01:38.925 CDT
+Begin processing the 477th record. Run 182609, Event 22616084, LumiSection 542 at 28-May-2014 17:01:38.926 CDT
+Begin processing the 478th record. Run 182609, Event 22624252, LumiSection 542 at 28-May-2014 17:01:38.927 CDT
+Begin processing the 479th record. Run 182609, Event 22624236, LumiSection 542 at 28-May-2014 17:01:38.927 CDT
+Begin processing the 480th record. Run 182609, Event 22620044, LumiSection 542 at 28-May-2014 17:01:38.928 CDT
+Begin processing the 481st record. Run 182609, Event 22623708, LumiSection 542 at 28-May-2014 17:01:38.928 CDT
+Begin processing the 482nd record. Run 182609, Event 22623100, LumiSection 542 at 28-May-2014 17:01:38.929 CDT
+Begin processing the 483rd record. Run 182609, Event 22620460, LumiSection 542 at 28-May-2014 17:01:38.929 CDT
+Begin processing the 484th record. Run 182609, Event 22626340, LumiSection 542 at 28-May-2014 17:01:38.930 CDT
+Begin processing the 485th record. Run 182609, Event 22614084, LumiSection 542 at 28-May-2014 17:01:42.497 CDT
+Begin processing the 486th record. Run 182609, Event 22625228, LumiSection 542 at 28-May-2014 17:01:42.497 CDT
+Begin processing the 487th record. Run 182609, Event 22613548, LumiSection 542 at 28-May-2014 17:01:42.498 CDT
+Begin processing the 488th record. Run 182609, Event 22627428, LumiSection 542 at 28-May-2014 17:01:42.498 CDT
+Begin processing the 489th record. Run 182609, Event 22621340, LumiSection 542 at 28-May-2014 17:01:42.499 CDT
+Begin processing the 490th record. Run 182609, Event 22613692, LumiSection 542 at 28-May-2014 17:01:42.499 CDT
+Begin processing the 491st record. Run 182609, Event 22619740, LumiSection 542 at 28-May-2014 17:01:42.500 CDT
+Begin processing the 492nd record. Run 182609, Event 22625436, LumiSection 542 at 28-May-2014 17:01:42.500 CDT
+Begin processing the 493rd record. Run 182609, Event 22625116, LumiSection 542 at 28-May-2014 17:01:42.501 CDT
+Begin processing the 494th record. Run 182609, Event 22623004, LumiSection 542 at 28-May-2014 17:01:42.501 CDT
+Begin processing the 495th record. Run 182609, Event 22623348, LumiSection 542 at 28-May-2014 17:01:42.502 CDT
+Begin processing the 496th record. Run 182609, Event 22629380, LumiSection 542 at 28-May-2014 17:01:42.502 CDT
+Begin processing the 497th record. Run 182609, Event 22626588, LumiSection 542 at 28-May-2014 17:01:42.503 CDT
+Begin processing the 498th record. Run 182609, Event 22620732, LumiSection 542 at 28-May-2014 17:01:42.504 CDT
+Begin processing the 499th record. Run 182609, Event 22617620, LumiSection 542 at 28-May-2014 17:01:42.504 CDT
+Begin processing the 500th record. Run 182609, Event 22616172, LumiSection 542 at 28-May-2014 17:01:42.505 CDT
+28-May-2014 17:01:42 CDT  Closed file file:/lio/lfs/cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00007/4E1A9169-D7BC-E311-BB34-02163E00F0A7.root
+
+TrigReport ---------- Event  Summary ------------
+TrigReport Events total = 500 passed = 18 failed = 482
+
+TrigReport ---------- Path   Summary ------------
+TrigReport  Trig Bit#        Run     Passed     Failed      Error Name
+TrigReport     1    0        500         18        482          0 eventFilter_step
+
+TrigReport -------End-Path   Summary ------------
+TrigReport  Trig Bit#        Run     Passed     Failed      Error Name
+TrigReport     0    0        500        500          0          0 output_step
+
+TrigReport ---------- Modules in Path: eventFilter_step ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     1    0        500         18        482          0 hltHIHighPt
+
+TrigReport ------ Modules in End-Path: output_step ------------
+TrigReport  Trig Bit#    Visited     Passed     Failed      Error Name
+TrigReport     0    0        500        500          0          0 output
+
+TrigReport ---------- Module Summary ------------
+TrigReport    Visited        Run     Passed     Failed      Error Name
+TrigReport        500        500         18        482          0 hltHIHighPt
+TrigReport        500        500        500          0          0 TriggerResults
+TrigReport        500        500        500          0          0 output
+
+TimeReport ---------- Event  Summary ---[sec]----
+TimeReport CPU/event = 0.073237 Real/event = 0.145029
+
+TimeReport ---------- Path   Summary ---[sec]----
+TimeReport             per event          per path-run 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.000054   0.000054   0.000054   0.000054 eventFilter_step
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event          per path-run 
+
+TimeReport -------End-Path   Summary ---[sec]----
+TimeReport             per event       per endpath-run 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.073159   0.144950   0.073159   0.144950 output_step
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event       per endpath-run 
+
+TimeReport ---------- Modules in Path: eventFilter_step ---[sec]----
+TimeReport             per event      per module-visit 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.000052   0.000053   0.000052   0.000053 hltHIHighPt
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event      per module-visit 
+
+TimeReport ------ Modules in End-Path: output_step ---[sec]----
+TimeReport             per event      per module-visit 
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport   0.073157   0.144949   0.073157   0.144949 output
+TimeReport        CPU       Real        CPU       Real Name
+TimeReport             per event      per module-visit 
+
+TimeReport ---------- Module Summary ---[sec]----
+TimeReport             per event        per module-run      per module-visit 
+TimeReport        CPU       Real        CPU       Real        CPU       Real Name
+TimeReport   0.000052   0.000053   0.000052   0.000053   0.000052   0.000053 hltHIHighPt
+TimeReport   0.000012   0.000020   0.000012   0.000020   0.000012   0.000020 TriggerResults
+TimeReport   0.073157   0.144949   0.073157   0.144949   0.073157   0.144949 output
+TimeReport        CPU       Real        CPU       Real        CPU       Real Name
+TimeReport             per event        per module-run      per module-visit 
+
+T---Report end!
+
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             1        1
+    2 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostEndRun                        
+    2 fileAction           pre-events       pre-events       
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  3                   3
+
+
+END CMSSW EXECUTION: Wed May 28 17:01:43 CDT 2014
+
+
+SKIM_TEST: CMSSW execution OK
+
+
+
+
+*****************************************************
+*
+* Checking output file and stageout scripts
+*
+*****************************************************
+
+
+
+
+Checking output file:
+-rw-r--r-- 1 appelte1 cms_stage2 112389121 May 28 17:01 hiHighPt.root
+-------------------------
+
+
+
+
+*****************************************************
+*
+* Uploading output file to /lio/lfs
+*
+*****************************************************
+
+
+
+
+construct output file name for upload
+Uploading to /lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/testoutput_814989.vmpsched_hiHighPt.root
+copy /tmp/814989.vmpsched/CMSSW_5_3_16/hiHighPt.root tacketar@lio:/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/testoutput_814989.vmpsched_hiHighPt.root
+SKIM_TEST: lio Upload OK
+/DC-ch/DC-cern/OU-Organic_Units/OU-Users/CN-appeltel/CN-693395/CN-Eric_Andrew_Appelt
+Set attribute successful
+Get attribute successful
+OUTFILE_DN is: /DC-ch/DC-cern/OU-Organic_Units/OU-Users/CN-appeltel/CN-693395/CN-Eric_Andrew_Appelt
+File has correct DN
+Running stat on uploaded file via BFS
+=====================================
+  File: `/lio/lfs/cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/testoutput_814989.vmpsched_hiHighPt.root'
+  Size: 112389121 	Blocks: 219510     IO Block: 4096   regular file
+Device: 20h/32d	Inode: 3819985033961002236  Links: 1
+Access: (0444/-r--r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2014-05-28 17:01:43.000000000 -0500
+Modify: 2014-05-28 17:01:46.000000000 -0500
+Change: 2014-05-28 17:01:43.000000000 -0500
+
+real	0m0.006s
+user	0m0.001s
+sys	0m0.001s
+=====================================
+
+
+
+
+*****************************************************
+*
+* Deleting output file from /lio/lfs
+*
+*****************************************************
+
+
+
+
+-------------------------------------
+run lio-inspection on the output file before deleting it
+6705560879807373733: Inspecting file /cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/testoutput_814989.vmpsched_hiHighPt.root
+6705560879807373733: Cache segment maps to child 4505849718983350356
+4505849718983350356: jerase segment maps to child 1324296815876970238
+4505849718983350356: segment information: method=cauchy_good data_devs=6 parity_devs=3 chunk_size=16384  used_size=168730848 mode=1
+4505849718983350356: Inspecting child segment...
+1324296815876970238: segment information: n_devices=9 n_shift=0 chunk_size=16388  used_size=168730848 total_size=168730848 mode=1
+1324296815876970238: Checking row: (0, 168730847, 168730848)   Stripe: (0, 1143)
+1324296815876970238:     dev=0 rcap=ibp://cms-depot20.vampire:6714/2215#IdhaglsiQdrmcpd5KEGfV0JyddneuZBD/17683447286154730020/READ
+1324296815876970238:     dev=1 rcap=ibp://cms-depot33.vampire:6714/2666#NN63CHccMtSZ0vF+jc7SCvFYftyXqUey/18019592834343834647/READ
+1324296815876970238:     dev=2 rcap=ibp://cms-depot31.vampire:6714/2595#5r5OZuMIC796nYURWw+PtijnWepjeen7/8985531174320289092/READ
+1324296815876970238:     dev=3 rcap=ibp://cms-depot14.vampire:6714/2000#X7rlh9hEyNSpa6ZJYIiqwG5S2XpwG7Kl/17662286768543967119/READ
+1324296815876970238:     dev=4 rcap=ibp://cms-depot27.vampire:6714/2442#IfiYs1jlZ2kVJJ++ykez9PUHj9Fk8+iQ/11394042477882674386/READ
+1324296815876970238:     dev=5 rcap=ibp://cms-depot16.vampire:6714/2053#-Wao81qOgDXZOdFbVdTWOUpSCFD-cIvM/8417316488638530463/READ
+1324296815876970238:     dev=6 rcap=ibp://cms-depot42.vampire:6714/3006#0CYL0JEaBF-ebDCOL7maDTAWCxBKWaYh/15086417859146141928/READ
+1324296815876970238:     dev=7 rcap=ibp://cms-depot39.vampire:6714/2901#VakisDviXK9KBKACt6vJB1j8QfEoJYpD/15294584801283889486/READ
+1324296815876970238:     dev=8 rcap=ibp://cms-depot37.vampire:6714/2820#oYws6HAOJsmNJt1PJX+7DODmxKPZXL4T/4121977727645672406/READ
+1324296815876970238:     slun_row_size_check: 0 0 0 0 0 0 0 0 0
+1324296815876970238:     slun_row_placement_check: 0 0 0 0 0 0 0 0 0
+1324296815876970238: status: SUCCESS (0 max dev/row lost, 0 lost, 0 repaired, 0 need(s) moving, 0 moved)
+4505849718983350356: status: SUCCESS (0 devices, -1 stripes)
+Success with file /cms/user/appeltel/HIHighPt/LStore_NewTest_v1/0cfdc1a71de6ea7f51d09fb0e4034ea2/output/testoutput_814989.vmpsched_hiHighPt.root
+--------------------------------------------------------------------
+Submitted: 1   Success: 1   Fail: 0
+-------------------------------------
+remove the output if the attributes match and check that it is gone
+SKIM_TEST: /lio/lfs file delete OK
+SKIM_TEST: ALL TESTS SUCCESSFUL
+timestamp_end=1401314507
+SKIM_TEST: Ending at Wed May 28 17:01:47 CDT 2014
