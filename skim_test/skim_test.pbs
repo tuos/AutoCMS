@@ -21,7 +21,7 @@ echo "*"
 echo "*****************************************************"
 echo -e "\n\n\n"
 
-AUTODIR=/home/appelte1/autocms
+AUTODIR=$AUTOCMS_BASEDIR
 cd $AUTODIR/skim_test/
 export SCRAM_ARCH=slc5_amd64_gcc472
 setpkgs -a lio
