@@ -8,9 +8,9 @@ print_autocms_crontab ()
   fi
 
   echo "MAILTO=\"\"" >> autocms.crontab
-  echo "*/$AUTOCMS_SUBWAIT * * * * $AUTOCMS_BASEDIR/skim_test_submitter.sh"  >> autocms.crontab
-  echo "*/30 * * * * $AUTOCMS_BASEDIR/skim_test_logharvester.sh" >> autocms.crontab
-  echo "*/47 * * * * $AUTOCMS_BASEDIR/skim_test_reporter.sh" >> autocms.crontab
+  echo "*/$AUTOCMS_SUBWAIT * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/skim_test_submitter.sh"  >> autocms.crontab
+  echo "*/30 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/skim_test_logharvester.sh" >> autocms.crontab
+  echo "*/47 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/skim_test_reporter.sh" >> autocms.crontab
 }
 
 source autocms.cfg
@@ -71,6 +71,7 @@ then
     fi
     echo "Stopping autocms..." 
     crontab -r
+    rm crontab_host.txt
     exit 0
   fi
 
