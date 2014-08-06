@@ -35,6 +35,7 @@ echo "*****************************************************"
 echo -e "\n\n\n"
 
 if [ -n "$INPUTFILE" ]; then
+  echo "SKIM_TEST: Will use input file $INPUTFILE"
   echo "-------------------------------------"
   echo "Running lio-inspection on $INPUTFILE"
   #lio_inspect -i 20 ${INPUTFILE/file:/}
