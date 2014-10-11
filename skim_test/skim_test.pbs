@@ -238,11 +238,9 @@ echo "run lio-inspection on the output file before deleting it"
 lio_inspect -i 20 $AUTOCMS_STAGEOUT_DIR/$DFILE
 echo "-------------------------------------"
 
-echo "remove the output if the attributes match and check that it is gone"
+echo "remove the output and check that it is gone"
 
-if [ $DN=$OUTFILE_DN ]; then 
 $AUTOCMS_VANDYRM $AUTOCMS_STAGEOUT_DIR/$DFILE
-fi 
 
 DELETE_TEST_RESULT=$?
 if [ $DELETE_TEST_RESULT -eq 0 ]; then
