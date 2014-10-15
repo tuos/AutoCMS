@@ -224,6 +224,18 @@ echo "Running stat on uploaded file via LFS"
 echo "====================================="
 time stat $AUTOCMS_STAGEOUT_DIR/$DFILE
 echo "====================================="
+echo
+echo "Checking that the uploaded file size is correct"
+LOCAL_OUTPUT_SIZE=$(ls -l hiHighPt.root | awk '{print $5}')
+LSTORE_OUTPUT_SIZE=$( lio_ls @:$AUTOCMS_STAGEOUT_DIR/$DFILE | tail -n 1 | awk '{print $4}')
+echo "    Local size = $LOCAL_OUTPUT_SIZE"
+echo "    LStore size = $LSTORE_OUTPUT_SIZE"
+if [ $LOCAL_OUTPUT_SIZE -ne $LSTORE_OUTPUT_SIZE ]; then
+  echo "SKIM_TEST: ERROR vandyCp returned 0 but file sizes do not match!"
+  exit 255
+  rm /tmp/$PBS_JOBID/tmpfs_test
+  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
+fi 
 
 echo -e "\n\n\n"
 echo "*****************************************************"
