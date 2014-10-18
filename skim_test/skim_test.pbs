@@ -5,269 +5,211 @@
 #PBS -l walltime=4:00:00
 #PBS -j oe
 
-# run the AutoCMS Configuration File
-source $CONFIGFILE
+main ()
+{
 
-echo -n "timestamp_begin="; date +%s
-echo -n "SKIM_TEST: Beginning at "
-date
-echo "SKIM_TEST: Running on node $HOSTNAME"  
+  # run the AutoCMS Configuration File
+  source $CONFIGFILE
 
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Setting up environment"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
+  echo -n "timestamp_begin="; date +%s
+  echo -n "SKIM_TEST: Beginning at "
+  date
+  echo "SKIM_TEST: Running on node $HOSTNAME"  
 
-AUTODIR=$AUTOCMS_BASEDIR
-cd $AUTODIR/skim_test/
-export SCRAM_ARCH=slc6_amd64_gcc472
-setpkgs -a lio
+  #-----------------------------------------------------------------------
+  printbanner "Setting up enviornment"
 
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Checking Input File"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
+  AUTODIR=$AUTOCMS_BASEDIR
+  cd $AUTODIR/skim_test/
+  export SCRAM_ARCH=slc6_amd64_gcc472
+  setpkgs -a lio
 
-if [ -n "$INPUTFILE" ]; then
-  echo "SKIM_TEST: Will use input file $INPUTFILE"
+  #-----------------------------------------------------------------------
+  printbanner "Checking Input File"
+
+  if [ -n "$INPUTFILE" ]; then
+    echo "SKIM_TEST: Will use input file $INPUTFILE"
+    echo "-------------------------------------"
+    echo "Running lio-inspection on $INPUTFILE"
+    #lio_inspect -i 20 ${INPUTFILE/file:/}
+    lio_inspect -i 20 -d 20 -log /tmp/inspect.${PBS_JOBID} ${INPUTFILE/file:/} | tee /tmp/check.${PBS_JOBID}
+    [ "$(grep 'Submitted: 0' /tmp/check.${PBS_JOBID})" == "" ] && rm /tmp/inspect.${PBS_JOBID}
+    /bin/rm /tmp/check.${PBS_JOBID}
+    echo "-------------------------------------"
+
+  else
+    echo "SKIM_TEST: WARNING: no input file specified, using default"
+  fi
+
+  #-----------------------------------------------------------------------
+  printbanner "Setting up SCRAM environment"
+
+  source /cvmfs/cms.cern.ch/cmsset_default.sh
+  SCRAM_TEST_RESULT=$?
+  if [ $SCRAM_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: SCRAM Enviornment setup OK"
+  else
+    echo "SKIM_TEST: SCRAM Enviornment setup ERROR $SCRAM_TEST_RESULT"
+    echo -n "timestamp_end="; date +%s
+    echo -n "SKIM_TEST: Ending at "; date
+    exitclean $SCRAM_TEST_RESULT
+  fi
+
+  #-----------------------------------------------------------------------
+  printbanner "Testing tmp filesystem"
+
+  cd /tmp/$PBS_JOBID
+
+  touch tmpfs_test
+  TEMPFS_TEST_RESULT=$?
+  if [ $TEMPFS_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID OK"
+  else
+    echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID ERROR $TEMPFS_TEST_RESULT"
+    exitclean $TEMPFS_TEST_RESULT
+  fi
+
+  #-----------------------------------------------------------------------
+  printbanner "Setting up CMSSW project area"
+
+  scram p CMSSW $AUTOCMS_CMSSW_VERSION
+  PROJECT_TEST_RESULT=$?
+  if [ $PROJECT_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: CMSSW project area setup OK"
+  else
+    echo "SKIM_TEST: CMSSW project area setup ERROR $PROJECT_TEST_RESULT"
+    exitclean $PROJECT_TEST_RESULT
+  fi
+
+  #-----------------------------------------------------------------------
+  printbanner "Initializing CMSSW runtime environment and copying input file"
+
+  cd $AUTOCMS_CMSSW_VERSION
+  eval `scramv1 runtime -sh`
+  cp $AUTODIR/skim_test/skimTestIvars.py .
+
+  #-----------------------------------------------------------------------
+  printbanner "Running CMSSW Skim Job"
+
+  echo -n "\n\n\nBEGIN CMSSW EXECUTION: $(date) \n\n\n"
+  if [ -z "$INPUTFILE" ]; then
+    cmsRun skimTestIvars.py
+    CMSSW_TEST_RESULT=$?
+  else
+    cmsRun skimTestIvars.py inputFiles=$INPUTFILE
+    CMSSW_TEST_RESULT=$?
+  fi
+  echo -n "\n\n\nEND CMSSW EXECUTION: $(date) \n\n\n"
+
+  if [ $CMSSW_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: CMSSW execution OK"
+  else
+    echo "SKIM_TEST: CMSSW execution ERROR $CMSSW_TEST_RESULT"
+    exitclean $CMSSW_TEST_RESULT
+  fi
+
+  #-----------------------------------------------------------------------
+  printbanner "Checking output file and stageout scripts"
+
+  echo "Checking output file:"
+  ls -l hiHighPt.root
+
+  echo "-------------------------"
+  echo "Checking Stageout scripts"
+  echo "-------------------------"
+  echo "Running: ls -lh /usr/local/cms-stageout/"
+  ls -lh /usr/local/cms-stageout/
+  echo "-------------------------"
+  echo "Running: md5sum /usr/local/cms-stageout/vandy.cfg"
+  md5sum /usr/local/cms-stageout/vandy.cfg
+  echo "Running: md5sum /usr/local/cms-stageout/vandyCp.sh"
+  md5sum /usr/local/cms-stageout/vandyCp.sh
+  echo "Running: md5sum /usr/local/cms-stageout/vandyRm.sh"
+  md5sum /usr/local/cms-stageout/vandyRm.sh
+  echo "-------------------------"
+
+  #-----------------------------------------------------------------------
+  printbanner "Uploading output file to /lio/lfs"
+
+  export X509_USER_CERT=/home/appelte1/.globus/usercert.pem
+
+  echo "construct output file name for upload"
+  export DFILE=testoutput_${PBS_JOBID}_hiHighPt.root
+  echo "Uploading to $AUTOCMS_STAGEOUT_DIR/$DFILE"
+  $AUTOCMS_VANDYCP hiHighPt.root $AUTOCMS_STAGEOUT_DIR/$DFILE
+  UPLOAD_TEST_RESULT=$?
+  if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: lio Upload OK"
+    rm /tmp/cp.${PBS_JOBID}
+  else
+    echo "SKIM_TEST: lio Upload ERROR $UPLOAD_TEST_RESULT"
+    exitclean $UPLOAD_TEST_RESULT
+  fi
+
+
+  echo "Running stat on uploaded file via LFS"
+  echo "====================================="
+  time stat $AUTOCMS_STAGEOUT_DIR/$DFILE
+  echo "====================================="
+  echo
+  echo "Checking that the uploaded file size is correct"
+  LOCAL_OUTPUT_SIZE=$(ls -l hiHighPt.root | awk '{print $5}')
+  LSTORE_OUTPUT_SIZE=$( lio_ls @:$AUTOCMS_STAGEOUT_DIR/$DFILE | tail -n 1 | awk '{print $4}')
+  echo "    Local size = $LOCAL_OUTPUT_SIZE"
+  echo "    LStore size = $LSTORE_OUTPUT_SIZE"
+  if [ $LOCAL_OUTPUT_SIZE -ne $LSTORE_OUTPUT_SIZE ]; then
+    echo "SKIM_TEST: ERROR vandyCp returned 0 but file sizes do not match!"
+    exitclean 255
+  fi 
+
+  #-----------------------------------------------------------------------
+  printbanner "Deleting output file from /lio/lfs"
+
   echo "-------------------------------------"
-  echo "Running lio-inspection on $INPUTFILE"
-  #lio_inspect -i 20 ${INPUTFILE/file:/}
-  lio_inspect -i 20 -d 20 -log /tmp/inspect.${PBS_JOBID} ${INPUTFILE/file:/} | tee /tmp/check.${PBS_JOBID}
-  [ "$(grep 'Submitted: 0' /tmp/check.${PBS_JOBID})" == "" ] && rm /tmp/inspect.${PBS_JOBID}
-  /bin/rm /tmp/check.${PBS_JOBID}
+  echo "run lio-inspection on the output file before deleting it"
+  lio_inspect -i 20 $AUTOCMS_STAGEOUT_DIR/$DFILE
   echo "-------------------------------------"
 
-else
-  echo "SKIM_TEST: WARNING: no input file specified, using default"
-fi
+  echo "remove the output and check that it is gone"
 
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Setting up SCRAM environment"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
+  $AUTOCMS_VANDYRM $AUTOCMS_STAGEOUT_DIR/$DFILE
 
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-SCRAM_TEST_RESULT=$?
-if [ $SCRAM_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: SCRAM Enviornment setup OK"
-else
-  echo "SKIM_TEST: SCRAM Enviornment setup ERROR $SCRAM_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  exit $SCRAM_TEST_RESULT
-fi
+  DELETE_TEST_RESULT=$?
+  if [ $DELETE_TEST_RESULT -eq 0 ]; then
+    echo "SKIM_TEST: /lio/lfs file delete OK"
+  else
+    echo "SKIM_TEST: /lio/lfs file delete ERROR $DELETE_TEST_RESULT"
+    exitclean $DELETE_TEST_RESULT
+  fi
 
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Testing tmp filesystem"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
+  echo "SKIM_TEST: ALL TESTS SUCCESSFUL"
+  exitclean 0
+}
 
-cd /tmp/$PBS_JOBID
+exitclean ()
+{
+    echo -n "timestamp_end="; date +%s
+    echo -n "SKIM_TEST: Ending at "; date
+    if [ -e /tmp/$PBS_JOBID/tmpfs_test ]; then
+      rm /tmp/$PBS_JOBID/tmpfs_test
+    fi
+    if [ -e /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION ]; then
+      rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
+    fi
+    exit $1
+}
 
-touch tmpfs_test
-TEMPFS_TEST_RESULT=$?
-if [ $TEMPFS_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID OK"
-else
-  echo "SKIM_TEST: touch in directory /tmp/$PBS_JOBID ERROR $TEMPFS_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  exit $TEMPFS_TEST_RESULT
-fi
+printbanner ()
+{
+  echo -e "\n\n\n"
+  echo "*****************************************************"
+  echo "*"
+  echo "* $1"
+  echo "*"
+  echo "*****************************************************"
+  echo -e "\n\n\n"
 
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Setting up CMSSW project area"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-scram p CMSSW $AUTOCMS_CMSSW_VERSION
-PROJECT_TEST_RESULT=$?
-if [ $PROJECT_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: CMSSW project area setup OK"
-else
-  echo "SKIM_TEST: CMSSW project area setup ERROR $PROJECT_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
-  exit $PROJECT_TEST_RESULT
-fi
-
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Initializing CMSSW runtime environment and copying input file"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-cd $AUTOCMS_CMSSW_VERSION
-eval `scramv1 runtime -sh`
-cp $AUTODIR/skim_test/skimTestIvars.py .
-
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Running CMSSW Skim Job"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-echo 
-echo
-echo -n "BEGIN CMSSW EXECUTION: "
-date
-echo 
-echo
-
-if [ -z "$INPUTFILE" ]; then
-  cmsRun skimTestIvars.py
-  CMSSW_TEST_RESULT=$?
-else
-  cmsRun skimTestIvars.py inputFiles=$INPUTFILE
-  CMSSW_TEST_RESULT=$?
-fi
-
-echo 
-echo 
-echo -n "END CMSSW EXECUTION: "
-date
-echo
-echo
+}
 
 
-if [ $CMSSW_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: CMSSW execution OK"
-else
-  echo "SKIM_TEST: CMSSW execution ERROR $CMSSW_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
-  exit $CMSSW_TEST_RESULT
-fi
-
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Checking output file and stageout scripts"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-
-echo "Checking output file:"
-ls -l hiHighPt.root
-
-echo "-------------------------"
-echo "Checking Stageout scripts"
-echo "-------------------------"
-echo "Running: ls -lh /usr/local/cms-stageout/"
-ls -lh /usr/local/cms-stageout/
-echo "-------------------------"
-echo "Running: md5sum /usr/local/cms-stageout/vandy.cfg"
-md5sum /usr/local/cms-stageout/vandy.cfg
-echo "Running: md5sum /usr/local/cms-stageout/vandyCp.sh"
-md5sum /usr/local/cms-stageout/vandyCp.sh
-echo "Running: md5sum /usr/local/cms-stageout/vandyRm.sh"
-md5sum /usr/local/cms-stageout/vandyRm.sh
-echo "-------------------------"
-
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Uploading output file to /lio/lfs"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-#export USER_DN=autocms
-export X509_USER_CERT=/home/appelte1/.globus/usercert.pem
-
-echo "construct output file name for upload"
-#export DFILE=testoutput_`date +%s`_hiHighPt.root
-export DFILE=testoutput_${PBS_JOBID}_hiHighPt.root
-echo "Uploading to $AUTOCMS_STAGEOUT_DIR/$DFILE"
-$AUTOCMS_VANDYCP hiHighPt.root $AUTOCMS_STAGEOUT_DIR/$DFILE
-UPLOAD_TEST_RESULT=$?
-if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: lio Upload OK"
-  rm /tmp/cp.${PBS_JOBID}
-else
-  echo "SKIM_TEST: lio Upload ERROR $UPLOAD_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  exit $UPLOAD_TEST_RESULT
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
-fi
-
-
-echo "Running stat on uploaded file via LFS"
-echo "====================================="
-time stat $AUTOCMS_STAGEOUT_DIR/$DFILE
-echo "====================================="
-echo
-echo "Checking that the uploaded file size is correct"
-LOCAL_OUTPUT_SIZE=$(ls -l hiHighPt.root | awk '{print $5}')
-LSTORE_OUTPUT_SIZE=$( lio_ls @:$AUTOCMS_STAGEOUT_DIR/$DFILE | tail -n 1 | awk '{print $4}')
-echo "    Local size = $LOCAL_OUTPUT_SIZE"
-echo "    LStore size = $LSTORE_OUTPUT_SIZE"
-if [ $LOCAL_OUTPUT_SIZE -ne $LSTORE_OUTPUT_SIZE ]; then
-  echo "SKIM_TEST: ERROR vandyCp returned 0 but file sizes do not match!"
-  exit 255
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
-fi 
-
-echo -e "\n\n\n"
-echo "*****************************************************"
-echo "*"
-echo "* Deleting output file from /lio/lfs"
-echo "*"
-echo "*****************************************************"
-echo -e "\n\n\n"
-
-echo "-------------------------------------"
-echo "run lio-inspection on the output file before deleting it"
-lio_inspect -i 20 $AUTOCMS_STAGEOUT_DIR/$DFILE
-echo "-------------------------------------"
-
-echo "remove the output and check that it is gone"
-
-$AUTOCMS_VANDYRM $AUTOCMS_STAGEOUT_DIR/$DFILE
-
-DELETE_TEST_RESULT=$?
-if [ $DELETE_TEST_RESULT -eq 0 ]; then
-  echo "SKIM_TEST: /lio/lfs file delete OK"
-else
-  echo "SKIM_TEST: /lio/lfs file delete ERROR $DELETE_TEST_RESULT"
-  echo -n "timestamp_end="; date +%s
-  echo -n "SKIM_TEST: Ending at "; date
-  exit $DELETE_TEST_RESULT
-  rm /tmp/$PBS_JOBID/tmpfs_test
-  rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
-fi
-
-echo "SKIM_TEST: ALL TESTS SUCCESSFUL"
-echo -n "timestamp_end="; date +%s
-echo -n "SKIM_TEST: Ending at "; date
-rm /tmp/$PBS_JOBID/tmpfs_test
-rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
+main
