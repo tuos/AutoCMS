@@ -188,6 +188,7 @@ main ()
 
 exitclean ()
 {
+    printbanner "Cleaning up /tmp and Exiting"
     echo -n "timestamp_end="; date +%s
     echo -n "SKIM_TEST: Ending at "; date
     if [ -e /tmp/$PBS_JOBID/tmpfs_test ]; then
@@ -196,6 +197,7 @@ exitclean ()
     if [ -e /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION ]; then
       rm -r /tmp/$PBS_JOBID/$AUTOCMS_CMSSW_VERSION
     fi
+    echo "exiting with status $1"
     exit $1
 }
 
