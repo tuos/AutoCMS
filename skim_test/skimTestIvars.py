@@ -20,7 +20,7 @@ ivars.inputFiles
 
 # =============== Other Statements =====================
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(500))
-process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
+process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 
 #Trigger Selection
