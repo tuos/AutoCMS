@@ -91,20 +91,24 @@ main ()
   #-----------------------------------------------------------------------
   printbanner "Running CMSSW Skim Job"
 
-  echo -n "\n\n\nBEGIN CMSSW EXECUTION: $(date) \n\n\n"
+  echo;echo;echo;echo "BEGIN CMSSW EXECUTION: $(date)";echo;echo
   if [ -z "$INPUTFILE" ]; then
-    cmsRun skimTestIvars.py
+    /usr/bin/timeout --signal=KILL $AUTOCMS_CMSRUN_TIMEOUT cmsRun skimTestIvars.py
     CMSSW_TEST_RESULT=$?
   else
-    cmsRun skimTestIvars.py inputFiles=$INPUTFILE
+    /usr/bin/timeout --signal=KILL $AUTOCMS_CMSRUN_TIMEOUT cmsRun skimTestIvars.py inputFiles=$INPUTFILE
     CMSSW_TEST_RESULT=$?
   fi
-  echo -n "\n\n\nEND CMSSW EXECUTION: $(date) \n\n\n"
+  echo;echo;echo;echo "END CMSSW EXECUTION: $(date)";echo;echo
 
   if [ $CMSSW_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: CMSSW execution OK"
   else
-    echo "SKIM_TEST: CMSSW execution ERROR $CMSSW_TEST_RESULT"
+    if [  $CMSSW_TEST_RESULT -eq 137 ]; then
+      echo "SKIM_TEST: CMMSW received KILL signal (likely excessive wall clock time) ERROR $CMSSW_TEST_RESULT"
+    else
+      echo "SKIM_TEST: CMSSW execution ERROR $CMSSW_TEST_RESULT"
+    fi
     exitclean $CMSSW_TEST_RESULT
   fi
 
@@ -161,6 +165,10 @@ main ()
     echo "SKIM_TEST: ERROR vandyCp returned 0 but file sizes do not match!"
     exitclean 255
   fi 
+
+  echo;echo "Checking user.cms_user_x509 attribute:"
+  FILE_DN=$(lio_getattr -al user.cms_user_x509 -new_obj "" -end_obj "" -attr_fmt "%s#%s\n" ${AUTOCMS_STAGEOUT_DIR}/${DFILE} | sed 's/^user.cms_user_x509#//')
+  echo "user.cms_user_x509 = $FILE_DN"; echo
 
   #-----------------------------------------------------------------------
   printbanner "Deleting output file from /lio/lfs"
