@@ -27,7 +27,7 @@ if [ $NUMJOBS -lt $AUTOCMS_MAXENQUEUE ]; then
 # Determine the input file
 #
 
-    INPUTSEQ=$(( $INPUTSEQ % 28747 ))
+    INPUTSEQ=$(( $INPUTSEQ % `wc -l < skim_test/myfiles.dat` ))
     INFILE=`cat skim_test/myfiles.dat | sed $INPUTSEQ'q;d'`
 
 #
