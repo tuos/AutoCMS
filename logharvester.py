@@ -71,5 +71,10 @@ for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.'
   if int(os.path.getctime(logFileName)) < purgetime :
     os.remove(logFileName)
 
+# debug - print record status
+#for job in records:
+#  records[job].printDebug()
+#  print
+
 # save logharvester state
 pickle.dump( records, open( autocms_pkl, "wb" ) )
