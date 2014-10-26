@@ -47,9 +47,8 @@ for line in stampsIn[:]:
   jobid = line.split()[0].replace('.vmpsched','')
   timestamp = int(line.split()[1])
   submitStatus = line.split()[2]
-  if now - timestamp < 60*60*24 :
-    if timestamp not in records:
-      records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
+  if timestamp not in records:
+    records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
   if timestamp < purgetime:
     stampsIn.remove(line) 
 
@@ -70,14 +69,17 @@ for job in records:
 for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.')):
   if int(os.path.getctime(logFileName)) < purgetime :
     os.remove(logFileName)
+oldRecords = list()
 for job in records.keys():
   if job < purgetime:
-    del records[job]
+    oldRecords.append(job)
+for job in oldRecords:
+  del records[job]
 
 # debug - print record status
-#for job in records:
-#  records[job].printDebug()
-#  print
+for job in records:
+  records[job].printDebug()
+  print
 
 # save logharvester state
 pickle.dump( records, open( autocms_pkl, "wb" ) )
