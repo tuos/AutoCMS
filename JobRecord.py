@@ -3,17 +3,27 @@ import re
 class JobRecord:
   'information about a specific AutoCMS job'
 
-  def __init__(self, timestamp, jobid):
-    self.submitTime = timestamp
+  def __init__(self, timestamp, jobid, submitStatus):
+    self.submitTime = int(timestamp)
     self.jobid = jobid
-
-    self.node = None    
-    self.startTime = None
-    self.endTime = None
-    self.exitCode = None
-    self.errorString = None
-    self.inputFile = None
-    self.logFile = None    
+    self.submitStatus = int(submitStatus) 
+    if self.submitStatus == 0 :
+      self.node = None    
+      self.startTime = None
+      self.endTime = None
+      self.exitCode = None
+      self.errorString = None
+      self.inputFile = None
+      self.logFile = None    
+    else:
+      self.node = "N/A"    
+      self.startTime = self.submitTime
+      self.endTime = self.submitTime
+      self.exitCode = submitStatus
+      self.errorString = "ERROR in job submission code "+str(submitStatus)
+      self.inputFile = "N/A"
+      self.logFile = None 
+      
 
   def runTime(self):
     return self.endTime - self.startTime

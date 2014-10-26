@@ -44,11 +44,12 @@ with open('submission.stamps','a') as stampFile:
 with open('submission.stamps','r') as stampFile:
   stampsIn = stampFile.read().splitlines()
 for line in stampsIn[:]:
-  timestamp = int(line.split()[1])
   jobid = line.split()[0].replace('.vmpsched','')
+  timestamp = int(line.split()[1])
+  submitStatus = line.split()[2]
   if now - timestamp < 60*60*24 :
     if timestamp not in records:
-      records[timestamp] = JobRecord(timestamp,jobid)
+      records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
   if timestamp < purgetime:
     stampsIn.remove(line) 
 
@@ -65,4 +66,10 @@ for job in records:
     if os.path.isfile(jobLogFile):
       records[job].parseOutput(jobLogFile)
 
- 
+# Remove old log files
+for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.')):
+  if int(os.path.getctime(logFileName)) < purgetime :
+    os.remove(logFileName)
+
+# save logharvester state
+pickle.dump( records, open( autocms_pkl, "wb" ) )
