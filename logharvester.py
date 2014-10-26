@@ -66,10 +66,13 @@ for job in records:
     if os.path.isfile(jobLogFile):
       records[job].parseOutput(jobLogFile)
 
-# Remove old log files
+# Remove old log files and job records
 for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.')):
   if int(os.path.getctime(logFileName)) < purgetime :
     os.remove(logFileName)
+for job in records.keys():
+  if job < purgetime:
+    del records[job]
 
 # debug - print record status
 #for job in records:
