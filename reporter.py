@@ -77,6 +77,9 @@ def main():
         )
       )
 
+    # close body and html tags
+    webpage.write('</body></html>')
+
   # copy logs for printed jobs
   for subTime in printedJobs:
     srcFile = testdir+"/"+records[subTime].logFile
@@ -96,15 +99,18 @@ def main():
   os.rename(newWebpageName,webpageName)  
 
 def writeWebpageHeader(webpage,config):
+
     webpage.write(
 """\
 <html><head><title>%s Internal Site Test: %s</title></head>
 <body>
 <h2>%s Internal Site Test: %s</h2>
+Page generated at: %s
 <hr />""" % ( config['AUTOCMS_SITE_NAME'], 
               config['AUTOCMS_TEST_NAME'], 
               config['AUTOCMS_SITE_NAME'], 
-              config['AUTOCMS_TEST_NAME'] )
+              config['AUTOCMS_TEST_NAME'],
+              time.strftime("%c") )
     )
 
 def writeTestDescription(webpage,config):
@@ -138,7 +144,7 @@ def writeJobStatistics(webpage,config,records):
 
   long3hour = sum( 1 for job in records.values() if job.isSuccess() 
                    and job.startTime > threehours  
-                   and job.runTim() > 3600 )
+                   and job.runTime() > 3600 )
   webpage.write("Long running jobs (> %s s) in the last 3 hours: %d <br />\n" 
                 % (config['AUTOCMS_RUNTIME_WARNING'],long3hour) )
   webpage.write("<br />\n")
@@ -165,7 +171,7 @@ def writeJobRecords(header,showError,webpage,config,records):
     webpage.write('  Start time: %s <br />\n' % 
                     datetime.datetime.fromtimestamp(
                       job.startTime
-                    ).strftime('%Y-%m-%d %H:%M:%S')
+                    ).strftime('%c')
                  )
     webpage.write('  Node Name: %s <br />\n' % job.node )
     webpage.write('  Input File: %s <br />\n' % job.inputFile )
