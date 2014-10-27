@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import time
 import datetime
 import cPickle as pickle
@@ -22,17 +23,27 @@ def main():
 
   webpageName = config['AUTOCMS_WEBDIR']+"/"+config['AUTOCMS_TEST_NAME']+".html"
   newWebpageName = config['AUTOCMS_WEBDIR']+"/"+config['AUTOCMS_TEST_NAME']+".html.new"
+  
+  yesterday = int(time.time()) - 24 * 3600
 
   # build new webpage
   with open(newWebpageName,'w') as webpage:
+
     writeWebpageHeader(webpage,config) 
-    yesterday = int(time.time()) - 24 * 3600
-    
+       
     # add code for graphics
-  
-    # print failed jobs from last 24 hours
-    webpage.write('<hr /><h3>Errors from the last 24 Hours</h3><hr />')
-    writeJobRecords('ERROR',True,webpage,config,filter(
+
+    writeTestDescription(webpage,config)  
+    writeJobStatistics(webpage,config,records)
+
+    # start a list of jobs to be printed
+    # whose logs will be copied to the webdir
+    printedJobs = list()
+
+    # print failed jobs from last 24 hours, add them to the list
+    webpage.write('<h3>Errors from the last 24 Hours</h3><hr />')
+    printedJobs = printedJobs + \
+    writeJobRecords('<b>ERROR</b>',True,webpage,config,filter(
       lambda job: job.startTime > yesterday \
                   and job.isComplete() \
                   and not job.isSuccess() , 
@@ -40,10 +51,11 @@ def main():
       ) 
     )
 
-    # print long running jobs
-    webpage.write('<hr /><h3>Long Running Jobs (> %s s)</h3><hr />' 
+    # print long running jobs, add them to the list
+    webpage.write('<h3>Long Running Jobs (> %s s)</h3><hr />' 
                   % config['AUTOCMS_RUNTIME_WARNING'] )
-    writeJobRecords('WARNING',False,webpage,config,filter(
+    printedJobs = printedJobs + \
+    writeJobRecords('Warning',False,webpage,config,filter(
       lambda job: job.startTime > yesterday \
                   and job.isComplete() \
                   and job.isSuccess() \
@@ -52,10 +64,11 @@ def main():
       ) 
     )
 
-    # print successful jobs (not long running) if requested
+    # print successful jobs (not long running) if requested, add them to the list
     if int(config['AUTOCMS_PRINT_SUCCESS']) == 1:
-      webpage.write('<hr /><h3>Successful Jobs</h3><hr />' )
-      writeJobRecords('SUCCESS',False,webpage,config,filter(
+      webpage.write('<h3>Successful Jobs</h3><hr />' )
+      printedJobs = printedJobs + \
+      writeJobRecords('Success',False,webpage,config,filter(
         lambda job: job.startTime > yesterday \
                     and job.isComplete() \
                     and job.isSuccess() \
@@ -63,6 +76,22 @@ def main():
         records.values()
         )
       )
+
+  # copy logs for printed jobs
+  for subTime in printedJobs:
+    srcFile = testdir+"/"+records[subTime].logFile
+    destFile = config['AUTOCMS_WEBDIR']+"/"+records[subTime].logFile+".txt"
+    if os.path.isfile(srcFile):
+      shutil.copyfile(srcFile, destFile)
+
+  # get rid of other logs in the webdir
+  logsToKeep = list()
+  for subTime in printedJobs:
+    logsToKeep.append( records[subTime].logFile+".txt" )
+  for logFile in filter(lambda x:re.search(r'.pbs.o[0-9]+.txt', x), 
+                        os.listdir(config['AUTOCMS_WEBDIR'])): 
+    if logFile not in logsToKeep:
+      os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
 
   os.rename(newWebpageName,webpageName)  
 
@@ -72,17 +101,67 @@ def writeWebpageHeader(webpage,config):
 <html><head><title>%s Internal Site Test: %s</title></head>
 <body>
 <h2>%s Internal Site Test: %s</h2>
-</body>""" % ( config['AUTOCMS_SITE_NAME'], 
-               config['AUTOCMS_TEST_NAME'], 
-               config['AUTOCMS_SITE_NAME'], 
-               config['AUTOCMS_TEST_NAME'] )
+<hr />""" % ( config['AUTOCMS_SITE_NAME'], 
+              config['AUTOCMS_TEST_NAME'], 
+              config['AUTOCMS_SITE_NAME'], 
+              config['AUTOCMS_TEST_NAME'] )
     )
 
+def writeTestDescription(webpage,config):
+  dFile = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']+".description.html"
+  if os.path.isfile(dFile):
+    with open(dFile) as descriptionIn:
+      description = descriptionIn.read()
+    webpage.write(description+"<hr />")
+  else:
+    webpage.write("No test description found.<br /><hr />")
+
+def writeJobStatistics(webpage,config,records):
+  
+  yesterday = int(time.time()) - 24 * 3600
+  threehours = int(time.time()) - 3 * 3600
+  
+  failed24hour = sum( 1 for job in records.values() if not job.isSuccess() 
+                      and job.startTime > yesterday )
+  webpage.write("Failed jobs in the last 24 hours: %d <br />\n" % failed24hour)
+
+  failed3hour = sum( 1 for job in records.values() if not job.isSuccess() 
+                     and job.startTime > threehours )
+  webpage.write("Failed jobs in the last 3 hours: %d <br />\n" % failed3hour)
+  webpage.write("<br />\n")
+
+  long24hour = sum( 1 for job in records.values() if job.isSuccess() 
+                    and job.startTime > yesterday 
+                    and job.runTime() > 3600 )
+  webpage.write("Long running jobs (> %s s) in the last 24 hours: %d <br />\n" 
+                % (config['AUTOCMS_RUNTIME_WARNING'],long24hour) )
+
+  long3hour = sum( 1 for job in records.values() if job.isSuccess() 
+                   and job.startTime > threehours  
+                   and job.runTim() > 3600 )
+  webpage.write("Long running jobs (> %s s) in the last 3 hours: %d <br />\n" 
+                % (config['AUTOCMS_RUNTIME_WARNING'],long3hour) )
+  webpage.write("<br />\n")
+
+  success24hour = sum( 1 for job in records.values() if job.isSuccess() 
+                      and job.startTime > yesterday )
+  webpage.write("Successful jobs in the last 24 hours: %d <br />\n" % success24hour)
+
+  success3hour = sum( 1 for job in records.values() if job.isSuccess() 
+                     and job.startTime > threehours )
+  webpage.write("Successful jobs in the last 3 hours: %d <br />\n" % success3hour)
+  webpage.write("<br />\n")
+ 
+  webpage.write("<hr />\n") 
+
+# This function writes out the properties of a 
+# completed job to a file in HTML, and then returns
+# a list of startTimes for the jobs it wrote
 def writeJobRecords(header,showError,webpage,config,records):
   counter = 1
   records.sort(key=lambda x: x.startTime, reverse=True)
   for job in records:
-    webpage.write('<b>%s</b> %d: <br />\n' % (header, counter) )
+    webpage.write('%s %d: <br />\n' % (header, counter) )
     webpage.write('  Start time: %s <br />\n' % 
                     datetime.datetime.fromtimestamp(
                       job.startTime
@@ -96,5 +175,7 @@ def writeJobRecords(header,showError,webpage,config,records):
                   ( job.logFile+".txt",job.logFile+".txt") )
     webpage.write('<hr />\n')
     counter += 1
+
+  return [x.submitTime for x in records]      
 
 main()
