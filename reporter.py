@@ -29,10 +29,40 @@ def main():
   # build new webpage
   with open(newWebpageName,'w') as webpage:
 
+    #header 
     writeWebpageHeader(webpage,config) 
-       
-    # add code for graphics
 
+    #plots
+
+    webpage.write( '<div style="align=left">\n' )
+
+    # run and wait time plot (not log scaled)
+    plot1name = config['AUTOCMS_TEST_NAME']+"_success24runwait.png"
+    plot1path = config['AUTOCMS_WEBDIR']+"/"+plot1name
+    AutoCMSUtil.createRunAndWaitTimePlot(plot1path,False,filter(        
+      lambda job: job.startTime > yesterday \
+                  and job.isComplete() \
+                  and job.isSuccess() ,
+      records.values()
+      )
+    )
+    webpage.write( '<img src="%s">\n' % plot1name )
+  
+    # run and wait time plot (log scaled) 
+    plot2name = config['AUTOCMS_TEST_NAME']+"_success24runwait_log.png"
+    plot2path = config['AUTOCMS_WEBDIR']+"/"+plot2name
+    AutoCMSUtil.createRunAndWaitTimePlot(plot2path,True,filter(
+      lambda job: job.startTime > yesterday \
+                  and job.isComplete() \
+                  and job.isSuccess() ,
+      records.values()
+      )
+    )
+    webpage.write( '<img src="%s">\n' % plot2name )
+
+    webpage.write( '</div><hr />\n' )
+
+    # description and statistics
     writeTestDescription(webpage,config)  
     writeJobStatistics(webpage,config,records)
 
@@ -177,11 +207,13 @@ def writeJobRecords(header,showError,webpage,config,records):
     webpage.write('  Input File: %s <br />\n' % job.inputFile )
     if showError:
       webpage.write('  Error Type: %s <br />\n' % job.errorString )
-    webpage.write('  Log File: <a href="%s">%s</a> <br />\n ' %
-                  ( job.logFile+".txt",job.logFile+".txt") )
+    if job.logFile != "N/A":
+      webpage.write('  Log File: <a href="%s">%s</a> <br />\n ' %
+                    ( job.logFile+".txt",job.logFile+".txt") )
     webpage.write('<hr />\n')
     counter += 1
 
   return [x.submitTime for x in records]      
+
 
 main()
