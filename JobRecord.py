@@ -8,13 +8,13 @@ class JobRecord:
     self.jobid = jobid
     self.submitStatus = int(submitStatus) 
     if self.submitStatus == 0 :
-      self.node = None    
-      self.startTime = None
-      self.endTime = None
-      self.exitCode = None
-      self.errorString = None
-      self.inputFile = None
-      self.logFile = None    
+      self.node = "N/A"    
+      self.startTime = 0
+      self.endTime = 0
+      self.exitCode = 0
+      self.errorString = "No error message found"
+      self.inputFile = "N/A"
+      self.logFile = "N/A"    
     else:
       self.node = "N/A"    
       self.startTime = self.submitTime
@@ -22,7 +22,7 @@ class JobRecord:
       self.exitCode = submitStatus
       self.errorString = "ERROR in job submission code "+str(submitStatus)
       self.inputFile = "N/A"
-      self.logFile = None 
+      self.logFile = "N/A" 
       
 
   def runTime(self):
@@ -38,7 +38,7 @@ class JobRecord:
       return False
 
   def isComplete(self):
-    if self.logFile is not None:
+    if self.startTime != 0:
       return True
     else:
       return False
