@@ -11,8 +11,8 @@ class JobRecord:
       self.node = "N/A"    
       self.startTime = 0
       self.endTime = 0
-      self.exitCode = 0
-      self.errorString = "No error message found"
+      self.exitCode = 255
+      self.errorString = "Job did not report success."
       self.inputFile = "N/A"
       self.logFile = "N/A"    
     else:
@@ -43,26 +43,36 @@ class JobRecord:
     else:
       return False
 
-  def parseOutput(self,logFileName):
+  def parseOutput(self,logFileName,config):
     self.logFile = logFileName
-    # assume jobs failed unless success token is found
-    self.exitCode = 1
     with open(logFileName,'r') as logFile:
       log = logFile.read().splitlines()
     for line in log:
-      # note - the SKIM_TEST token needs to be eventually changed to AUTOCMS_TEST
-      if( re.match(r'timestamp_begin=',line)):
-        self.startTime = int(line.replace('timestamp_begin=',''))
-      if( re.match(r'timestamp_end=',line)):
-        self.endTime = int(line.replace('timestamp_end=',''))
-      if( re.match(r'SKIM_TEST: Running on node',line)):
-        self.node = line.replace('SKIM_TEST: Running on node ','')
-      if( re.match(r'SKIM_TEST: Will use input file ',line)):
-        self.inputFile = line.replace('SKIM_TEST: Will use input file ','')
-      if( re.search(r'ALL TESTS SUCCESSFUL',line)):
-        self.exitCode = 0 
-      if( re.match(r'SKIM_TEST:.*ERROR',line)):
-        self.errorString = line.replace('SKIM_TEST: ','')
+      for setting in config.keys():
+        if( re.match(r'AUTOCMS_.*_TOKEN',setting) ):
+          if( re.match(config[setting],line) ):
+            recordAttrName = setting.replace('AUTOCMS_','').replace('_TOKEN','') 
+            recordAttrValue = line.replace(config[setting],'')
+            if recordAttrName == 'SUCCESS':
+              self.exitCode = 0
+            else:
+              setattr(self,recordAttrName,recordAttrValue) 
+    # ensure that required attributes remain ints
+    self.exitCode = int(self.exitCode)
+    self.startTime = int(self.startTime)
+    self.endTime = int(self.endTime)             
+#      if( re.match(r'timestamp_begin=',line)):
+#        self.startTime = int(line.replace('timestamp_begin=',''))
+#      if( re.match(r'timestamp_end=',line)):
+#        self.endTime = int(line.replace('timestamp_end=',''))
+#      if( re.match(r'SKIM_TEST: Running on node',line)):
+#        self.node = line.replace('SKIM_TEST: Running on node ','')
+#      if( re.match(r'SKIM_TEST: Will use input file ',line)):
+#        self.inputFile = line.replace('SKIM_TEST: Will use input file ','')
+#      if( re.search(r'ALL TESTS SUCCESSFUL',line)):
+#        self.exitCode = 0 
+#      if( re.match(r'SKIM_TEST:.*ERROR',line)):
+#        self.errorString = line.replace('SKIM_TEST: ','')
 
   def printDebug(self):
     print "Job Record: "+str(self.submitTime)

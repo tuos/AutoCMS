@@ -16,6 +16,7 @@ def LoadConfiguration(configFileName):
       varKey = varKey.strip()
       varValue = varValue = line.split('=')[1]
       varValue = varValue.strip()
+      varValue = varValue.strip('"')
       config[varKey] = varValue
 
   return config

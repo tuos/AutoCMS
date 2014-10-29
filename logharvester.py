@@ -63,7 +63,7 @@ for job in records:
   if not records[job].isComplete():
     jobLogFile = config['AUTOCMS_TEST_NAME']+'.pbs.o'+str(records[job].jobid)
     if os.path.isfile(jobLogFile):
-      records[job].parseOutput(jobLogFile)
+      records[job].parseOutput(jobLogFile,config)
 
 # Remove old log files and job records
 for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.')):
@@ -77,9 +77,9 @@ for job in oldRecords:
   del records[job]
 
 # debug - print record status
-for job in records:
-  records[job].printDebug()
-  print
+#for job in records:
+#  records[job].printDebug()
+#  print
 
 # save logharvester state
 pickle.dump( records, open( autocms_pkl, "wb" ) )
