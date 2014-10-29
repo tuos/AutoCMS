@@ -60,19 +60,13 @@ class JobRecord:
     # ensure that required attributes remain ints
     self.exitCode = int(self.exitCode)
     self.startTime = int(self.startTime)
-    self.endTime = int(self.endTime)             
-#      if( re.match(r'timestamp_begin=',line)):
-#        self.startTime = int(line.replace('timestamp_begin=',''))
-#      if( re.match(r'timestamp_end=',line)):
-#        self.endTime = int(line.replace('timestamp_end=',''))
-#      if( re.match(r'SKIM_TEST: Running on node',line)):
-#        self.node = line.replace('SKIM_TEST: Running on node ','')
-#      if( re.match(r'SKIM_TEST: Will use input file ',line)):
-#        self.inputFile = line.replace('SKIM_TEST: Will use input file ','')
-#      if( re.search(r'ALL TESTS SUCCESSFUL',line)):
-#        self.exitCode = 0 
-#      if( re.match(r'SKIM_TEST:.*ERROR',line)):
-#        self.errorString = line.replace('SKIM_TEST: ','')
+    self.endTime = int(self.endTime)     
+    # if starttime is still zero, set to the submitTime        
+    if self.startTime == 0 : 
+      self.startTime = self.submitTime
+    # if endTime is still zero, set to startTime
+    if self.endTime == 0 :
+      self.endTime = self.startTime
 
   def printDebug(self):
     print "Job Record: "+str(self.submitTime)

@@ -8,7 +8,7 @@ process.load('Configuration.EventContent.EventContentHeavyIons_cff')
 import FWCore.ParameterSet.VarParsing as VarParsing
 
 ivars = VarParsing.VarParsing('python')
-ivars.inputFiles = '/lio/lfs/cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00030/E225A85D-99C3-E311-B632-FA163EF2B3E5.root'
+ivars.inputFiles = '/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00030/E225A85D-99C3-E311-B632-FA163EF2B3E5.root'
 ivars.parseArguments()
 
 

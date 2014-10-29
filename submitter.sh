@@ -16,18 +16,18 @@ fi
 
 cd $AUTODIR
 
-# increment the inputfile counter
-INPUTSEQ=$(( `cat $AUTOCMS_TEST_NAME/inputfile.counter` + 1 ))
-echo -n $INPUTSEQ > $AUTOCMS_TEST_NAME/inputfile.counter
+# increment the counter
+if [ ! -f $AUTOCMS_TEST_NAME/counter ]; then
+  echo -n "0" > $AUTOCMS_TEST_NAME/counter
+fi
 
-# Determine the input file
-INPUTSEQ=$(( $INPUTSEQ % `wc -l < skim_test/myfiles.dat` ))
-INFILE=`cat skim_test/myfiles.dat | sed $INPUTSEQ'q;d'`
+SEQ=$(( `cat $AUTOCMS_TEST_NAME/counter` + 1 ))
+echo -n $SEQ > $AUTOCMS_TEST_NAME/counter
 
 # Submit the skim_test pbs script
 cd $AUTODIR/$AUTOCMS_TEST_NAME
 
-SUBID=`/usr/scheduler/torque/bin/qsub  $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.pbs -v INPUTFILE="$INFILE",CONFIGFILE="$AUTODIR/autocms.cfg"`
+SUBID=`/usr/scheduler/torque/bin/qsub  $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.pbs -v AUTOCMS_COUNTER="$SEQ",AUTOCMS_CONFIGFILE="$AUTODIR/autocms.cfg"`
 SUBMIT_STATUS=$?
 NOW=`date`
 STAMP=`date +%s`

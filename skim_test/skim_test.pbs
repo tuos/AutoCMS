@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #PBS -W group_list=cms_stage2
 #PBS -l nodes=1
 #PBS -l mem=2000mb
@@ -9,7 +9,7 @@ main ()
 {
 
   # run the AutoCMS Configuration File
-  source $CONFIGFILE
+  source $AUTOCMS_CONFIGFILE
 
   echo "${AUTOCMS_startTime_TOKEN}$(date +%s)"
   echo "SKIM_TEST: Beginning at $(date)"
@@ -26,6 +26,12 @@ main ()
 
   #-----------------------------------------------------------------------
   printbanner "Checking Input File"
+
+  # determine input file to be used by picking a line in the file list
+  # indicated by the counter
+  AUTOCMS_COUNTER=$(( $AUTOCMS_COUNTER % `wc -l < myfiles.dat` ))
+  INPUTFILE=`cat myfiles.dat | sed ${AUTOCMS_COUNTER}'q;d'`
+
 
   if [ -n "$INPUTFILE" ]; then
     echo "${AUTOCMS_inputFile_TOKEN}${INPUTFILE}"
@@ -83,7 +89,7 @@ main ()
   printbanner "Initializing CMSSW runtime environment and copying python configuration"
 
   cd $AUTOCMS_CMSSW_VERSION
-  echo 'Evaluating \'scramv1 runtime -sh\''
+  echo "Evaluating 'scramv1 runtime -sh'"
   eval `scramv1 runtime -sh`
   echo "Copying $AUTODIR/skim_test/skimTestIvars.py to current directory"
   cp $AUTODIR/skim_test/skimTestIvars.py .
@@ -107,7 +113,7 @@ main ()
     if [  $CMSSW_TEST_RESULT -eq 137 ]; then
       echo "${AUTOCMS_errorString_TOKEN}CMMSW received KILL signal (likely excessive wall clock time) ERROR $CMSSW_TEST_RESULT"
     else
-      echo "${AUTOCMS_errorString_TOKEN}}CMSSW execution ERROR $CMSSW_TEST_RESULT"
+      echo "${AUTOCMS_errorString_TOKEN}CMSSW execution ERROR $CMSSW_TEST_RESULT"
     fi
     exitclean $CMSSW_TEST_RESULT
   fi
