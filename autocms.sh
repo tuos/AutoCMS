@@ -8,9 +8,22 @@ print_autocms_crontab ()
   fi
 
   echo "MAILTO=\"\"" >> autocms.crontab
-  echo "*/$AUTOCMS_SUBWAIT * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/submitter.sh"  >> autocms.crontab
-  echo "0,30 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python logharvester.py" >> autocms.crontab
-  echo "15,45 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py" >> autocms.crontab
+  SUBWAIT=( $( echo $AUTOCMS_TEST_SUBWAITS | tr ":" " " ) )
+  COUNT=0
+  for TESTNAME in $( echo $AUTOCMS_TEST_NAMES | tr ":" "\n" ); do
+    echo "count: $COUNT subwait: ${SUBWAIT[$COUNT]}"
+    if [ ${SUBWAIT[$COUNT]} -lt 60 ]; then
+      echo "*/${SUBWAIT[$COUNT]} * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/submitter.sh $TESTNAME"  >> autocms.crontab
+      echo "0,10,20,30,40,50 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python logharvester.py $TESTNAME" >> autocms.crontab
+      echo "5,15,25,35,45,55 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py $TESTNAME" >> autocms.crontab
+    else
+      SUBWAIT[$COUNT]=$(( ${SUBWAIT[$COUNT]} / 60 )) 
+      echo "* */${SUBWAIT[$COUNT]} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/submitter.sh $TESTNAME"  >> autocms.crontab
+      echo "0,30 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python logharvester.py $TESTNAME" >> autocms.crontab
+      echo "15,45 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py $TESTNAME" >> autocms.crontab
+    fi
+    (( COUNT++ ))
+  done
 }
 
 source autocms.cfg

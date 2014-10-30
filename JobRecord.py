@@ -78,7 +78,6 @@ class JobRecord:
       print "  start time: "+str(self.startTime)
       print "  end time: "+str(self.endTime)
       print "  exit code: "+str(self.exitCode)
-      print "  input file: "+str(self.inputFile)
       print "  log file: "+str(self.logFile)
       if self.isSuccess():
         print "  This job succeeded."

@@ -1,3 +1,4 @@
+import sys
 import os
 import re
 import time
@@ -5,8 +6,9 @@ import cPickle as pickle
 from JobRecord import JobRecord
 import AutoCMSUtil
 
-# load configuration and enter test directory
+# load configuration, determine test, and enter test directory
 config = AutoCMSUtil.LoadConfiguration('autocms.cfg')
+config['AUTOCMS_TEST_NAME'] = sys.argv[1]
 testdir = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']
 os.chdir(testdir)
 
@@ -77,9 +79,10 @@ for job in oldRecords:
   del records[job]
 
 # debug - print record status
-#for job in records:
-#  records[job].printDebug()
-#  print
+if '--debug' in sys.argv[1:]:
+  for job in records:
+    records[job].printDebug()
+    print
 
 # save logharvester state
 pickle.dump( records, open( autocms_pkl, "wb" ) )

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# read configuration file
+# read configuration file and determine test name
 source `pwd`/autocms.cfg
+AUTOCMS_TEST_NAME=$1
 
 AUTODIR=$AUTOCMS_BASEDIR
 export MOABHOMEDIR=/usr/scheduler/config/moab

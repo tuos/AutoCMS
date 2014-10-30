@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import shutil
 import time
@@ -9,8 +10,9 @@ import AutoCMSUtil
 
 def main():
 
-  # load configuration and enter test directory
+  # load configuration, determine test, and enter test directory
   config = AutoCMSUtil.LoadConfiguration('autocms.cfg')
+  config['AUTOCMS_TEST_NAME'] = sys.argv[1]
   testdir = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']
   os.chdir(testdir)
 
@@ -121,7 +123,7 @@ def main():
   logsToKeep = list()
   for subTime in printedJobs:
     logsToKeep.append( records[subTime].logFile+".txt" )
-  for logFile in filter(lambda x:re.search(r'.pbs.o[0-9]+.txt', x), 
+  for logFile in filter(lambda x:re.search('%s.pbs.o[0-9]+.txt' % config['AUTOCMS_TEST_NAME'], x), 
                         os.listdir(config['AUTOCMS_WEBDIR'])): 
     if logFile not in logsToKeep:
       os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
@@ -204,7 +206,8 @@ def writeJobRecords(header,showError,webpage,config,records):
                     ).strftime('%c')
                  )
     webpage.write('  Node Name: %s <br />\n' % job.node )
-    webpage.write('  Input File: %s <br />\n' % job.inputFile )
+    if job.inputFile is not None:
+      webpage.write('  Input File: %s <br />\n' % job.inputFile )
     if showError:
       webpage.write('  Error Type: %s <br />\n' % job.errorString )
     if job.logFile != "N/A":
