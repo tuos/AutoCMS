@@ -28,13 +28,14 @@ yesterday = int(time.time()) - 24 * 3600
 
 # build new webpage using custom module for the test (if it exists)
 # or the default page builder module
-customWebPageBuilderModule = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']+"WebPageBuilder.py"
+customWebPageBuilderModule = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']+"/WebPageBuilder.py"
 if os.path.isfile(customWebPageBuilderModule):
-  WebPageBuilder = __import__(config['AUTOCMS_TEST_NAME']+"WebPageBuilder")
+  AutoCMSWebPageBuilder = __import__(config['AUTOCMS_TEST_NAME']+".WebPageBuilder",
+                                     globals(), locals(), ['WebPageBuilder'], -1)
 else:
-  WebPageBuilder = __import__("WebPageBuilder")
+  AutoCMSWebPageBuilder = __import__("WebPageBuilder")
 
-printedJobs = WebPageBuilder.build(newWebpageName,config,records)
+printedJobs = AutoCMSWebPageBuilder.build(newWebpageName,config,records)
 
 # copy logs for printed jobs
 for subTime in printedJobs:
