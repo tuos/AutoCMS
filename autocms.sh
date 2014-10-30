@@ -18,9 +18,9 @@ print_autocms_crontab ()
       echo "5,15,25,35,45,55 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py $TESTNAME" >> autocms.crontab
     else
       SUBWAIT[$COUNT]=$(( ${SUBWAIT[$COUNT]} / 60 )) 
-      echo "* */${SUBWAIT[$COUNT]} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/submitter.sh $TESTNAME"  >> autocms.crontab
-      echo "0,30 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python logharvester.py $TESTNAME" >> autocms.crontab
-      echo "15,45 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py $TESTNAME" >> autocms.crontab
+      echo "0 */${SUBWAIT[$COUNT]} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/submitter.sh $TESTNAME"  >> autocms.crontab
+      echo "10,40 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python logharvester.py $TESTNAME" >> autocms.crontab
+      echo "20,50 * * * * cd $AUTOCMS_BASEDIR && /usr/local/bin/python reporter.py $TESTNAME" >> autocms.crontab
     fi
     (( COUNT++ ))
   done
