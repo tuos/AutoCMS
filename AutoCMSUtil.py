@@ -1,5 +1,7 @@
 import re 
 import os
+import time
+import datetime
 from JobRecord import JobRecord
 
 def LoadConfiguration(configFileName):
@@ -22,8 +24,7 @@ def LoadConfiguration(configFileName):
   return config
 
 
-# Right now graphics are only used by the reporter, but
-# other scripts could potentially use them
+# basic plot used by the default WebBuilder
 
 def createRunAndWaitTimePlot(outputFileName,logScale,records):
 
@@ -61,3 +62,85 @@ EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
   ) 
 
   os.remove(dataFileName) 
+
+# This function writes out the properties of a 
+# completed job to a file in HTML, and then returns
+# a list of startTimes for the jobs it wrote
+def writeJobRecords(header,webpage,config,records,**extraAttrs):
+  counter = 1
+  records.sort(key=lambda x: x.startTime, reverse=True)
+  for job in records:
+    webpage.write('%s %d: <br />\n' % (header, counter) )
+    webpage.write('  Start time: %s <br />\n' % 
+                    datetime.datetime.fromtimestamp(
+                      job.startTime
+                    ).strftime('%c')
+                 )
+    webpage.write('  Node Name: %s <br />\n' % job.node )
+    if job.logFile != "N/A":
+      webpage.write('  Log File: <a href="%s">%s</a> <br />\n ' %
+                    ( job.logFile+".txt",job.logFile+".txt") )
+    for attr,text in extraAttrs.iteritems():
+      if hasattr(job,attr):
+        webpage.write('  %s: %s <br />\n' % (text,getattr(job,attr) ) )
+
+    webpage.write('<hr />\n')
+    counter += 1
+
+  return [x.submitTime for x in records] 
+
+
+def beginWebpage(webpage,config):
+
+    webpage.write(
+"""\
+<html><head><title>%s Internal Site Test: %s</title></head>
+<body>
+<h2>%s Internal Site Test: %s</h2>
+Page generated at: %s
+<hr />""" % ( config['AUTOCMS_SITE_NAME'],
+              config['AUTOCMS_TEST_NAME'],
+              config['AUTOCMS_SITE_NAME'],
+              config['AUTOCMS_TEST_NAME'],
+              time.strftime("%c") )
+    )
+
+def endWebpage(webpage,config):
+ 
+  webpage.write('</body></html>')
+
+
+def writeTestDescription(webpage,config):
+  dFile = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']+"/description.html"
+  if os.path.isfile(dFile):
+    with open(dFile) as descriptionIn:
+      description = descriptionIn.read()
+    webpage.write(description + '<br /><br />')
+  else:
+    webpage.write("No test description found.<br /><br />")
+
+
+def writeBasicJobStatistics(webpage,config,records):
+
+  yesterday = int(time.time()) - 24 * 3600
+  threehours = int(time.time()) - 3 * 3600
+
+  failed24hour = sum( 1 for job in records.values() if not job.isSuccess()
+                      and job.startTime > yesterday )
+  webpage.write("Failed jobs in the last 24 hours: %d <br />\n" % failed24hour)
+
+  failed3hour = sum( 1 for job in records.values() if not job.isSuccess()
+                     and job.startTime > threehours )
+  webpage.write("Failed jobs in the last 3 hours: %d <br />\n" % failed3hour)
+  webpage.write("<br />\n")
+
+
+  success24hour = sum( 1 for job in records.values() if job.isSuccess()
+                      and job.startTime > yesterday )
+  webpage.write("Successful jobs in the last 24 hours: %d <br />\n" % success24hour)
+
+  success3hour = sum( 1 for job in records.values() if job.isSuccess()
+                     and job.startTime > threehours )
+  webpage.write("Successful jobs in the last 3 hours: %d <br />\n" % success3hour)
+  webpage.write("<br />\n")
+
