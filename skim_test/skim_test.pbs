@@ -99,10 +99,10 @@ main ()
 
   echo;echo;echo;echo "BEGIN CMSSW EXECUTION: $(date)";echo;echo
   if [ -z "$INPUTFILE" ]; then
-    /usr/bin/timeout --signal=KILL $AUTOCMS_CMSRUN_TIMEOUT cmsRun skimTestIvars.py
+    /usr/bin/timeout --signal=KILL $SKIMTEST_CMSRUN_TIMEOUT cmsRun skimTestIvars.py
     CMSSW_TEST_RESULT=$?
   else
-    /usr/bin/timeout --signal=KILL $AUTOCMS_CMSRUN_TIMEOUT cmsRun skimTestIvars.py inputFiles=$INPUTFILE
+    /usr/bin/timeout --signal=KILL $SKIMTEST_CMSRUN_TIMEOUT cmsRun skimTestIvars.py inputFiles=$INPUTFILE
     CMSSW_TEST_RESULT=$?
   fi
   echo;echo;echo;echo "END CMSSW EXECUTION: $(date)";echo;echo
@@ -144,8 +144,8 @@ main ()
 
   echo "construct output file name for upload"
   export DFILE=testoutput_${PBS_JOBID}_hiHighPt.root
-  echo "Uploading to $AUTOCMS_STAGEOUT_DIR/$DFILE"
-  $AUTOCMS_VANDYCP hiHighPt.root $AUTOCMS_STAGEOUT_DIR/$DFILE
+  echo "Uploading to $SKIMTEST_STAGEOUT_DIR/$DFILE"
+  $AUTOCMS_VANDYCP hiHighPt.root $SKIMTEST_STAGEOUT_DIR/$DFILE
   UPLOAD_TEST_RESULT=$?
   if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: lio Upload OK"
@@ -157,12 +157,12 @@ main ()
 
   echo "Running stat on uploaded file via LFS"
   echo "====================================="
-  time stat $AUTOCMS_STAGEOUT_DIR/$DFILE
+  time stat $SKIMTEST_STAGEOUT_DIR/$DFILE
   echo "====================================="
   echo
   echo "Checking that the uploaded file size is correct"
   LOCAL_OUTPUT_SIZE=$(ls -l hiHighPt.root | awk '{print $5}')
-  LSTORE_OUTPUT_SIZE=$( lio_ls @:$AUTOCMS_STAGEOUT_DIR/$DFILE | tail -n 1 | awk '{print $4}')
+  LSTORE_OUTPUT_SIZE=$( lio_ls @:$SKIMTEST_STAGEOUT_DIR/$DFILE | tail -n 1 | awk '{print $4}')
   echo "    Local size = $LOCAL_OUTPUT_SIZE"
   echo "    LStore size = $LSTORE_OUTPUT_SIZE"
   if [ $LOCAL_OUTPUT_SIZE -ne $LSTORE_OUTPUT_SIZE ]; then
@@ -171,7 +171,7 @@ main ()
   fi 
 
   echo;echo "Checking user.cms_user_x509 attribute:"
-  FILE_DN=$(lio_getattr -al user.cms_user_x509 -new_obj "" -end_obj "" -attr_fmt "%s#%s\n" ${AUTOCMS_STAGEOUT_DIR}/${DFILE} | sed 's/^user.cms_user_x509#//')
+  FILE_DN=$(lio_getattr -al user.cms_user_x509 -new_obj "" -end_obj "" -attr_fmt "%s#%s\n" ${SKIMTEST_STAGEOUT_DIR}/${DFILE} | sed 's/^user.cms_user_x509#//')
   echo "   user.cms_user_x509 = $FILE_DN"; echo
 
   #-----------------------------------------------------------------------
@@ -179,12 +179,12 @@ main ()
 
   echo "-------------------------------------"
   echo "run lio-inspection on the output file before deleting it"
-  lio_inspect -i 20 $AUTOCMS_STAGEOUT_DIR/$DFILE
+  lio_inspect -i 20 $SKIMTEST_STAGEOUT_DIR/$DFILE
   echo "-------------------------------------"
 
   echo "remove the output and check that it is gone"
 
-  $AUTOCMS_VANDYRM $AUTOCMS_STAGEOUT_DIR/$DFILE
+  $AUTOCMS_VANDYRM $SKIMTEST_STAGEOUT_DIR/$DFILE
 
   DELETE_TEST_RESULT=$?
   if [ $DELETE_TEST_RESULT -eq 0 ]; then
