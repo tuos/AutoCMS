@@ -30,7 +30,7 @@ main ()
   # determine input file to be used by picking a line in the file list
   # indicated by the counter
   AUTOCMS_COUNTER=$(( $AUTOCMS_COUNTER % `wc -l < myfiles.dat` ))
-  INPUTFILE=`cat myfiles.dat | sed ${AUTOCMS_COUNTER}'q;d'`
+  INPUTFILE=$( sed ${AUTOCMS_COUNTER}'q;d' myfiles.dat)
 
 
   if [ -n "$INPUTFILE" ]; then
