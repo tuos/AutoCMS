@@ -13,7 +13,6 @@ class JobRecord:
       self.endTime = 0
       self.exitCode = 255
       self.errorString = "Job did not report success."
-      self.inputFile = "N/A"
       self.logFile = "N/A"    
     else:
       self.node = "N/A"    
@@ -21,7 +20,6 @@ class JobRecord:
       self.endTime = self.submitTime
       self.exitCode = submitStatus
       self.errorString = "ERROR in job submission code "+str(submitStatus)
-      self.inputFile = "N/A"
       self.logFile = "N/A" 
       
 
@@ -69,17 +67,21 @@ class JobRecord:
       self.endTime = self.startTime
 
   def printDebug(self):
-    print "Job Record: "+str(self.submitTime)
-    print "  pbs id: "+str(self.jobid) 
-    print "  submission status: "+str(self.submitStatus)
-    if self.isComplete():
-      print "  This is a completed job"
-      print "  cluster node: "+str(self.node)
-      print "  start time: "+str(self.startTime)
-      print "  end time: "+str(self.endTime)
-      print "  exit code: "+str(self.exitCode)
-      print "  log file: "+str(self.logFile)
-      if self.isSuccess():
-        print "  This job succeeded."
-      else:
-        print self.errorString
+    print 'JobRecord id %d:' % self.submitTime
+    for attr in dir(self):
+      if not hasattr(getattr(self,attr), '__call__'):
+        print '  %s: %s' % (attr, str(getattr(self,attr)))
+  #  print "Job Record: "+str(self.submitTime)
+  #  print "  pbs id: "+str(self.jobid) 
+  #  print "  submission status: "+str(self.submitStatus)
+  #  if self.isComplete():
+  #    print "  This is a completed job"
+  #    print "  cluster node: "+str(self.node)
+  #    print "  start time: "+str(self.startTime)
+  #    print "  end time: "+str(self.endTime)
+  #    print "  exit code: "+str(self.exitCode)
+  #    print "  log file: "+str(self.logFile)
+  #    if self.isSuccess():
+  #      print "  This job succeeded."
+  #    else:
+  #      print self.errorString

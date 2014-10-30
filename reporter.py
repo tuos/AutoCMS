@@ -206,7 +206,7 @@ def writeJobRecords(header,showError,webpage,config,records):
                     ).strftime('%c')
                  )
     webpage.write('  Node Name: %s <br />\n' % job.node )
-    if job.inputFile is not None:
+    if hasattr(job,'inputFile'):
       webpage.write('  Input File: %s <br />\n' % job.inputFile )
     if showError:
       webpage.write('  Error Type: %s <br />\n' % job.errorString )

@@ -35,6 +35,13 @@ main ()
   fi
 
   #-----------------------------------------------------------------------
+  printbanner "Sleeping for a while"
+
+  SLEEPTIME=$(( $RANDOM % 600 ))
+  echo "EXAMPLE_TEST: Sleeping for $SLEEPTIME seconds"
+  sleep $SLEEPTIME
+
+  #-----------------------------------------------------------------------
   printbanner "Touching a file in /tmp"
 
   cd /tmp/$PBS_JOBID
