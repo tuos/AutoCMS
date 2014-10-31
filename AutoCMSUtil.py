@@ -56,8 +56,10 @@ gnuplot <<- EOF
   #set yrange [0:1000]
   %s
   #set xtics border nomirror in rotate by -45 offset character 0, 0, 0
-  plot '%s' using 1:2 title "Waiting Time", \
-       '%s' using 1:3 title "Running Time"
+  set style line 1 lc rgb 'red' pt 5 ps 0.7  # square
+  set style line 2 lc rgb 'green' pt 7 ps 0.7  # circle
+  plot '%s' using 1:2 title "Waiting Time" ls 1, \
+       '%s' using 1:3 title "Running Time" ls 2
 EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
   ) 
 
@@ -79,14 +81,15 @@ def createHistogram(outputFileName,binWidth,xtit,ytit,attr,records):
 gnuplot <<- EOF
 set terminal png crop enhanced  size 500,350 font '/usr/share/fonts/liberation/LiberationSans-Regular.ttf' 
 set output "%s"
-set offset graph 0.1, graph 0.1, graph 0.1, graph 0.0
 set ylabel "%s"
 set xlabel "%s"
+set offset graph 0.1, graph 0.1, graph 0.1, graph 0.0
 bin_width = %f; 
 bin_number(x) = floor(x/bin_width)
 rounded(x) = bin_width * ( bin_number(x) + 0.5 )
 UNITY = 1
-plot '%s' u (rounded(\$1)):(UNITY) smooth frequency w histeps notitle
+set style line 1 lt 1 lw 2 pt 2 linecolor rgb "red"
+plot '%s' u (rounded(\$1)):(UNITY) smooth frequency w histeps notitle ls 1
 unset xlabel
 unset ylabel
 EOF""" % ( outputFileName,ytit,xtit,binWidth,dataFileName )

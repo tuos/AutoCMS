@@ -71,17 +71,3 @@ class JobRecord:
     for attr in dir(self):
       if not hasattr(getattr(self,attr), '__call__'):
         print '  %s: %s' % (attr, str(getattr(self,attr)))
-  #  print "Job Record: "+str(self.submitTime)
-  #  print "  pbs id: "+str(self.jobid) 
-  #  print "  submission status: "+str(self.submitStatus)
-  #  if self.isComplete():
-  #    print "  This is a completed job"
-  #    print "  cluster node: "+str(self.node)
-  #    print "  start time: "+str(self.startTime)
-  #    print "  end time: "+str(self.endTime)
-  #    print "  exit code: "+str(self.exitCode)
-  #    print "  log file: "+str(self.logFile)
-  #    if self.isSuccess():
-  #      print "  This job succeeded."
-  #    else:
-  #      print self.errorString
