@@ -45,7 +45,7 @@ def createRunAndWaitTimePlot(outputFileName,logScale,records):
   os.system(
 """\
 gnuplot <<- EOF
-  set terminal png crop enhanced  size 750,350
+  set terminal png crop enhanced  size 750,350 font '/usr/share/fonts/liberation/LiberationSans-Regular.ttf' 
   set output "%s"
   set xlabel "timestamp (recent 24 hours)"
   set ylabel "time (s)"
@@ -77,7 +77,7 @@ def createHistogram(outputFileName,binWidth,xtit,ytit,attr,records):
   os.system(
 """\
 gnuplot <<- EOF
-set terminal png crop enhanced  size 350,350
+set terminal png crop enhanced  size 500,350 font '/usr/share/fonts/liberation/LiberationSans-Regular.ttf' 
 set output "%s"
 set offset graph 0.1, graph 0.1, graph 0.1, graph 0.0
 set ylabel "%s"
@@ -174,4 +174,17 @@ def writeBasicJobStatistics(webpage,config,records):
                      and job.startTime > threehours )
   webpage.write("Successful jobs in the last 3 hours: %d <br />\n" % success3hour)
   webpage.write("<br />\n")
+
+def listNodesByErrors(webpage,config,records):
+  yesterday = int(time.time()) - 24 * 3600
+  badNodes = dict()
+  for job in records.values():
+    if job.isComplete() and not job.isSuccess() and job.startTime > yesterday :
+      if job.node in badNodes:
+        badNodes[job.node] += 1 
+      else:
+        badNodes[job.node] = 1
+
+  for node in sorted(badNodes, key=badNodes.get, reverse=True):
+    webpage.write("%s: %s<br />" % (node, badNodes[node]))
 

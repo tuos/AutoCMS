@@ -47,8 +47,10 @@ def build(newWebpageName,config,records):
     AutoCMSUtil.writeTestDescription(webpage,config)
     webpage.write('<hr />\n')
 
-    AutoCMSUtil.writeBasicJobStatistics(webpage,config,records)
+    webpage.write('<table><tr><td style="width:30%;vertical-align:top;">\n')
 
+    webpage.write('<b>Daily Job Statistics</b><br /><br />')
+    AutoCMSUtil.writeBasicJobStatistics(webpage,config,records)
     # add some statistics on long running jobs
     long24hour = sum( 1 for job in records.values() if job.isSuccess()
                       and job.startTime > yesterday
@@ -62,6 +64,12 @@ def build(newWebpageName,config,records):
     webpage.write("Long running jobs (> %s s) in the last 3 hours: %d <br />\n"
                 % (config['SKIMTEST_RUNTIME_WARNING'],long3hour) )
     webpage.write("<br />\n")
+
+    webpage.write('</td><td style="width:30%;vertical-align:top;">\n')
+    webpage.write('<b>Errors by Worker Node:</b><br /><br />\n')
+    AutoCMSUtil.listNodesByErrors(webpage,config,records)
+
+    webpage.write('</td></tr></table>\n')
 
     webpage.write('<hr />\n')
 

@@ -23,6 +23,7 @@ def build(newWebpageName,config,records):
       )
     )
     webpage.write( '<img src="%s">\n' % plot1name )
+    webpage.write( '<br />\n')
 
     plot2name = config['AUTOCMS_TEST_NAME']+"_dicerolls.png"
     plot2path = config['AUTOCMS_WEBDIR']+"/"+plot2name
@@ -33,6 +34,17 @@ def build(newWebpageName,config,records):
       )
     )
     webpage.write( '<img src="%s">\n' % plot2name )
+
+    plot3name = config['AUTOCMS_TEST_NAME']+"_numprocs.png"
+    plot3path = config['AUTOCMS_WEBDIR']+"/"+plot3name
+    AutoCMSUtil.createHistogram(plot3path,50.0,'number of running processes','count','numProc',filter(
+      lambda job: job.startTime > yesterday \
+                  and job.isComplete(),
+      records.values()
+      )
+    )
+    webpage.write( '<img src="%s">\n' % plot3name )
+
     webpage.write( '<hr />\n' )
 
     # description and statistics
@@ -69,7 +81,8 @@ def build(newWebpageName,config,records):
                                and job.isComplete() \
                                and job.isSuccess(),
                    records.values() ),
-           diceSum='Roll of the Dice'
+           diceSum='Roll of the Dice',
+           numProc='Num. of processes on the node'
       )
 
     AutoCMSUtil.endWebpage(webpage,config)
