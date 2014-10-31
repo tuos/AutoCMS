@@ -54,7 +54,7 @@ def build(newWebpageName,config,records):
                           and job.isComplete() \
                           and not job.isSuccess() ,
               records.values() ),
-      inputFile='Input File',
+      diceSum='Roll of the Dice',
       errorString='Error Type'
     )
 
@@ -69,7 +69,7 @@ def build(newWebpageName,config,records):
                                and job.isComplete() \
                                and job.isSuccess(),
                    records.values() ),
-           inputFile='Input File'
+           diceSum='Roll of the Dice'
       )
 
     AutoCMSUtil.endWebpage(webpage,config)
