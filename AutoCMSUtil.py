@@ -63,6 +63,37 @@ EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
 
   os.remove(dataFileName) 
 
+
+def createHistogram(outputFileName,binWidth,xtit,ytit,attr,records):
+
+  # make a 1-column data file of the attr for records that have it
+  dataFileName = outputFileName+'.data'
+  with open(dataFileName,'w') as dataFile:
+    for job in filter( lambda job: hasattr(job,attr) , records ):
+      print >>dataFile, '%f' % float(getattr(job,attr))
+
+  # make the plot
+  # found this trick at http://www.inference.phy.cam.ac.uk/teaching/comput/C++/examples/gnuplot/#two
+  os.system(
+"""\
+gnuplot <<- EOF
+set terminal png crop enhanced  size 350,350
+set output "%s"
+set offset graph 0.1, graph 0.1, graph 0.1, graph 0.0
+set ylabel "%s"
+set xlabel "%s"
+bin_width = %f; 
+bin_number(x) = floor(x/bin_width)
+rounded(x) = bin_width * ( bin_number(x) + 0.5 )
+UNITY = 1
+plot '%s' u (rounded(\$1)):(UNITY) smooth frequency w histeps notitle
+unset xlabel
+unset ylabel
+EOF""" % ( outputFileName,ytit,xtit,binWidth,dataFileName )
+  ) 
+
+  os.remove(dataFileName)
+
 # This function writes out the properties of a 
 # completed job to a file in HTML, and then returns
 # a list of startTimes for the jobs it wrote
