@@ -190,7 +190,7 @@ main ()
   if [ $DELETE_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: /lio/lfs file delete OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}/lio/lfs file delete ERROR"
+    echo "${AUTOCMS_errorString_TOKEN}/lio/lfs file delete ERROR $DELETE_TEST_RESULT"
     exitclean $DELETE_TEST_RESULT
   fi
 

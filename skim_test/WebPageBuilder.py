@@ -47,7 +47,7 @@ def build(newWebpageName,config,records):
     AutoCMSUtil.writeTestDescription(webpage,config)
     webpage.write('<hr />\n')
 
-    webpage.write('<table><tr><td style="width:30%;vertical-align:top;">\n')
+    webpage.write('<div style="width:30%;min-width: 20em;float:left;">\n')
 
     webpage.write('<b>Daily Job Statistics</b><br /><br />')
     AutoCMSUtil.writeBasicJobStatistics(webpage,config,records)
@@ -63,15 +63,19 @@ def build(newWebpageName,config,records):
                      and job.runTime() > config['SKIMTEST_RUNTIME_WARNING'] )
     webpage.write("Long running jobs (> %s s) in the last 3 hours: %d <br />\n"
                 % (config['SKIMTEST_RUNTIME_WARNING'],long3hour) )
-    webpage.write("<br />\n")
+    webpage.write("<br /></div>\n")
 
-    webpage.write('</td><td style="width:30%;vertical-align:top;">\n')
+    webpage.write('<div style="width:25%;min-width: 15em;float:left;">\n')
     webpage.write('<b>Errors by Worker Node:</b><br /><br />\n')
     AutoCMSUtil.listNodesByErrors(webpage,config,records)
+    webpage.write('<br /></div>\n')
 
-    webpage.write('</td></tr></table>\n')
+    webpage.write('<div style="width:40%;min-width: 25em;float:left;">\n')
+    webpage.write('<b>Errors by Reason:</b><br /><br />\n')
+    AutoCMSUtil.listErrorsByReason(webpage,config,records)
+    webpage.write('<br /></div>\n')
 
-    webpage.write('<hr />\n')
+    webpage.write('<div style="clear:both;"></div><hr />\n')
 
     # start a list of jobs to be printed
     printedJobs = list()

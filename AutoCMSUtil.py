@@ -57,7 +57,7 @@ gnuplot <<- EOF
   %s
   #set xtics border nomirror in rotate by -45 offset character 0, 0, 0
   set style line 1 lc rgb 'red' pt 5 ps 0.7  # square
-  set style line 2 lc rgb 'green' pt 7 ps 0.7  # circle
+  set style line 2 lc rgb 'green' pt 5 ps 0.7  # square
   plot '%s' using 1:2 title "Waiting Time" ls 1, \
        '%s' using 1:3 title "Running Time" ls 2
 EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
@@ -189,5 +189,18 @@ def listNodesByErrors(webpage,config,records):
         badNodes[job.node] = 1
 
   for node in sorted(badNodes, key=badNodes.get, reverse=True):
-    webpage.write("%s: %s<br />" % (node, badNodes[node]))
+    webpage.write("%s - %s<br />" % (badNodes[node],node))
+
+def listErrorsByReason(webpage,config,records):
+  yesterday = int(time.time()) - 24 * 3600
+  errorMsgs = dict()
+  for job in records.values():
+    if job.isComplete() and not job.isSuccess() and job.startTime > yesterday :
+      if job.errorString in errorMsgs:
+        errorMsgs[job.errorString] += 1
+      else:
+        errorMsgs[job.errorString] = 1
+
+  for message in sorted(errorMsgs, key=errorMsgs.get, reverse=True):
+    webpage.write("%s - %s<br />" % (errorMsgs[message],message))
 
