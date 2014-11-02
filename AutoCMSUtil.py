@@ -182,11 +182,11 @@ def writeBasicJobStatistics(webpage,config,records):
   successRate3 = float(100 * success3hour) / float(success3hour + failed3hour)
 
   if successRate24 < 90.0 :
-    webpage.write('Success rate (24 hours): <div style="color:red;">%.2f %%</div><br />\n' % successRate24)
+    webpage.write('Success rate (24 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate24)
   else:
     webpage.write('Success rate (24 hours): %.2f %%<br />\n' % successRate24)
   if successRate3 < 90.0 :
-    webpage.write('Success rate (3 hours): <div style="color:red;">%.2f %%</div><br />\n' % successRate3)
+    webpage.write('Success rate (3 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate3)
   else:
     webpage.write('Success rate (3 hours): %.2f %%<br />\n' % successRate3)
   webpage.write("<br />\n")
