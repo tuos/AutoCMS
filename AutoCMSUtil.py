@@ -178,6 +178,19 @@ def writeBasicJobStatistics(webpage,config,records):
   webpage.write("Successful jobs in the last 3 hours: %d <br />\n" % success3hour)
   webpage.write("<br />\n")
 
+  successRate24 = float(100 * success24hour) / float(success24hour + failed24hour)
+  successRate3 = float(100 * success3hour) / float(success3hour + failed3hour)
+
+  if successRate24 < 90.0 :
+    webpage.write('Success rate (24 hours): <div style="color:red;">%.2f %%</div><br />\n' % successRate24)
+  else:
+    webpage.write('Success rate (24 hours): %.2f %%<br />\n' % successRate24)
+  if successRate3 < 90.0 :
+    webpage.write('Success rate (3 hours): <div style="color:red;">%.2f %%</div><br />\n' % successRate3)
+  else:
+    webpage.write('Success rate (3 hours): %.2f %%<br />\n' % successRate3)
+  webpage.write("<br />\n")
+
 def listNodesByErrors(webpage,config,records):
   yesterday = int(time.time()) - 24 * 3600
   badNodes = dict()
