@@ -109,9 +109,7 @@ def writeJobRecords(header,webpage,config,records,**extraAttrs):
   for job in records:
     webpage.write('%s %d: <br />\n' % (header, counter) )
     webpage.write('  Start time: %s <br />\n' % 
-                    datetime.datetime.fromtimestamp(
-                      job.startTime
-                    ).strftime('%c')
+                  time.strftime('%c (%Z)', time.localtime(job.startTime))
                  )
     webpage.write('  Node Name: %s <br />\n' % job.node )
     if job.logFile != "N/A":
@@ -139,7 +137,7 @@ Page generated at: %s
               config['AUTOCMS_TEST_NAME'],
               config['AUTOCMS_SITE_NAME'],
               config['AUTOCMS_TEST_NAME'],
-              time.strftime("%c") )
+              time.strftime("%c (%Z)") )
     )
 
 def endWebpage(webpage,config):
