@@ -28,11 +28,14 @@ def LoadConfiguration(configFileName):
 
 def createRunAndWaitTimePlot(outputFileName,logScale,records):
 
+  #find utc offset
+  utcoffset = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).total_seconds()))
+
   #create data file to send to gnuplot
   dataFileName = outputFileName+'.data'
   with open(dataFileName,'w') as dataFile:
     for job in records:
-      print >>dataFile, '%d %d %d' % (job.startTime,job.waitTime(),job.runTime())
+      print >>dataFile, '%d %d %d' % (job.startTime+utcoffset,job.waitTime(),job.runTime())
 
   if logScale:
     logScaleString = 'set logscale y'
