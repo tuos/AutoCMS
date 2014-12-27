@@ -54,13 +54,13 @@ def build(newWebpageName,config,records):
     # add some statistics on long running jobs
     long24hour = sum( 1 for job in records.values() if job.isSuccess()
                       and job.startTime > yesterday
-                      and job.runTime() > config['SKIMTEST_RUNTIME_WARNING'] )
+                      and job.runTime() >= int(config['SKIMTEST_RUNTIME_WARNING']) )
     webpage.write("Long running jobs (> %s s) in the last 24 hours: %d <br />\n"
                   % (config['SKIMTEST_RUNTIME_WARNING'],long24hour) )
 
     long3hour = sum( 1 for job in records.values() if job.isSuccess()
                      and job.startTime > threehours
-                     and job.runTime() > config['SKIMTEST_RUNTIME_WARNING'] )
+                     and job.runTime() >= int(config['SKIMTEST_RUNTIME_WARNING']) )
     webpage.write("Long running jobs (> %s s) in the last 3 hours: %d <br />\n"
                 % (config['SKIMTEST_RUNTIME_WARNING'],long3hour) )
     webpage.write("<br /></div>\n")
@@ -103,7 +103,7 @@ def build(newWebpageName,config,records):
          filter( lambda job: job.startTime > yesterday \
                              and job.isComplete() \
                              and job.isSuccess() \
-                             and job.runTime() >= config['SKIMTEST_RUNTIME_WARNING'],
+                             and job.runTime() >= int(config['SKIMTEST_RUNTIME_WARNING']),
                  records.values() ),
          inputFile='Input File'
     )

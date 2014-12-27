@@ -97,6 +97,9 @@ main ()
   #-----------------------------------------------------------------------
   printbanner "Running CMSSW Skim Job"
 
+  echo;echo "Current system load:";echo
+  dstat --nocolor -cdngy 1 10
+
   echo;echo;echo;echo "BEGIN CMSSW EXECUTION: $(date)";echo;echo
   if [ -z "$INPUTFILE" ]; then
     /usr/bin/timeout --signal=KILL $SKIMTEST_CMSRUN_TIMEOUT cmsRun skimTestIvars.py
@@ -106,6 +109,9 @@ main ()
     CMSSW_TEST_RESULT=$?
   fi
   echo;echo;echo;echo "END CMSSW EXECUTION: $(date)";echo;echo
+
+  echo;echo "Current system load:";echo
+  dstat --nocolor -cdngy 1 10
 
   if [ $CMSSW_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: CMSSW execution OK"
