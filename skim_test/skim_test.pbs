@@ -151,8 +151,10 @@ main ()
   echo "construct output file name for upload"
   export DFILE=testoutput_${PBS_JOBID}_hiHighPt.root
   echo "Uploading to $SKIMTEST_STAGEOUT_DIR/$DFILE"
-  $AUTOCMS_VANDYCP hiHighPt.root $SKIMTEST_STAGEOUT_DIR/$DFILE
+  echo; echo "============== Begin VandyCp Log =============="; echo
+  $AUTOCMS_VANDYCP hiHighPt.root $SKIMTEST_STAGEOUT_DIR/$DFILE verbose
   UPLOAD_TEST_RESULT=$?
+  echo; echo "============== End VandyCp Log =============="; echo
   if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: lio Upload OK"
   else
@@ -190,9 +192,11 @@ main ()
 
   echo "remove the output and check that it is gone"
 
-  $AUTOCMS_VANDYRM $SKIMTEST_STAGEOUT_DIR/$DFILE
-
+  echo; echo "============== Begin VandyRm Log =============="; echo
+  $AUTOCMS_VANDYRM $SKIMTEST_STAGEOUT_DIR/$DFILE verbose
   DELETE_TEST_RESULT=$?
+  echo; echo "============== End VandyRm Log =============="; echo
+
   if [ $DELETE_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: /lio/lfs file delete OK"
   else
