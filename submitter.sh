@@ -32,8 +32,9 @@ cd $AUTODIR/$AUTOCMS_TEST_NAME
 export AUTOCMS_COUNTER=$SEQ
 export AUTOCMS_CONFIGFILE=$AUTODIR/autocms.cfg
 
-SUBID=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE | sed -e "s/Submitted batch job //"`
+SUBID_MESSAGE=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE `
 SUBMIT_STATUS=$?
+SUBID=`echo $SUBID_MESSAGE | sed -e "s/Submitted batch job //"`
 NOW=`date`
 STAMP=`date +%s`
 if [ ! $SUBMIT_STATUS -eq 0 ]; then

@@ -46,13 +46,16 @@ with open('submission.stamps','a') as stampFile:
 with open('submission.stamps','r') as stampFile:
   stampsIn = stampFile.read().splitlines()
 for line in stampsIn[:]:
-  jobid = line.split()[0].replace('.vmpsched','')
-  timestamp = int(line.split()[1])
-  submitStatus = line.split()[2]
-  if timestamp not in records:
-    records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
-  if timestamp < purgetime:
-    stampsIn.remove(line) 
+  # for some reason slurm is not always reporting a job number, so skip lines 
+  # that have less than three columns (i.e. no job number, timestamp, or exit code)
+  if len(line.split()) > 2 :
+    jobid = line.split()[0].replace('.vmpsched','')
+    timestamp = int(line.split()[1])
+    submitStatus = line.split()[2]
+    if timestamp not in records:
+      records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
+    if timestamp < purgetime:
+      stampsIn.remove(line) 
 
 stampFile = open('submission.stamps','w') 
 for line in stampsIn:
@@ -65,13 +68,10 @@ stampFile.close()
 # parse their logs if they exist
 completedJobs = AutoCMSUtil.getCompletedJobs(config)
 for job in records:
-  print 'Looking at job %s ' % records[job].jobid
   if not records[job].isCompleted:
-    print 'Job %s is not complete' % records[job].jobid
     if records[job].jobid in completedJobs:
       records[job].isCompleted = True
       jobLogFile = config['AUTOCMS_TEST_NAME']+'.slurm.o'+str(records[job].jobid)
-      print 'Looking for log file: %s' % jobLogFile
       if os.path.isfile(jobLogFile):
         records[job].parseOutput(jobLogFile,config)
       else:

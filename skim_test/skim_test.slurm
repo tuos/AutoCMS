@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=1G
+#SBATCH --mem-per-cpu=2G
 #SBATCH --output=skim_test.slurm.o%A
 #SBATCH --time=0-01:00:00
 #SBATCH --job-name="skim_test"
@@ -43,9 +43,9 @@ main ()
     echo "${AUTOCMS_inputFile_TOKEN}${INPUTFILE}"
     echo "-------------------------------------"
     echo "Running lio-inspection on $INPUTFILE"
-    lio_inspect -i 20 -d 20 -log /tmp/inspect.${SBATCH_JOBID} ${INPUTFILE/file:/} | tee /tmp/check.${SBATCH_JOBID}
-    [ "$(grep 'Submitted: 0' /tmp/check.${SBATCH_JOBID})" == "" ] && rm /tmp/inspect.${SBATCH_JOBID}
-    /bin/rm /tmp/check.${SBATCH_JOBID}
+    lio_inspect -i 20 -d 20 -log /tmp/inspect.${SLURM_JOB_ID} ${INPUTFILE/file:/} | tee /tmp/check.${SLURM_JOB_ID}
+    [ "$(grep 'Submitted: 0' /tmp/check.${SLURM_JOB_ID})" == "" ] && rm /tmp/inspect.${SLURM_JOB_ID}
+    /bin/rm /tmp/check.${SLURM_JOB_ID}
     echo "-------------------------------------"
 
   else
@@ -66,16 +66,19 @@ main ()
   fi
 
   #-----------------------------------------------------------------------
-  printbanner "Testing tmp filesystem"
+  printbanner "Making tmp working directory and testing tmp filesystem"
 
-  cd /tmp/$SBATCH_JOBID
+  TMP_WORKDIR=/tmp/${AUTOCMS_UNAME}-${SLURM_JOB_ID}
+
+  mkdir $TMP_WORKDIR
+  cd $TMP_WORKDIR
 
   touch tmpfs_test
   TEMPFS_TEST_RESULT=$?
   if [ $TEMPFS_TEST_RESULT -eq 0 ]; then
-    echo "SKIM_TEST: touch in directory /tmp/$SBATCH_JOBID OK"
+    echo "SKIM_TEST: touch in directory $TMP_WORKDIR OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}touch in directory /tmp/$SBATCH_JOBID ERROR $TEMPFS_TEST_RESULT"
+    echo "${AUTOCMS_errorString_TOKEN}touch in directory $TMP_WORKDIR ERROR $TEMPFS_TEST_RESULT"
     exitclean $TEMPFS_TEST_RESULT
   fi
 
@@ -155,7 +158,7 @@ main ()
 
 
   echo "construct output file name for upload"
-  export DFILE=testoutput_${SBATCH_JOBID}_hiHighPt.root
+  export DFILE=testoutput_${SLURM_JOB_ID}_hiHighPt.root
   echo "Uploading to $SKIMTEST_STAGEOUT_DIR/$DFILE"
   echo; echo "============== Begin VandyCp Log =============="; echo
   $AUTOCMS_VANDYCP hiHighPt.root $SKIMTEST_STAGEOUT_DIR/$DFILE verbose
@@ -217,11 +220,12 @@ main ()
 exitclean ()
 {
     printbanner "Cleaning up /tmp and Exiting"
-    if [ -e /tmp/$SBATCH_JOBID/tmpfs_test ]; then
-      rm /tmp/$SBATCH_JOBID/tmpfs_test
+    if [ -e $TMP_WORKDIR/tmpfs_test ]; then
+      rm $TMP_WORKDIR/tmpfs_test
     fi
-    if [ -e /tmp/$SBATCH_JOBID/$AUTOCMS_CMSSW_VERSION ]; then
-      rm -r /tmp/$SBATCH_JOBID/$AUTOCMS_CMSSW_VERSION
+    if [ -e $TMP_WORKDIR/$AUTOCMS_CMSSW_VERSION ]; then
+      rm -r $TMP_WORKDIR/$AUTOCMS_CMSSW_VERSION
+      rmdir $TMP_WORKDIR
     fi
     echo -n "SKIM_TEST: Ending at "; date
     echo "${AUTOCMS_endTime_TOKEN}$(date +%s)"
