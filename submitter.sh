@@ -9,7 +9,8 @@ export MOABHOMEDIR=/usr/scheduler/config/moab
 
 # Determine number of jobs in the queue
 
-NUMJOBS=`/usr/scheduler/moab/bin/showq -w group=$AUTOCMS_GNAME | grep -c $AUTOCMS_UNAME`
+#NUMJOBS=`/usr/scheduler/moab/bin/showq -w group=$AUTOCMS_GNAME | grep -c $AUTOCMS_UNAME`
+NUMJOBS=`/usr/scheduler/slurm/bin/squeue -h --user=$AUTOCMS_UNAME --account=$AUTOCMS_GNAME | wc -l`
 
 if [ $NUMJOBS -ge $AUTOCMS_MAXENQUEUE ]; then
   exit 0
@@ -25,10 +26,13 @@ fi
 SEQ=$(( `cat $AUTOCMS_TEST_NAME/counter` + 1 ))
 echo -n $SEQ > $AUTOCMS_TEST_NAME/counter
 
-# Submit the skim_test pbs script
+# Submit the skim_test slurm script
 cd $AUTODIR/$AUTOCMS_TEST_NAME
 
-SUBID=`/usr/scheduler/torque/bin/qsub  $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.pbs -v AUTOCMS_COUNTER="$SEQ",AUTOCMS_CONFIGFILE="$AUTODIR/autocms.cfg"`
+AUTOCMS_COUNTER=$SEQ
+AUTOCMS_CONFIGFILE=$AUTODIR/autocms.cfg
+
+SUBID=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE | sed -e "s/Submitted batch job //"`
 SUBMIT_STATUS=$?
 NOW=`date`
 STAMP=`date +%s`

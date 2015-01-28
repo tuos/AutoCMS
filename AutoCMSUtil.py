@@ -2,6 +2,7 @@ import re
 import os
 import time
 import datetime
+import subprocess
 from JobRecord import JobRecord
 
 def LoadConfiguration(configFileName):
@@ -218,3 +219,9 @@ def listErrorsByReason(webpage,config,records):
   for message in sorted(errorMsgs, key=errorMsgs.get, reverse=True):
     webpage.write("%s - %s<br />" % (errorMsgs[message],message))
 
+def getCompletedJobs(config):
+  cmd = '/usr/scheduler/slurm/bin/sacct --state=CA,CD,F,NF,TO -S $(date +%%Y-%%m-%%d -d @$(( $(date +%%s) - 172800 )) ) --accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "' % ( config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME'] )
+  result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+  lines = result.stdout.readlines()
+  lines = map(str.strip,lines)
+  return lines

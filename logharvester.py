@@ -63,12 +63,12 @@ stampFile.close()
 # known to be completed
 for job in records:
   if not records[job].isComplete():
-    jobLogFile = config['AUTOCMS_TEST_NAME']+'.pbs.o'+str(records[job].jobid)
+    jobLogFile = config['AUTOCMS_TEST_NAME']+'.slurm.o'+str(records[job].jobid)
     if os.path.isfile(jobLogFile):
       records[job].parseOutput(jobLogFile,config)
 
 # Remove old log files and job records
-for logFileName in filter(lambda x:re.search(r'.pbs.o[0-9]+', x), os.listdir('.')):
+for logFileName in filter(lambda x:re.search(r'.slurm.o[0-9]+', x), os.listdir('.')):
   if int(os.path.getctime(logFileName)) < purgetime :
     os.remove(logFileName)
 oldRecords = list()
