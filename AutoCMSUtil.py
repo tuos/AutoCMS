@@ -179,18 +179,27 @@ def writeBasicJobStatistics(webpage,config,records):
                      and job.startTime > threehours )
   webpage.write("Successful jobs in the last 3 hours: %d <br />\n" % success3hour)
   webpage.write("<br />\n")
+ 
+  # only print success rates if jobs have actually run
 
-  successRate24 = float(100 * success24hour) / float(success24hour + failed24hour)
-  successRate3 = float(100 * success3hour) / float(success3hour + failed3hour)
+  if success24hour + failed24hour > 0 :
+    successRate24 = float(100 * success24hour) / float(success24hour + failed24hour)
+    if successRate24 < 90.0 :
+      webpage.write('Success rate (24 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate24)
+    else:
+      webpage.write('Success rate (24 hours): %.2f %%<br />\n' % successRate24)
 
-  if successRate24 < 90.0 :
-    webpage.write('Success rate (24 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate24)
-  else:
-    webpage.write('Success rate (24 hours): %.2f %%<br />\n' % successRate24)
-  if successRate3 < 90.0 :
-    webpage.write('Success rate (3 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate3)
-  else:
-    webpage.write('Success rate (3 hours): %.2f %%<br />\n' % successRate3)
+  if success3hour + failed3hour > 0 :
+    successRate3 = float(100 * success3hour) / float(success3hour + failed3hour)
+    if successRate24 < 90.0 :
+      webpage.write('Success rate (24 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate24)
+    else:
+      webpage.write('Success rate (24 hours): %.2f %%<br />\n' % successRate24)
+    if successRate3 < 90.0 :
+      webpage.write('Success rate (3 hours): <span style="color:red;">%.2f %%</span><br />\n' % successRate3)
+    else:
+      webpage.write('Success rate (3 hours): %.2f %%<br />\n' % successRate3)
+
   webpage.write("<br />\n")
 
 def listNodesByErrors(webpage,config,records):
