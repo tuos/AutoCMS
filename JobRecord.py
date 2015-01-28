@@ -13,6 +13,7 @@ class JobRecord:
       self.endTime = 0
       self.exitCode = 255
       self.errorString = "Job did not report success."
+      self.isCompleted = False
       self.logFile = "N/A"    
     else:
       self.node = "N/A"    
@@ -20,6 +21,7 @@ class JobRecord:
       self.endTime = self.submitTime
       self.exitCode = submitStatus
       self.errorString = "ERROR in job submission code "+str(submitStatus)
+      self.isCompleted = True
       self.logFile = "N/A" 
       
 
@@ -36,10 +38,11 @@ class JobRecord:
       return False
 
   def isComplete(self):
-    if self.startTime != 0:
-      return True
-    else:
-      return False
+    return self.isCompleted
+#    if self.startTime != 0:
+#      return True
+#    else:
+#      return False
 
   def parseOutput(self,logFileName,config):
     self.logFile = logFileName
@@ -53,6 +56,7 @@ class JobRecord:
             recordAttrValue = line.replace(config[setting],'')
             if recordAttrName == 'SUCCESS':
               self.exitCode = 0
+              self.errorString = ''
             else:
               setattr(self,recordAttrName,recordAttrValue) 
     # ensure that required attributes remain ints

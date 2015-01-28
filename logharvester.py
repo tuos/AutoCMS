@@ -59,13 +59,24 @@ for line in stampsIn:
   print>>stampFile, line
 stampFile.close()
 
-# Harvest information from log for jobs not yet 
-# known to be completed
+# get a list of jobs completed in the 
+# last 24-48 hours from this account, 
+# then updated jobs not completed, and attempt to
+# parse their logs if they exist
+completedJobs = AutoCMSUtil.getCompletedJobs(config)
 for job in records:
-  if not records[job].isComplete():
-    jobLogFile = config['AUTOCMS_TEST_NAME']+'.slurm.o'+str(records[job].jobid)
-    if os.path.isfile(jobLogFile):
-      records[job].parseOutput(jobLogFile,config)
+  print 'Looking at job %s ' % records[job].jobid
+  if not records[job].isCompleted:
+    print 'Job %s is not complete' % records[job].jobid
+    if records[job].jobid in completedJobs:
+      records[job].isCompleted = True
+      jobLogFile = config['AUTOCMS_TEST_NAME']+'.slurm.o'+str(records[job].jobid)
+      print 'Looking for log file: %s' % jobLogFile
+      if os.path.isfile(jobLogFile):
+        records[job].parseOutput(jobLogFile,config)
+      else:
+        records[job].exitCode = 1
+        records[job].errorString = "ERROR standard output of this job was not found."
 
 # Remove old log files and job records
 for logFileName in filter(lambda x:re.search(r'.slurm.o[0-9]+', x), os.listdir('.')):

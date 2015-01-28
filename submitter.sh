@@ -5,7 +5,7 @@ source `pwd`/autocms.cfg
 AUTOCMS_TEST_NAME=$1
 
 AUTODIR=$AUTOCMS_BASEDIR
-export MOABHOMEDIR=/usr/scheduler/config/moab
+#export MOABHOMEDIR=/usr/scheduler/config/moab
 
 # Determine number of jobs in the queue
 
@@ -29,8 +29,8 @@ echo -n $SEQ > $AUTOCMS_TEST_NAME/counter
 # Submit the skim_test slurm script
 cd $AUTODIR/$AUTOCMS_TEST_NAME
 
-AUTOCMS_COUNTER=$SEQ
-AUTOCMS_CONFIGFILE=$AUTODIR/autocms.cfg
+export AUTOCMS_COUNTER=$SEQ
+export AUTOCMS_CONFIGFILE=$AUTODIR/autocms.cfg
 
 SUBID=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE | sed -e "s/Submitted batch job //"`
 SUBMIT_STATUS=$?
