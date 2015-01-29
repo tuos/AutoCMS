@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=2G
 #SBATCH --output=skim_test.slurm.o%A
-#SBATCH --time=0-01:00:00
+#SBATCH --time=0-12:00:00
 #SBATCH --job-name="skim_test"
 
 main ()
