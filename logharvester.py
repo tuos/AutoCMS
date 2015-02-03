@@ -54,6 +54,9 @@ for line in stampsIn[:]:
     submitStatus = line.split()[2]
     if timestamp not in records:
       records[timestamp] = JobRecord(timestamp,jobid,submitStatus)
+      # add submission log for failed submissions
+      if int(submitStatus) != 0 and len(line.split()) > 3:
+        records[timestamp].logFile = line.split()[3]
     if timestamp < purgetime:
       stampsIn.remove(line) 
 

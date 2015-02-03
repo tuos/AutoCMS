@@ -32,13 +32,19 @@ cd $AUTODIR/$AUTOCMS_TEST_NAME
 export AUTOCMS_COUNTER=$SEQ
 export AUTOCMS_CONFIGFILE=$AUTODIR/autocms.cfg
 
-SUBID_MESSAGE=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE `
+SUBID_MESSAGE=`/usr/scheduler/slurm/bin/sbatch  --account=$AUTOCMS_GNAME $AUTODIR/$AUTOCMS_TEST_NAME/$AUTOCMS_TEST_NAME.slurm -export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE  2>&1`
 SUBMIT_STATUS=$?
 SUBID=`echo $SUBID_MESSAGE | sed -e "s/Submitted batch job //"`
 NOW=`date`
 STAMP=`date +%s`
+SLOG=""
 if [ ! $SUBMIT_STATUS -eq 0 ]; then
    SUBID=FAIL
+   SLOG=$AUTOCMS_TEST_NAME.submission.$SEQ.$(date +%s).log
+   echo "Job submission failed at $(date)" >> $SLOG
+   echo "On node $HOSTNAME" >> $SLOG
+   echo "Submission command output:" >> $SLOG ;  echo >> $SLOG
+   echo "$SUBID_MESSAGE" >> $SLOG 
 fi
 
-echo "$SUBID $STAMP $SUBMIT_STATUS" >> $AUTODIR/$AUTOCMS_TEST_NAME/newstamp.$(date +%s)
+echo "$SUBID $STAMP $SUBMIT_STATUS $SLOG" >> $AUTODIR/$AUTOCMS_TEST_NAME/newstamp.$(date +%s)
