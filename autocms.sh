@@ -17,59 +17,51 @@ main ()
     exit 0
   fi
 
-  echo "WARNING: Use of this script will overwrite your crontab on this host."
-  echo "For manual setup, use \"autocms.sh print\" to print the"
-  echo "crontab entry lines needed to run the system."
-  echo "Current host: $HOSTNAME"
 
-  read -p "Are you sure [y/n] ? " -n 1 -r
-  echo; echo   
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-
-    if [[ ${commandline_args[1]} = "start" ]]
-    then  
-      if [[ -f crontab_host.txt ]]
-      then
-        AUTOCMS_HOST=`cat crontab_host.txt`
-        echo "ERROR: autocms instance already running on $AUTOCMS_HOST"
-        echo "Exiting..."
-      exit 1
-      fi
-      echo "Starting autocms..."
-      echo $HOSTNAME > crontab_host.txt
-      print_autocms_crontab
-      crontab autocms.crontab
-      exit 0
-    fi
-
-    if [[ ${commandline_args[1]} = "stop" ]]
+  if [[ ${commandline_args[1]} = "start" ]]
+  then  
+    crontab_overwrite_warning
+    if [[ -f crontab_host.txt ]]
     then
-      if [[ ! -f crontab_host.txt ]]
-      then
-        echo "No running autocms instance detected. Exiting..."
-        exit 1
-      fi
       AUTOCMS_HOST=`cat crontab_host.txt`
-      if [[ ! $AUTOCMS_HOST = $HOSTNAME ]]
-      then
-        echo "Attempting to stop autocms on $HOSTNAME "
-        echo "but this instance of autocms is running on $AUTOCMS_HOST. "
-        echo "Log into $HOSTNAME and try again."
-        exit 1
-      fi
-      echo "Stopping autocms..." 
-      crontab -r
-      rm crontab_host.txt
-      exit 0
+      echo "ERROR: autocms instance already running on $AUTOCMS_HOST"
+      echo "Exiting..."
+    exit 1
     fi
-
-    echo "Usage \"autocms.sh start\" or \"autocms.sh stop\" "
-    echo "Please see: "
-    echo "  https://wiki.accre.vanderbilt.edu/foswiki/bin/view/VandyCMS/AutoCMS"
-    echo "for additional documentation."
-
+    echo "Starting autocms..."
+    echo $HOSTNAME > crontab_host.txt
+    print_autocms_crontab
+    crontab autocms.crontab
+    exit 0
   fi
+
+  if [[ ${commandline_args[1]} = "stop" ]]
+  then
+    crontab_overwrite_warning
+    if [[ ! -f crontab_host.txt ]]
+    then
+      echo "No running autocms instance detected. Exiting..."
+      exit 1
+    fi
+    AUTOCMS_HOST=`cat crontab_host.txt`
+    if [[ ! $AUTOCMS_HOST = $HOSTNAME ]]
+    then
+      echo "Attempting to stop autocms on $HOSTNAME "
+      echo "but this instance of autocms is running on $AUTOCMS_HOST. "
+      echo "Log into $HOSTNAME and try again."
+      exit 1
+    fi
+    echo "Stopping autocms..." 
+    crontab -r
+    rm crontab_host.txt
+    exit 0
+  fi
+
+  echo "Usage \"autocms.sh start\" or \"autocms.sh stop\" "
+  echo "Please see: "
+  echo "  https://wiki.accre.vanderbilt.edu/foswiki/bin/view/VandyCMS/AutoCMS"
+  echo "for additional documentation."
+
 }
 
 print_autocms_crontab ()
@@ -98,6 +90,22 @@ print_autocms_crontab ()
   done
 }
 
+crontab_overwrite_warning()
+{
+  echo "WARNING: Use of this command will overwrite your crontab on this host."
+  echo "For manual setup, use \"autocms.sh print\" to print the"
+  echo "crontab entry lines needed to run the system."
+  echo "Current host: $HOSTNAME"
+
+  read -p "Are you sure [y/n] ? " -n 1 -r
+  echo; echo   
+  if [[ $REPLY =~ ^[Yy]$ ]]
+  then
+    return
+  else
+    exit 0
+  fi
+}
 
 commandline_args=("$@")
 source autocms.cfg
