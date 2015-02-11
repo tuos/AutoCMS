@@ -9,7 +9,7 @@ main ()
         . 
   fi
 
-  case "${commandline_args[1]}" in
+  case "${commandline_args[0]}" in
   
     print) autocms_print
       ;;
@@ -22,6 +22,11 @@ main ()
     logharvest) autocms_logharvest
       ;;
     report) autocms_report
+      ;;
+    *) if [ -n ${commandline_args[0]} ]; then 
+         echo "${commandline_args[0]} is not a valid command"
+       fi
+      ;;
 
   esac
 
@@ -89,33 +94,33 @@ autocms_stop ()
 
 autocms_submit ()
 {
-  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[2]}" ]; then
-    $AUTOCMS_BASEDIR/submitter.sh ${commandline_args[2]} 
+  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
+    $AUTOCMS_BASEDIR/submitter.sh ${commandline_args[1]} 
     exit 0
   else
-    echo "Request to submit non-existent test ${commandline_args[2]} failed"
+    echo "Request to submit non-existent test ${commandline_args[1]} failed"
     exit 1
   fi 
 }
 
 autocms_report ()
 {
-  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[2]}" ]; then
-    python reporter.py ${commandline_args[2]}
+  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
+    python reporter.py ${commandline_args[1]}
     exit 0
   else
-    echo "Request to report non-existent test ${commandline_args[2]} failed"
+    echo "Request to report non-existent test ${commandline_args[1]} failed"
     exit 1
   fi
 }
 
 autocms_logharvest ()
 {
-  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[2]}" ]; then
-    python logharvester.py ${commandline_args[2]}
+  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
+    python logharvester.py ${commandline_args[1]}
     exit 0
   else
-    echo "Request to harvest non-existent test ${commandline_args[2]} failed"
+    echo "Request to harvest non-existent test ${commandline_args[1]} failed"
     exit 1
   fi
 }
