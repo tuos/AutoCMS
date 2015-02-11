@@ -23,6 +23,8 @@ main ()
       ;;
     report) autocms_report
       ;;
+    statsharvest) autocms_statsharvest
+      ;;
     *) if [ -n "${commandline_args[0]}" ]; then 
          echo "${commandline_args[0]} is not a valid command"
        fi
@@ -121,6 +123,17 @@ autocms_logharvest ()
     exit 0
   else
     echo "Request to harvest non-existent test ${commandline_args[1]} failed"
+    exit 1
+  fi
+}
+
+autocms_statsharvest ()
+{
+  if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
+    python statsharvester.py ${commandline_args[1]}
+    exit 0
+  else
+    echo "Request to statsharvest non-existent test ${commandline_args[1]} failed"
     exit 1
   fi
 }
