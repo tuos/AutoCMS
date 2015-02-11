@@ -23,7 +23,7 @@ main ()
       ;;
     report) autocms_report
       ;;
-    *) if [ -n ${commandline_args[0]} ]; then 
+    *) if [ -n "${commandline_args[0]}" ]; then 
          echo "${commandline_args[0]} is not a valid command"
        fi
       ;;
