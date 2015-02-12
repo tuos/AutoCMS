@@ -1,6 +1,7 @@
 import re 
 import os
 import time
+import math
 import datetime
 import subprocess
 from JobRecord import JobRecord
@@ -68,7 +69,43 @@ EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
   ) 
 
   os.remove(dataFileName) 
+ 
 
+def createBasicStatisticsPlot(dataFileName, outputFileName, startTime, endTime ):
+ 
+  #find utc offset
+  utcoffset = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).total_seconds()))
+
+  # make no more than 7 ticks 
+  daysToPlot = float(endTime-startTime)/float(86400) 
+  xticks = 86400
+  if daysToPlot > 7 :
+    xticks = xticks * int( math.ceil(daysToPlot/7.0) ) 
+  os.system(
+"""\
+gnuplot <<- EOF
+  set terminal png crop enhanced  size 750,350 
+  #set key outside right
+  set output "%s"
+  set xlabel "Date"
+  set ylabel "time (s)"
+  set xdata time
+  set timefmt "%%s"
+  set xrange ["%d":"%d"]
+  set xtics %d
+  set format x "%%m-%%d"
+  set style line 1 lc rgb 'red' lw 2 
+  set style line 2 lc rgb 'blue' lw 2 
+  set style line 3 lc rgb 'green' lw 2
+  plot '%s' using (\$1+%d):(\$6) title "Max. Runtime" ls 1 with lines, \
+       '%s' using (\$1+%d):(\$5) title "Mean Runtime" ls 2 with lines, \
+       '%s' using (\$1+%d):(\$4) title "Min. Runtime" ls 3 with lines
+EOF""" % ( outputFileName, 
+           startTime+utcoffset, endTime+utcoffset, xticks,  
+           dataFileName, utcoffset,
+           dataFileName, utcoffset,
+           dataFileName, utcoffset )
+  ) 
 
 def createHistogram(outputFileName,binWidth,xtit,ytit,attr,records):
 

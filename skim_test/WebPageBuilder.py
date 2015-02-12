@@ -6,6 +6,7 @@ import AutoCMSUtil
 
 def build(newWebpageName,config,records):
 
+  now = int(time.time())
   yesterday = int(time.time()) - 24 * 3600
   threehours = int(time.time()) - 3 * 3600
 
@@ -43,6 +44,15 @@ def build(newWebpageName,config,records):
 
     webpage.write( '<hr />\n' )
 
+    # long term statistics plot
+    statFile = "statistics.dat"
+    statPlotName = config['AUTOCMS_TEST_NAME']+"_basicStats.png"
+    statPlotPath = config['AUTOCMS_WEBDIR']+"/"+statPlotName
+    AutoCMSUtil.createBasicStatisticsPlot(statFile,statPlotPath, now - 7*24*3600, now)
+    webpage.write( '<img src="%s">\n' % statPlotName )
+    
+    webpage.write( '<hr />\n' ) 
+   
     # description and statistics
     AutoCMSUtil.writeTestDescription(webpage,config)
     webpage.write('<hr />\n')
