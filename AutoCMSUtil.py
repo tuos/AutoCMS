@@ -103,7 +103,7 @@ gnuplot <<- EOF
   set style line 3 lc rgb 'green' lw 2
   set style line 4 lc rgb 'magenta' lw 1 
   set style line 5 lc rgb 'cyan' lw 1 
-  plot '%s' using (\$1+%d):(\$3/(\$2+\$3)*100.0) title "Failure Rate" ls 5 with filledcurves axis x1y2, \
+  plot '%s' using (\$1+%d):(\$3/(\$2+\$3)*100.0) title "Failure Rate" ls 5 with filledcurve y1=0 axis x1y2, \
        '%s' using (\$1+%d):(\$3/(\$2+\$3)*100.0) notitle ls 4 with lines axis x1y2, \
        '%s' using (\$1+%d):(\$6) title "Max. Runtime" ls 1 with lines, \
        '%s' using (\$1+%d):(\$5) title "Mean Runtime" ls 2 with lines, \
