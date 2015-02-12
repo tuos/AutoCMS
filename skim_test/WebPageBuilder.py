@@ -44,15 +44,7 @@ def build(newWebpageName,config,records):
 
     webpage.write( '<hr />\n' )
 
-    # long term statistics plot
-    statFile = "statistics.dat"
-    statPlotName = config['AUTOCMS_TEST_NAME']+"_basicStats.png"
-    statPlotPath = config['AUTOCMS_WEBDIR']+"/"+statPlotName
-    AutoCMSUtil.createBasicStatisticsPlot(statFile,statPlotPath, now - 7*24*3600, now)
-    webpage.write( '<img src="%s">\n' % statPlotName )
-    
-    webpage.write( '<hr />\n' ) 
-   
+  
     # description and statistics
     AutoCMSUtil.writeTestDescription(webpage,config)
     webpage.write('<hr />\n')
@@ -87,6 +79,18 @@ def build(newWebpageName,config,records):
 
     webpage.write('<div style="clear:both;"></div><hr />\n')
 
+
+    # long term statistics plot
+    webpage.write( 'Fake rate, average runtimes, and extreme runtimes of completed jobs over last week, trailing '
+                   + config['AUTOCMS_STAT_INTERVAL'] + ' hours: <br /><br />' )
+    statFile = "statistics.dat"
+    statPlotName = config['AUTOCMS_TEST_NAME']+"_basicStats.png"
+    statPlotPath = config['AUTOCMS_WEBDIR']+"/"+statPlotName
+    AutoCMSUtil.createBasicStatisticsPlot(statFile,statPlotPath, now - 7*24*3600, now)
+    webpage.write( '<img src="%s">\n' % statPlotName )
+    
+    webpage.write( '<hr />\n' ) 
+ 
     # start a list of jobs to be printed
     printedJobs = list()
 
