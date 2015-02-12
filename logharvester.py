@@ -85,6 +85,9 @@ for job in records:
 for logFileName in filter(lambda x:re.search(r'.slurm.o[0-9]+', x), os.listdir('.')):
   if int(os.path.getctime(logFileName)) < purgetime :
     os.remove(logFileName)
+for logFileName in filter(lambda x:re.search(r'.submission.[0-9]+.[0-9]+.log', x), os.listdir('.')):
+  if int(os.path.getctime(logFileName)) < purgetime :
+    os.remove(logFileName)
 oldRecords = list()
 for job in records.keys():
   if job < purgetime:

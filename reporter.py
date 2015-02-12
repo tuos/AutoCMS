@@ -48,7 +48,11 @@ for subTime in printedJobs:
 logsToKeep = list()
 for subTime in printedJobs:
   logsToKeep.append( records[subTime].logFile+".txt" )
-for logFile in filter(lambda x:re.search('%s.pbs.o[0-9]+.txt' % config['AUTOCMS_TEST_NAME'], x), 
+for logFile in filter(lambda x:re.search('%s.slurm.o[0-9]+.txt' % config['AUTOCMS_TEST_NAME'], x), 
+                      os.listdir(config['AUTOCMS_WEBDIR'])): 
+  if logFile not in logsToKeep:
+    os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
+for logFile in filter(lambda x:re.search('%s.submission.[0-9]+.[0-9]+.log.txt' % config['AUTOCMS_TEST_NAME'], x), 
                       os.listdir(config['AUTOCMS_WEBDIR'])): 
   if logFile not in logsToKeep:
     os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
