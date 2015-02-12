@@ -149,7 +149,6 @@ print_autocms_crontab ()
   SUBWAIT=( $( echo $AUTOCMS_TEST_SUBWAITS | tr ":" " " ) )
   COUNT=0
   for TESTNAME in $( echo $AUTOCMS_TEST_NAMES | tr ":" "\n" ); do
-    echo "count: $COUNT subwait: ${SUBWAIT[$COUNT]}"
     if [ ${SUBWAIT[$COUNT]} -lt 60 ]; then
       echo "*/${SUBWAIT[$COUNT]} * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh submit $TESTNAME"  >> autocms.crontab
       echo "0,10,20,30,40,50 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh logharvest $TESTNAME" >> autocms.crontab
@@ -160,6 +159,7 @@ print_autocms_crontab ()
       echo "10,40 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh logharvest $TESTNAME" >> autocms.crontab
       echo "20,50 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh report $TESTNAME" >> autocms.crontab
     fi
+    echo "57 */${AUTOCMS_STAT_INTERVAL} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh statsharvest $TESTNAME" >> autocms.crontab 
     (( COUNT++ ))
   done
 }

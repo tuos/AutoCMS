@@ -49,7 +49,7 @@ def createRunAndWaitTimePlot(outputFileName,logScale,records):
   os.system(
 """\
 gnuplot <<- EOF
-  set terminal png crop enhanced  size 750,350 font '/usr/share/fonts/liberation/LiberationSans-Regular.ttf' 
+  set terminal png crop enhanced  size 750,350 
   set output "%s"
   set xlabel "timestamp (recent 24 hours)"
   set ylabel "time (s)"
@@ -83,7 +83,7 @@ def createHistogram(outputFileName,binWidth,xtit,ytit,attr,records):
   os.system(
 """\
 gnuplot <<- EOF
-set terminal png crop enhanced  size 500,350 font '/usr/share/fonts/liberation/LiberationSans-Regular.ttf' 
+set terminal png crop enhanced  size 500,350 
 set output "%s"
 set ylabel "%s"
 set xlabel "%s"

@@ -26,7 +26,7 @@ export AUTOCMS_TEST_SUBWAITS=120:10
 # how often to harvest job statistics (in hours)  
 # for long term performance monitoring
 # this should be a divisor of 24 (i.e. 1,2,3,4,...,12 )  
-export AUTOCMS_STAT_INTERVAL=1
+export AUTOCMS_STAT_INTERVAL=6
 
 # maximum number of jobs to hold in the queue
 export AUTOCMS_MAXENQUEUE=20
