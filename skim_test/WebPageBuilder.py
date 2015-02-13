@@ -199,12 +199,13 @@ gnuplot <<- EOF
   set xtics 14400
   set format x "%%a %%Hh"
   #set yrange [0:1000]
+  set xrange ["%d":"%d"]
   set cbrange [0:12]
   #set xtics border nomirror in rotate by -45 offset character 0, 0, 0
   set style line 1 lc rgb 'red' pt 5 ps 0.7  # square
   set style line 2 lc rgb 'green' pt 5 ps 0.7  # square
   plot '%s' using 1:2:3 notitle ls 1 palette
-EOF""" % ( outputFileName, dataFileName )
+EOF""" % ( outputFileName, yesterday+utcoffset, now+utcoffset, dataFileName )
   ) 
 
   os.remove(dataFileName) 
