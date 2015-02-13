@@ -53,7 +53,7 @@ def createRunAndWaitTimePlot(outputFileName,logScale,records):
   os.system(
 """\
 gnuplot <<- EOF
-  set terminal png crop enhanced  size 750,350 
+  set terminal png crop enhanced  size 700,350 
   set output "%s"
   set xlabel "timestamp (recent 24 hours)"
   set ylabel "time (s)"
@@ -87,7 +87,7 @@ def createBasicStatisticsPlot(dataFileName, outputFileName, startTime, endTime )
   os.system(
 """\
 gnuplot <<- EOF
-  set terminal png crop enhanced  size 750,350 
+  set terminal png crop enhanced  size 700,350 
   #set key outside right
   set output "%s"
   set xlabel "Date"

@@ -15,8 +15,6 @@ def build(newWebpageName,config,records):
 
     AutoCMSUtil.beginWebpage(webpage,config)
 
-    webpage.write( '<div style="align=left">\n' )
-
     # run and wait time plot (not log scaled)
     plot1name = config['AUTOCMS_TEST_NAME']+"_success24runwait.png"
     plot1path = config['AUTOCMS_WEBDIR']+"/"+plot1name
@@ -27,8 +25,10 @@ def build(newWebpageName,config,records):
       records.values()
       )
     )
-    webpage.write( '<img src="%s">\n' % plot1name )
-
+    webpage.write( '<div style="float:left;font-weight:bold"><br />Rutime and wait time plot '
+                   + 'from last 24 hours:<br /><br />')
+    webpage.write( '<img src="%s"></div>\n' % plot1name )
+  
     # run and wait time plot (log scaled) 
     plot2name = config['AUTOCMS_TEST_NAME']+"_success24runwait_log.png"
     plot2path = config['AUTOCMS_WEBDIR']+"/"+plot2name
@@ -39,11 +39,11 @@ def build(newWebpageName,config,records):
       records.values()
       )
     )
-    webpage.write( '<img src="%s">\n' % plot2name )
+    webpage.write( '<div style="float:right;font-weight:bold"><br />Rutime and wait time plot '
+                   + 'from last 24 hours (log scaled):<br /><br />')
+    webpage.write( '<img src="%s"></div>\n' % plot2name )
 
-    webpage.write( '</div>\n' )
-
-    webpage.write( '<hr />\n' )
+    webpage.write( '<div style="clear:both"></div><hr />\n' )
 
 
     # runtime plot by number of cmsRun processes
@@ -56,9 +56,23 @@ def build(newWebpageName,config,records):
       records.values()
       )
     )
-    webpage.write( '<img src="%s">\n' % plot3name )
+    webpage.write( '<div style="float:left;font-weight:bold"><br />Rutimes by number of additional cmsRun '
+                   + 'processes on the node from last 24 hours:<br /><br />')
+    webpage.write( '<img src="%s"></div>\n' % plot3name )
 
-    webpage.write( '<hr />\n' )
+
+    # long term statistics plot
+    statFile = "statistics.dat"
+    statPlotName = config['AUTOCMS_TEST_NAME']+"_basicStats.png"
+    statPlotPath = config['AUTOCMS_WEBDIR']+"/"+statPlotName
+    AutoCMSUtil.createBasicStatisticsPlot(statFile,statPlotPath, now - 7*24*3600, now)
+    webpage.write( '<div style="float:right;font-weight:bold"><br />Fake rate and '
+                   + 'runtime statistics of completed jobs over last week, trailing '
+                   + config['AUTOCMS_STAT_INTERVAL'] + ' hours: <br /><br />' )
+    webpage.write( '<img src="%s"></div>\n' % statPlotName )
+    
+    webpage.write( '<div style="clear:both"></div><hr />\n' )
+ 
 
   
     # description and statistics
@@ -96,17 +110,7 @@ def build(newWebpageName,config,records):
     webpage.write('<div style="clear:both;"></div><hr />\n')
 
 
-    # long term statistics plot
-    webpage.write( 'Fake rate, average runtimes, and extreme runtimes of completed jobs over last week, trailing '
-                   + config['AUTOCMS_STAT_INTERVAL'] + ' hours: <br /><br />' )
-    statFile = "statistics.dat"
-    statPlotName = config['AUTOCMS_TEST_NAME']+"_basicStats.png"
-    statPlotPath = config['AUTOCMS_WEBDIR']+"/"+statPlotName
-    AutoCMSUtil.createBasicStatisticsPlot(statFile,statPlotPath, now - 7*24*3600, now)
-    webpage.write( '<img src="%s">\n' % statPlotName )
-    
-    webpage.write( '<hr />\n' ) 
- 
+
     # start a list of jobs to be printed
     printedJobs = list()
 
@@ -184,7 +188,7 @@ def createCMSRunTimePlot(outputFileName,records):
   os.system(
 """\
 gnuplot <<- EOF
-  set terminal png crop enhanced  size 750,350 
+  set terminal png crop enhanced  size 700,350 
   set output "%s"
   set palette model RGB defined ( 0 'dark-green', 4 'dark-yellow',  8 'red', 12 'dark-violet' )
   set xlabel "timestamp (recent 24 hours)"
