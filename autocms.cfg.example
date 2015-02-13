@@ -132,3 +132,7 @@ export SKIMTEST_CMSRUN_TIMEOUT=14400
 
 # LFS directory for stageout
 export SKIMTEST_STAGEOUT_DIR=/cms/store/autocms/autocms_dev/skim_test
+
+# number of other cmsRun processes running on the node
+# averaged from before and after cmsRun is executed
+export AUTOCMS_cmsRunProcCount_TOKEN="AutoCMS: Number of other cmsRun processes - "

@@ -109,6 +109,10 @@ main ()
   echo;echo "Current system load:";echo
   dstat --nocolor -cdngy 1 10
 
+  CMSRUNPROCBEFORE=$(ps aux | grep "[c]msRun" | grep -v "/usr/bin/time" | wc -l)
+  echo;echo "Number of cmsRun processes on node: $CMSRUNPROCBEFORE ";echo
+
+
   echo;echo;echo;echo "BEGIN CMSSW EXECUTION: $(date)";echo;echo
   if [ -z "$INPUTFILE" ]; then
     /usr/bin/timeout --signal=KILL $SKIMTEST_CMSRUN_TIMEOUT cmsRun skimTestIvars.py
@@ -118,6 +122,12 @@ main ()
     CMSSW_TEST_RESULT=$?
   fi
   echo;echo;echo;echo "END CMSSW EXECUTION: $(date)";echo;echo
+
+  CMSRUNPROCAFTER=$(ps aux | grep "[c]msRun" | grep -v "/usr/bin/time" | wc -l)
+  echo;echo "Number of cmsRun processes on node: $CMSRUNPROCAFTER ";echo
+
+  CMSRUNPROCAVG=$(echo "($CMSRUNPROCBEFORE + $CMSRUNPROCAFTER ) / 2.0" | bc -l)
+  echo "${AUTOCMS_cmsRunProcCount_TOKEN}${CMSRUNPROCAVG}"
 
   echo;echo "Current system load:";echo
   dstat --nocolor -cdngy 1 10

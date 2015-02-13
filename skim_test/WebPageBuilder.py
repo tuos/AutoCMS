@@ -1,6 +1,7 @@
 import re 
 import os
 import time
+import datetime
 from JobRecord import JobRecord
 import AutoCMSUtil
 
@@ -41,6 +42,21 @@ def build(newWebpageName,config,records):
     webpage.write( '<img src="%s">\n' % plot2name )
 
     webpage.write( '</div>\n' )
+
+    webpage.write( '<hr />\n' )
+
+
+    # runtime plot by number of cmsRun processes
+    plot3name = config['AUTOCMS_TEST_NAME']+"_successBycmsRun_log.png"
+    plot3path = config['AUTOCMS_WEBDIR']+"/"+plot3name
+    createCMSRunTimePlot(plot3path,filter(
+      lambda job: job.startTime > yesterday \
+                  and job.isComplete() \
+                  and job.isSuccess() ,
+      records.values()
+      )
+    )
+    webpage.write( '<img src="%s">\n' % plot3name )
 
     webpage.write( '<hr />\n' )
 
@@ -140,3 +156,54 @@ def build(newWebpageName,config,records):
     AutoCMSUtil.endWebpage(webpage,config)
 
     return printedJobs
+
+
+
+
+def createCMSRunTimePlot(outputFileName,records):
+
+  now = int(time.time())
+  yesterday = now - 24*3600
+
+  #find utc offset
+  utcoffset = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).total_seconds()))
+
+  #create data file to send to gnuplot
+  dataFileName = outputFileName+'.data'
+  with open(dataFileName,'w') as dataFile:
+    for job in filter( lambda job: hasattr(job,'cmsRunProcCount') , records ):
+      try:
+        cmsRPCfloat = float(job.cmsRunProcCount)
+        print >>dataFile, '%d %d %d' % (job.startTime+utcoffset,job.runTime(),cmsRPCfloat)
+      except ValueError:
+        pass
+
+  # make the plot
+  # note: gnuplot needs to be compiled with 
+  # png terminal support.
+  os.system(
+"""\
+gnuplot <<- EOF
+  set terminal png crop enhanced  size 750,350 
+  set output "%s"
+  set palette model RGB defined ( 0 'dark-green', 4 'dark-yellow',  8 'red', 12 'dark-violet' )
+  set xlabel "timestamp (recent 24 hours)"
+  set ylabel "running time (s)"
+  set cblabel "# of cmsRun procs on node"
+  set xdata time
+  set timefmt "%%s"
+  set xtics 14400
+  set format x "%%a %%Hh"
+  #set yrange [0:1000]
+  set cbrange [0:12]
+  #set xtics border nomirror in rotate by -45 offset character 0, 0, 0
+  set style line 1 lc rgb 'red' pt 5 ps 0.7  # square
+  set style line 2 lc rgb 'green' pt 5 ps 0.7  # square
+  plot '%s' using 1:2:3 notitle ls 1 palette
+EOF""" % ( outputFileName, dataFileName )
+  ) 
+
+  os.remove(dataFileName) 
+
+
+

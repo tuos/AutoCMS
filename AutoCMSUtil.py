@@ -30,6 +30,9 @@ def LoadConfiguration(configFileName):
 
 def createRunAndWaitTimePlot(outputFileName,logScale,records):
 
+  now = int(time.time())
+  yesterday = now - 24*3600
+
   #find utc offset
   utcoffset = int(round((datetime.datetime.now() - datetime.datetime.utcnow()).total_seconds()))
 
@@ -57,15 +60,15 @@ gnuplot <<- EOF
   set xdata time
   set timefmt "%%s"
   set xtics 14400
-  set format x "%%a %%H:%%M"
-  #set yrange [0:1000]
+  set format x "%%a %%Hh"
+  set xrange ["%d":"%d"]
   %s
   #set xtics border nomirror in rotate by -45 offset character 0, 0, 0
   set style line 1 lc rgb 'red' pt 5 ps 0.7  # square
   set style line 2 lc rgb 'green' pt 5 ps 0.7  # square
   plot '%s' using 1:2 title "Waiting Time" ls 1, \
        '%s' using 1:3 title "Running Time" ls 2
-EOF""" % ( outputFileName, logScaleString, dataFileName, dataFileName )
+EOF""" % ( outputFileName,yesterday+utcoffset,now+utcoffset, logScaleString, dataFileName, dataFileName )
   ) 
 
   os.remove(dataFileName) 

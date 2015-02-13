@@ -119,7 +119,7 @@ autocms_report ()
 autocms_logharvest ()
 {
   if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
-    python logharvester.py ${commandline_args[1]}
+    python logharvester.py ${commandline_args[1]} ${commandline_args[2]}
     exit 0
   else
     echo "Request to harvest non-existent test ${commandline_args[1]} failed"

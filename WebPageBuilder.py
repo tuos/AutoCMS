@@ -6,6 +6,7 @@ import AutoCMSUtil
 
 def build(newWebpageName,config,records):
 
+  now = int(time.time())
   yesterday = int(time.time()) - 24 * 3600
 
   with open(newWebpageName,'w') as webpage:
