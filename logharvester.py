@@ -174,11 +174,6 @@ def run_harvest():
     for job in old_records:
         del records[job]
 
-    # debug - print record status
-    for job in records:
-        records[job].printDebug()
-        print
-
     save_records(records)
 
 def main():
