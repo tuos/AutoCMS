@@ -155,9 +155,9 @@ def run_harvest():
     register_new_stamps()
     with open('submission.stamps', 'r') as stamp_file:
         stamps = stamp_file.read().splitlines()
-        create_records_from_stamps(records,stamps)
-        purge_old_stamps(stamps,purgetime)
-    write_stamp_file(stamps,'submission.stamps')
+        create_records_from_stamps(records, stamps)
+        purge_old_stamps(stamps, purgetime)
+    write_stamp_file(stamps, 'submission.stamps')
 
     # get a list of jobs completed in the
     # last 24-48 hours from this account,
@@ -171,9 +171,9 @@ def run_harvest():
             parse_job_log(records[job], config)
 
     # Remove old log files and job records
-    logfile_list = [x for x in os.listdir('.') if
-                        re.search(r'.slurm.o[0-9]+', x) or
-                        re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
+    logfile_list = [x for x in os.listdir('.')
+                       if re.search(r'.slurm.o[0-9]+', x) or
+                           re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
     for logfile_name in logfile_list:
         if int(os.path.getctime(logfile_name)) < purgetime:
             os.remove(logfile_name)
