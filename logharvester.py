@@ -172,8 +172,8 @@ def run_harvest():
 
     # Remove old log files and job records
     logfile_list = [x for x in os.listdir('.')
-                    if re.search(r'.slurm.o[0-9]+', x) or
-                       re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
+                      if re.search(r'.slurm.o[0-9]+', x) or
+                         re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
     for logfile_name in logfile_list:
         if int(os.path.getctime(logfile_name)) < purgetime:
             os.remove(logfile_name)
