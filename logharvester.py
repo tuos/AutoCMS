@@ -71,41 +71,41 @@ def get_records():
 def save_records(records):
     """Write the JobRecord dictionary to the pickle."""
     autocms_pkl = 'records.pickle'
-    pickle.dump( records, open(autocms_pkl, "wb"))
+    pickle.dump(records, open(autocms_pkl, "wb"))
 
 
 def register_new_stamps():
     """Find new submission stamp files, append the stamp, and delete."""
     newstamp_files = [file for file in os.listdir('.')
                       if re.match(r'newstamp', file)]
-    with open('submission.stamps','a') as stamp_file:
+    with open('submission.stamps', 'a') as stamp_file:
         for newstamp_filename in newstamp_files:
-            with open(newstamp_filename,'r') as newstamp_file:
+            with open(newstamp_filename, 'r') as newstamp_file:
                 newstamp = newstamp_file.read().strip()
             print>>stamp_file, newstamp
             os.remove(newstamp_filename)
 
 
-def create_records_from_stamps(records,stamplist):
+def create_records_from_stamps(records, stamplist):
     """Create new job records from submission stamps."""
     for line in stamplist:
-	# for some reason slurm is not always reporting a job number, 
-	# so skip lines  that have less than three columns 
-	# (i.e. no job number, timestamp, or exit code)
-	if len(line.split()) > 2 :
-	    jobid = line.split()[0].replace('.vmpsched','')
-	    timestamp = int(line.split()[1])
-	    submitStatus = line.split()[2]
-	    if timestamp not in records:
-		records[timestamp] = JobRecord(timestamp,
-					       jobid,
-					       submitStatus)
+        # for some reason slurm is not always reporting a job number,
+        # so skip lines  that have less than three columns
+        # (i.e. no job number, timestamp, or exit code)
+        if len(line.split()) > 2:
+            jobid = line.split()[0].replace('.vmpsched', '')
+            timestamp = int(line.split()[1])
+            submitStatus = line.split()[2]
+            if timestamp not in records:
+                records[timestamp] = JobRecord(timestamp,
+                                               jobid,
+                                               submitStatus)
                 # add submission log for failed submissions
-		if int(submitStatus) != 0 and len(line.split()) > 3:
-		    records[timestamp].logFile = line.split()[3]
+               if int(submitStatus) != 0 and len(line.split()) > 3:
+                   records[timestamp].logFile = line.split()[3]
 
 
-def purge_old_stamps(stamplist,purgetime):
+def purge_old_stamps(stamplist, purgetime):
     """Remove old stamps from the list"""
     for line in stamplist[:]:
         if len(line.split()) > 1:
@@ -114,18 +114,18 @@ def purge_old_stamps(stamplist,purgetime):
                 stamplist.remove(line)
 
 
-def write_stamp_file(stamplist,stampfile):
+def write_stamp_file(stamplist, stampfile):
     """Write a list of submission stamps to a file."""
-    with open(stampfile,'w') as file:
+    with open(stampfile, 'w') as file:
         for stamp in stamplist:
             print>>file, stamp
 
 
-def parse_job_log(job,config):
+def parse_job_log(job, config):
     """See if job log exists and parse it, or record the missing log."""
     logfile = (config['AUTOCMS_TEST_NAME'] + '.slurm.o' + str(job.jobid))
     if os.path.isfile(logfile):
-        job.parseOutput(logfile,config)
+        job.parseOutput(logfile, config)
     else:
         job.exitCode = 1
         job.errorString = "ERROR standard output of this job was not found."
@@ -160,24 +160,24 @@ def run_harvest():
     write_stamp_file(stamps,'submission.stamps')
 
     # get a list of jobs completed in the
-    # last 24-48 hours from this account, 
+    # last 24-48 hours from this account,
     # then updated jobs not completed, and attempt to
     # parse their logs if they exist
     completedJobs = AutoCMSUtil.getCompletedJobs(config)
     for job in records:
-        if (records[job].jobid in completedJobs 
-                and not records[job].isCompleted):
+        if (records[job].jobid in completedJobs and
+                not records[job].isCompleted):
             records[job].isCompleted = True
-            parse_job_log(records[job],config)
+            parse_job_log(records[job], config)
 
     # Remove old log files and job records
-    logfile_list = [ x for x in os.listdir('.') if
-                         re.search(r'.slurm.o[0-9]+', x) or
-                         re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
+    logfile_list = [x for x in os.listdir('.') if
+                        re.search(r'.slurm.o[0-9]+', x) or
+                        re.search(r'.submission.[0-9]+.[0-9]+.log', x)]
     for logfile_name in logfile_list:
-        if int(os.path.getctime(logfile_name)) < purgetime :
+        if int(os.path.getctime(logfile_name)) < purgetime:
             os.remove(logfile_name)
-    
+ 
     old_records = [job for job in records.keys() if job < purgetime]
     for job in old_records:
         del records[job]
