@@ -101,8 +101,8 @@ def create_records_from_stamps(records, stamplist):
                                                jobid,
                                                submitStatus)
                 # add submission log for failed submissions
-               if int(submitStatus) != 0 and len(line.split()) > 3:
-                   records[timestamp].logFile = line.split()[3]
+                if int(submitStatus) != 0 and len(line.split()) > 3:
+                    records[timestamp].logFile = line.split()[3]
 
 
 def purge_old_stamps(stamplist, purgetime):
