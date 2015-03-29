@@ -60,13 +60,14 @@ def create_records_from_stamps(records, stamplist):
 
 
 def purge_old_stamps(stamplist, purgetime):
-    """Remove old stamps from the list"""
-    for line in stamplist[:]:
+    """Remove old stamps from the list, return truncated list"""
+    newstamplist = []
+    for line in stamplist:
         if len(line.split()) > 1:
             timestamp = int(line.split()[1])
-            if timestamp < purgetime:
-                stamplist.remove(line)
-
+            if timestamp >= purgetime:
+                newstamplist.append(line)
+    return newstamplist
 
 def write_stamp_file(stamplist, stampfile):
     """Write a list of submission stamps to a file."""

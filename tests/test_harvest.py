@@ -13,7 +13,8 @@ from autocms.harvest import (
     register_new_stamps,
     create_records_from_stamps,
     write_stamp_file,
-    parse_job_log
+    parse_job_log,
+    purge_old_stamps
 )
 from autocms.scheduler import Scheduler
 
@@ -98,6 +99,12 @@ class TestSubmissionStamps(unittest.TestCase):
         with open('tests/scratch/submission.stamps') as dst:
             dst_stamps = dst.read()
         self.assertEqual(src_stamps, dst_stamps)
+
+    def test_purge_old_stamps(self):
+        newstamps = purge_old_stamps(self.stamps, 1427266850)
+        self.assertEqual(len(newstamps), 2)
+        self.assertIn(self.stamps[2], newstamps)
+        self.assertNotIn(self.stamps[0], newstamps)
 
  
 if __name__ == '__main__':
