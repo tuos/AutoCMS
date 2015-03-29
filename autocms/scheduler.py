@@ -49,6 +49,15 @@ class Scheduler(object):
         """Retun the filename of the job standard output."""
         pass
 
+    def logfile_regexp(self):
+        """Return a regular expression matching only log files.
+
+        The returned expression will be used to delete old log files,
+        and should not match anything that is not an old log file in
+        the test directory, i.e. 'submission.stamps', 'records.pickle',
+        'example_test.slurm', etc."""
+        pass
+
 
 class SlurmScheduler(Scheduler):
     """Interface to slurm scheduler."""
@@ -59,8 +68,16 @@ class SlurmScheduler(Scheduler):
                '--accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "' 
                % (config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME'] ))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        lines = result.stdout.readlines()
-        return  map(str.strip,lines)
+        result.wait()
+        return map(str.strip, result.stdout.readlines())
+
+    def enqueued_job_count(self, config):
+        cmd = ('squeue -h --user=%s --account=%s | wc -l'
+               %  (config['AUTOCMS_UNAME'], config['AUTOCMS_GNAME']))
+        result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        result.wait()
+        count = int( result.stdout.readlines()[0].strip() ) 
+        return count
 
     def submit_job(self, counter, testname, config):
         slurm_script = os.path.join(
@@ -80,9 +97,12 @@ class SlurmScheduler(Scheduler):
                 shell=True, 
                 stdout=subprocess.PIPE)
         result.wait()
-        submit_stdout = result.stdout.readlines()
+        submit_stdout = map(str.strip, result.stdout.readlines())
         timestamp = int(time.time())
         return (timestamp, result.returncode, submit_stdout)
 
     def jobid_logfilename(self, jobid, testname):
-        return testname + '.' + 'slurm' + '.o' + jobid
+        return testname + '.' + 'slurm' + '.o' + str(jobid)
+
+    def logfile_regexp(self):
+        return r'.slurm.o[0-9]+$'

@@ -10,19 +10,18 @@ import re
 import time
 import cPickle as pickle
 
-from .core import (
-    JobRecord
-)
+from .core import JobRecord
+from .scheduler import Scheduler
 
-def list_log_files(ls_result,config):
+def list_log_files(ls_result,scheduler,config):
     """List files in given ls result that are log files.
 
-    Any file matching a regular expression corresponding to the configured
+    Any file matching a regular expression corresponding to the 
     scheduler or produced by the submission script is assumed to be the 
     output log of a submitted job"""
     logs = list()
     for file in ls_result:
-        if (re.search(config['AUTOCMS_SCHEDULER_LOGFORMAT'], file) or
+        if (re.search(scheduler.logfile_regexp(), file) or
                 re.search(r'.submission.[0-9]+.[0-9]+.log', file)):
             logs.append(file)
     return logs
@@ -76,12 +75,12 @@ def write_stamp_file(stamplist, stampfile):
             print>>file, stamp
 
 
-def parse_job_log(job, config):
+def parse_job_log(job, scheduler, config):
     """See if job log exists and parse it, or record the missing log."""
-    logfile = (config['AUTOCMS_TEST_NAME'] + '.slurm.o' + str(job.jobid))
+    logfile = scheduler.jobid_logfilename(job.jobid,
+                                          config['AUTOCMS_TEST_NAME'])
     if os.path.isfile(logfile):
         job.parse_output(logfile, config)
     else:
         job.exit_code = 1
         job.error_string = "ERROR standard output of this job was not found."
-
