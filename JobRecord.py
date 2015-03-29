@@ -1,3 +1,5 @@
+"""Depreciated: use jobrecord.py instead"""
+
 import re
 
 class JobRecord:

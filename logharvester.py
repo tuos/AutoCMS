@@ -44,7 +44,7 @@ import re
 import time
 import cPickle as pickle
 
-from JobRecord import JobRecord
+from jobrecord import JobRecord
 import AutoCMSUtil
 
 
@@ -95,13 +95,13 @@ def create_records_from_stamps(records, stamplist):
         if len(line.split()) > 2:
             jobid = line.split()[0].replace('.vmpsched', '')
             timestamp = int(line.split()[1])
-            submitStatus = line.split()[2]
+            submit_status = line.split()[2]
             if timestamp not in records:
                 records[timestamp] = JobRecord(timestamp,
                                                jobid,
-                                               submitStatus)
+                                               submit_status)
                 # add submission log for failed submissions
-                if int(submitStatus) != 0 and len(line.split()) > 3:
+                if int(submit_status) != 0 and len(line.split()) > 3:
                     records[timestamp].logFile = line.split()[3]
 
 
@@ -125,10 +125,10 @@ def parse_job_log(job, config):
     """See if job log exists and parse it, or record the missing log."""
     logfile = (config['AUTOCMS_TEST_NAME'] + '.slurm.o' + str(job.jobid))
     if os.path.isfile(logfile):
-        job.parseOutput(logfile, config)
+        job.parse_output(logfile, config)
     else:
-        job.exitCode = 1
-        job.errorString = "ERROR standard output of this job was not found."
+        job.exit_code = 1
+        job.error_string = "ERROR standard output of this job was not found."
 
 
 def run_harvest():
@@ -163,11 +163,11 @@ def run_harvest():
     # last 24-48 hours from this account,
     # then updated jobs not completed, and attempt to
     # parse their logs if they exist
-    completedJobs = AutoCMSUtil.getCompletedJobs(config)
+    completed_jobs = AutoCMSUtil.getCompletedJobs(config)
     for job in records:
-        if (records[job].jobid in completedJobs and
-                not records[job].isCompleted):
-            records[job].isCompleted = True
+        if (records[job].jobid in completed_jobs and
+                not records[job].completed):
+            records[job].completed = True
             parse_job_log(records[job], config)
 
     # Remove old log files and job records
