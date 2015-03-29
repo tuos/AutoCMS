@@ -5,7 +5,7 @@ import os
 import time
 import math
 import datetime
-
+import cPickle as pickle
 
 class JobRecord(object):
     """Information about a specific AutoCMS test job.
@@ -150,3 +150,17 @@ def load_configuration(filename):
             val = val.strip('"')
             config[key] = val
     return config
+
+
+def load_records(filename):
+    """Get the JobRecord dictionary from the pickle or make a new one."""
+    if os.path.isfile(filename):
+        records = pickle.load(open(filename, "rb"))
+    else:
+        records = dict()
+    return records
+
+
+def save_records(records, filename):
+    """Write the JobRecord dictionary to a pickle."""
+    pickle.dump(records, open(filename, "wb"))
