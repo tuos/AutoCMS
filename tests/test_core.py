@@ -8,6 +8,7 @@ from autocms.core import (JobRecord,
                           load_records,
                           save_records)
 
+
 class TestConfiguration(unittest.TestCase):
     """Test that the configuration is loaded correctly."""
 

@@ -78,6 +78,17 @@ export AUTOCMS_exit_code_TOKEN="AutoCMS: exit code "
 export AUTOCMS_error_string_TOKEN="AutoCMS ERROR Message: "
 export AUTOCMS_SUCCESS_TOKEN="AutoCMS: ALL TESTS SUCCESSFUL"
 
+# Name of the scheduler and regular expression for the expected form of
+# logs returned by the scheduler. Note that test scripts will be expected
+# to be named "some_test/some_test.schedulername", for example the 
+# skim_test using the slurm scheduler will have the script name to be 
+# submitted as "slim_test/skim_test.slurm"
+#
+# Note that only the slurm scheduler is implemented, but the scheduler 
+# logic is separated so that other schedulers may be implemented.
+export AUTOCMS_SCHEDULER = "slurm"
+export AUTOCMS_SCHEDULER_LOGFORMAT=".slurm.o[0-9]+"
+
 #################################################################
 #
 # Settings used by the example_test
