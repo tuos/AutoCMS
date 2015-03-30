@@ -86,8 +86,13 @@ export AUTOCMS_SUCCESS_TOKEN="AutoCMS: ALL TESTS SUCCESSFUL"
 #
 # Note that only the slurm scheduler is implemented, but the scheduler 
 # logic is separated so that other schedulers may be implemented.
-export AUTOCMS_SCHEDULER = "slurm"
-export AUTOCMS_SCHEDULER_LOGFORMAT=".slurm.o[0-9]+"
+export AUTOCMS_SCHEDULER="slurm"
+#
+# For the local "scheduler", which is just running the job on the current
+# node, jobs are considered complete after some set time as there is no
+# real scheduler to ask which jobs are completed. The following 
+# option gives this time in seconds. 
+export AUTOCMS_LOCAL_JOBTIME=7200
 
 #################################################################
 #

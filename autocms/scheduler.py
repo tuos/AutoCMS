@@ -30,8 +30,10 @@ class Scheduler(object):
                                   type +
                                   "' is not implemented.")
 
-    def get_completed_jobs(self, config):
-        """Return a list of recently completed jobs."""
+    def get_completed_jobs(self, joblist, config):
+        """Return a list of recently completed jobs.
+        
+        Joblist is a list of jobids to check for completion."""
         pass
 
     def enqueued_job_count(self, config):
@@ -66,14 +68,18 @@ class Scheduler(object):
 class SlurmScheduler(Scheduler):
     """Interface to slurm scheduler."""
 
-    def get_completed_jobs(self, config):
+    def get_completed_jobs(self, joblist, config):
         cmd = ('/usr/scheduler/slurm/bin/sacct --state=CA,CD,F,NF,TO '
                '-S $(date +%%Y-%%m-%%d -d @$(( $(date +%%s) - 172800 )) ) '
                '--accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "' 
                % (config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME'] ))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
-        return map(str.strip, result.stdout.readlines())
+        completed_jobs = map(str.strip, result.stdout.readlines())
+        for job in completed_jobs[:]:
+            if not job in joblist:
+                completed_jobs.remove(job)      
+        return completed_jobs
 
     def enqueued_job_count(self, config):
         cmd = ('squeue -h --user=%s --account=%s | wc -l'
@@ -114,3 +120,56 @@ class SlurmScheduler(Scheduler):
 
     def logfile_regexp(self):
         return r'.slurm.o[0-9]+$'
+
+
+class LocalScheduler(Scheduler):
+    """Run jobs in the background of the local machine."""
+
+    def get_completed_jobs(self, joblist, config):
+        # For the local scheduler, jobs are considered complete
+        # if they are older than the configuration variable 
+        # AUTOCMS_LOCAL_JOBTIME. The submission (and thus start)
+        # time of a local job is encoded in its jobid.
+        completed_jobs = []
+        cutoff_time = int(time.time()) - config['AUTOCMS_LOCAL_JOBTIME']
+        for job in joblist:
+            timestamp = jobid.split('.')[0]
+            if timestamp < cutoff_time:
+                completed_jobs.append(job)
+        return completed_jobs
+
+    def enqueued_job_count(self, config):
+        # there is no queue, return 0
+        return 0
+
+    def submit_job(self, counter, testname, config):
+        local_script = os.path.join(
+                config['AUTOCMS_BASEDIR'],
+                testname,
+                testname + '.local')
+        timestamp = int(time.time())
+        logfile = testname + '.local.o' + str(timestamp) + '.' + str(counter)
+        config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')
+        cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
+               ' nohup bash %s > %s  2>&1 &'
+               % (counter, 
+                  config_path, 
+                  local_script,
+                  logfile))
+        result = subprocess.Popen(
+                cmd, 
+                shell=True, 
+                stdout=subprocess.PIPE)
+        result.wait()
+        submit_stdout = map(str.strip, result.stdout.readlines())
+        if result.returncode == 0:
+             jobid = str(timestamp) + '.' + str(counter)
+        else:
+             jobid = 'FAIL'
+        return (jobid, timestamp, result.returncode, submit_stdout)
+
+    def jobid_logfilename(self, jobid, testname):
+        return testname + '.' + 'local' + '.o' + str(jobid)
+
+    def logfile_regexp(self):
+        return r'.local.o[0-9]+.[0-9]+$'
