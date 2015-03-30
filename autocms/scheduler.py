@@ -1,6 +1,7 @@
 """Scheduler classes to handle job submission and queue status."""
 
 import os
+import re
 import subprocess
 import time
 
@@ -37,12 +38,15 @@ class Scheduler(object):
         """Count the number of jobs that user has on the queue."""
         pass
 
-    def submit_job(self, counter, config):
+    def submit_job(self, counter, testname, config):
         """Submit a new job to the queue.
 
-        Returns a tuple with a timestamp, return code, and list of 
+        Returns a tuple with a jobid timestamp, return code, and list of 
         lines from the standard output and error of the submission
-        executable."""
+        executable.
+
+        If the submission fails the jobid should be the string literal
+        'FAIL'."""
         pass
 
     def jobid_logfilename(self, jobid, testname):
@@ -98,8 +102,12 @@ class SlurmScheduler(Scheduler):
                 stdout=subprocess.PIPE)
         result.wait()
         submit_stdout = map(str.strip, result.stdout.readlines())
+        if result.returncode == 0:
+             jobid = re.sub('Submitted batch job ','',submit_stdout[0])
+        else:
+             jobid = 'FAIL'
         timestamp = int(time.time())
-        return (timestamp, result.returncode, submit_stdout)
+        return (jobid, timestamp, result.returncode, submit_stdout)
 
     def jobid_logfilename(self, jobid, testname):
         return testname + '.' + 'slurm' + '.o' + str(jobid)
