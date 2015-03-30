@@ -78,10 +78,9 @@ def write_stamp_file(stamplist, stampfile):
             print>>file, stamp
 
 
-def parse_job_log(job, scheduler, config):
+def parse_job_log(job, scheduler, testname, config):
     """See if job log exists and parse it, or record the missing log."""
-    logfile = scheduler.jobid_logfilename(job.jobid,
-                                          config['AUTOCMS_TEST_NAME'])
+    logfile = scheduler.jobid_logfilename(job.jobid, testname)
     if os.path.isfile(logfile):
         job.parse_output(logfile, config)
     else:
