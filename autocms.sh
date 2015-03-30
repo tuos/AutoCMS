@@ -97,7 +97,7 @@ autocms_stop ()
 autocms_submit ()
 {
   if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
-    $AUTOCMS_BASEDIR/submitter.sh ${commandline_args[1]} 
+    python submitter.py ${commandline_args[1]}
     exit 0
   else
     echo "Request to submit non-existent test ${commandline_args[1]} failed"
