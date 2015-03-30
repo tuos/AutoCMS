@@ -90,10 +90,7 @@ class SlurmScheduler(Scheduler):
         return count
 
     def submit_job(self, counter, testname, config):
-        slurm_script = os.path.join(
-                config['AUTOCMS_BASEDIR'],
-                testname,
-                testname + '.slurm')
+        slurm_script = testname + '.slurm'
         config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')
         cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
                '/usr/scheduler/slurm/bin/sbatch --account=%s %s '
@@ -143,10 +140,7 @@ class LocalScheduler(Scheduler):
         return 0
 
     def submit_job(self, counter, testname, config):
-        local_script = os.path.join(
-                config['AUTOCMS_BASEDIR'],
-                testname,
-                testname + '.local')
+        local_script = testname + '.local'
         timestamp = int(time.time())
         logfile = testname + '.local.o' + str(timestamp) + '.' + str(counter)
         config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')

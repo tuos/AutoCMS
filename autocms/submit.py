@@ -37,3 +37,23 @@ def submit_and_stamp(counter, testname, scheduler, config):
     with open(newstamp_filename,'w') as nsfile:
         nsfile.write(newstamp)
     return newstamp_filename
+
+
+def get_job_counter():
+    """Return an integer for the counter to pass to the next job.
+
+    This should be called from within the test directory."""
+    if os.path.exists('counter'):
+        with open('counter') as file:
+            count = file.read()
+    else:
+        count = 1
+    return int(count)
+
+
+def set_job_counter(count):
+    """Write the job counter to file.
+
+    This should be called from within the test directory."""
+    with open('counter','w') as file:
+        file.write(str(count))
