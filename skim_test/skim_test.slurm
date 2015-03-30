@@ -56,6 +56,12 @@ main ()
   #-----------------------------------------------------------------------
   printbanner "Setting up SCRAM environment"
 
+  # I don't know why this is a problem, but if one runs a 
+  # 'setpkgs -a python' from the submitting node, then 
+  # the CMS environment breaks python on the worker node
+  # unsetting the PYTHONAPATH fixes this.
+  unset PYTHONPATH
+
   source /cvmfs/cms.cern.ch/cmsset_default.sh
   SCRAM_TEST_RESULT=$?
   if [ $SCRAM_TEST_RESULT -eq 0 ]; then
