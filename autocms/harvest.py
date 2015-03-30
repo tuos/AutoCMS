@@ -13,6 +13,7 @@ import cPickle as pickle
 from .core import JobRecord
 from .scheduler import Scheduler
 
+
 def list_log_files(ls_result,scheduler,config):
     """List files in given ls result that are log files.
 
@@ -68,6 +69,7 @@ def purge_old_stamps(stamplist, purgetime):
             if timestamp >= purgetime:
                 newstamplist.append(line)
     return newstamplist
+
 
 def write_stamp_file(stamplist, stampfile):
     """Write a list of submission stamps to a file."""
