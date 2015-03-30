@@ -1,0 +1,55 @@
+#!/bin/bash
+
+main ()
+{
+
+  # run the AutoCMS Configuration File
+  source $AUTOCMS_CONFIGFILE
+
+  echo "${AUTOCMS_startTime_TOKEN}$(date +%s)"
+  echo "EXAMPLE_TEST: Beginning at $(date)"
+  echo "${AUTOCMS_node_TOKEN}${HOSTNAME}"
+
+  #-----------------------------------------------------------------------
+  printbanner "Determining number of proccesses on this node"
+
+  NUM_PROCESSES=`ps aux | wc -l`
+  echo "${AUTOCMS_numProc_TOKEN}${NUM_PROCESSES}"
+
+  #-----------------------------------------------------------------------
+  printbanner "Rolling the dice"
+
+  DICE_A=$(( $RANDOM % 6 + 1 ))
+  echo "Rolled a ${DICE_A}!!!"
+  DICE_B=$(( $RANDOM % 6 + 1 ))
+  echo "Rolled a ${DICE_B}!!!"
+  echo "${AUTOCMS_diceSum_TOKEN}$(( $DICE_A + $DICE_B ))"
+
+  echo
+  echo "${AUTOCMS_SUCCESS_TOKEN}" 
+  exitclean 0
+}
+
+exitclean ()
+{
+    printbanner "Cleaning up /tmp and Exiting"
+    echo -n "EXAMPLE_TEST: Ending at "; date
+    echo "${AUTOCMS_endTime_TOKEN}$(date +%s)"
+    echo "${AUTOCMS_exitCode_TOKEN}$1"
+    exit $1
+}
+
+printbanner ()
+{
+  echo -e "\n\n\n"
+  echo "*****************************************************"
+  echo "*"
+  echo "* $1"
+  echo "*"
+  echo "*****************************************************"
+  echo -e "\n\n\n"
+
+}
+
+
+main
