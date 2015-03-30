@@ -23,7 +23,6 @@ def create_histogram(attr, joblist, xtit, size, filepath):
     should end in '.png'"""
     matplotlib.use('Agg')
     data = [float(getattr(job, attr)) for job in joblist if hasattr(job, attr)]
-    print joblist
     df = pandas.DataFrame({'col':data})
     plot = df.plot(kind='hist', figsize=size, legend=False)
     plot.set_xlabel(xtit)
