@@ -7,10 +7,11 @@ import time
 from .core import JobRecord
 
 
-def begin_webpage(webpage, config):
+def begin_webpage(testname, webpage, config):
     """Write head and open webpage body, state name of test and time.
 
     Arguments:
+        testname - name of the test directory
         webpage - open filehandle to write to
         config - AutoCMS configuration dictionary""" 
     webpage.write(
@@ -18,11 +19,11 @@ def begin_webpage(webpage, config):
         "</title></head>\n"
         "<body>\n"
         "<h2>{2} Internal Site Test:{3}</h2>\n"
-        "Page generated at: {4}\n<hr />\n".format( 
+        "Page generated at: {4}\n".format( 
             config['AUTOCMS_SITE_NAME'],
-            config['AUTOCMS_TEST_NAME'],
+            testname,
             config['AUTOCMS_SITE_NAME'],
-            config['AUTOCMS_TEST_NAME'],
+            testname,
             time.strftime("%c (%Z)") )
     )
 
@@ -52,10 +53,9 @@ def write_test_description(testname, webpage, config):
     if os.path.isfile(desc_file):
         with open(desc_file) as df:
             description = df.read()
-        webpage.write(description + '<br /><br />')
+        webpage.write(description + '<br />\n')
     else:
-        webpage.write("No test description found.<br /><br />") 
-
+        webpage.write("No test description found.<br />\n") 
 
 def write_job_failure_rates(times, warn_rate, records, webpage, config):
     """Writes basic statistics on failed and successful jobs.
@@ -67,26 +67,28 @@ def write_job_failure_rates(times, warn_rate, records, webpage, config):
         records - dictionary of JobRecords
         webpage - open filehandle to write to
         config - AutoCMS configuration dictionary""" 
-    min_times = [int(time.time()) - t*3600 for t in times]
-    for t in min_times:
+    for t in times:
+        min_time = int(time.time()) - t*3600
         failures = sum( 1 for job in records.viewvalues() 
-                        if not job.isSuccess() and job.start_time > t )
+                        if not job.is_success() and job.start_time > min_time )
         successes = sum( 1 for job in records.viewvalues() 
-                         if job.isSuccess() and job.start_time > t )
-        webpage.write("Failed jobs in the last {0} hours"
-                      "<br />\n".format(failures))
-        webpage.write("Successful jobs in the last {0} hours"
-                      "<br />\n".format(successes))
+                         if job.is_success() and job.start_time > min_time )
+        webpage.write("Failed jobs in the last {0} hours: {1}"
+                      "<br />\n".format(t, failures))
+        webpage.write("Successful jobs in the last {0} hours: {1}"
+                      "<br />\n".format(t, successes))
         # print success rates if jobs have actually run
         if successes + failures > 0:
             rate = float(100 * successes) / float(failures + successes)
             webpage.write("Success rate ({0} hours): ".format(t))
             if rate < warn_rate:
                 webpage.write('<span style="color:red;">')
-            webpage.write("{0:.2f}".format(rate))
+            webpage.write("{0:.2f}%".format(rate))
             if rate < warn_rate:
                 webpage.write('</span>')
             webpage.write('<br />\n')
-        webpage.write('<br />\n')
         
- 
+
+def write_divider(webpage):
+    """Write a <hr /> divider and spacing to filehandle webpage."""
+    webpage.write('<br style="clear:both;"/>\n<hr />\n<br />\n')
