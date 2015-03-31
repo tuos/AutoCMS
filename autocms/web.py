@@ -112,3 +112,20 @@ class AutoCMSWebpage(object):
         self.page += ('<div class="fcontent" '
                       'style="min-width:{0}%;">\n'.format(width))
         self.page += '<img src="{0}" /></div>\n'.format(image_file)
+
+    def __repr__(self):
+        """Describe object id and page destination path."""
+        return '<{0}.{1} object at {2} output_path: {3}>'.format(
+                   self.__class__.__module__,
+                   self.__class__.__name__,
+                   hex(id(self)),
+                   self.output_path)
+
+    def __str__(self):
+        """Return page destination and text."""
+        return ('{0}.{1} object.\n\nDestination Path: {2}\n\n'
+                'Page content:\n\n{3}'.format(
+                    self.__class__.__module__,
+                    self.__class__.__name__,
+                    self.output_path,
+                    self.page))
