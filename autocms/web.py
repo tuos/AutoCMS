@@ -81,10 +81,10 @@ def write_job_failure_rates(times, warn_rate, records, webpage, config):
         if successes + failures > 0:
             rate = float(100 * successes) / float(failures + successes)
             webpage.write("Success rate ({0} hours): ".format(t))
-            if rate < 90.0:
+            if rate < warn_rate:
                 webpage.write('<span style="color:red;">')
             webpage.write("{0:.2f}".format(rate))
-            if rate < 90.0:
+            if rate < warn_rate:
                 webpage.write('</span>')
             webpage.write('<br />\n')
         webpage.write('<br />\n')
