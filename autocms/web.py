@@ -73,10 +73,10 @@ def write_job_failure_rates(times, warn_rate, records, webpage, config):
                         if not job.is_success() and job.start_time > min_time )
         successes = sum( 1 for job in records.viewvalues() 
                          if job.is_success() and job.start_time > min_time )
-        webpage.write("Failed jobs in the last {0} hours: {1}"
-                      "<br />\n".format(t, failures))
         webpage.write("Successful jobs in the last {0} hours: {1}"
                       "<br />\n".format(t, successes))
+        webpage.write("Failed jobs in the last {0} hours: {1}"
+                      "<br />\n".format(t, failures))
         # print success rates if jobs have actually run
         if successes + failures > 0:
             rate = float(100 * successes) / float(failures + successes)
@@ -87,6 +87,7 @@ def write_job_failure_rates(times, warn_rate, records, webpage, config):
             if rate < warn_rate:
                 webpage.write('</span>')
             webpage.write('<br />\n')
+        webpage.write('<br />\n')
         
 
 def write_divider(webpage):
