@@ -12,7 +12,7 @@ class JobRecord(object):
     exist until the logs are parsed and only if the corresponding token
     exists in the output log (see README.md for details).
 
-    The following properties are set during construction and should be 
+    The following properties are set during construction and should be
     guaranteed to exist (with the specified type if listed):
 
     jobid : the slurm job id or 'FAIL' if submission failed
@@ -22,7 +22,7 @@ class JobRecord(object):
                       or zero if the job is not yet completed.
     end_time (int): timestamp of when the job completed
                     or zero if the job is not yet completed.
-    node: hostname of the worker node that runs the job or 'N/A'. 
+    node: hostname of the worker node that runs the job or 'N/A'.
     logfile: standard output of the job reported through slurm or 'N/A'.
     completed (boolean): completion status of the job.
     exit_code (int): exit code returned by the job script
@@ -37,7 +37,7 @@ class JobRecord(object):
         'FAIL' if submission failed, and submit_status to be the exit code
         of the sbatch submission command.
 
-        Additional keyword arguments may be given and will be set as object 
+        Additional keyword arguments may be given and will be set as object
         properties, but this is mainly for use with __repr__.
         """
         self.submit_time = int(submit_time)
@@ -95,13 +95,13 @@ class JobRecord(object):
                         self.error_string = ''
                     else:
                         setattr(self, t_name, t_val)
-        # ensure that required attributes remain ints - oddball log could 
+        # ensure that required attributes remain ints - oddball log could
         # mess this up
         self.exit_code = int(self.exit_code)
         self.start_time = int(self.start_time)
         self.end_time = int(self.end_time)
         # odd log could result in zero for start, end times
-        # set to reasonable values        
+        # set to reasonable values
         if self.start_time == 0:
             self.start_time = self.submit_time
         if self.end_time == 0:
@@ -112,20 +112,20 @@ class JobRecord(object):
         s = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
                                              self.jobid,
                                              self.submit_status)
-        more_attrs = (attr for attr in dir(self) 
+        more_attrs = (attr for attr in dir(self)
                       if not attr.startswith('__') and
-                         not callable(getattr(self,attr)) and
+                         not callable(getattr(self, attr)) and
                          not attr == 'submit_time' and
                          not attr == 'jobid' and
                          not attr == 'submit_status')
         for attr in more_attrs:
-            s += ", {0}={1}".format(attr,repr(getattr(self,attr)))
+            s += ", {0}={1}".format(attr, repr(getattr(self, attr)))
         s += ')'
         return s
 
     def __str__(self):
         """Return readable string of JobRecord object attributes."""
-        attr_list = (attr for attr in dir(self) 
+        attr_list = (attr for attr in dir(self)
                      if not attr.startswith('__') and
                         not callable(getattr(self,attr)))
         s = "JobRecord object"
@@ -137,10 +137,10 @@ class JobRecord(object):
 def load_configuration(filename):
     """Return configuration dict from filename."""
     config = dict()
-    with open(filename,'r') as handle:
+    with open(filename, 'r') as handle:
         config_raw = handle.read().splitlines()
     for line in config_raw:
-        if( re.match(r'export', line) ):
+        if( re.match(r'export', line)):
             key = line.split('=')[0]
             key = key.replace("export", "")
             key = key.strip()
