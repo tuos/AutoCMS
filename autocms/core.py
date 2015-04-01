@@ -81,9 +81,9 @@ class JobRecord(object):
     def parse_output(self, logfile_name, config):
         """Parse job information from specified log file."""
         tokens = [s for s in config.keys()
-                     if re.match(r'AUTOCMS_.*_TOKEN', s)]
+                  if re.match(r'AUTOCMS_.*_TOKEN', s)]
         self.logfile = logfile_name
-        with open(logfile_name,'r') as handle:
+        with open(logfile_name, 'r') as handle:
             log = handle.read().splitlines()
         for line in log:
             for tok in tokens:
@@ -109,9 +109,9 @@ class JobRecord(object):
 
     def __repr__(self):
         """Return expression string to construct identical object."""
-        rs = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
-                                              self.jobid,
-                                              self.submit_status)
+        s = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
+                                             self.jobid,
+                                             self.submit_status)
         more_attrs = (attr for attr in dir(self) 
                       if not attr.startswith('__') and
                          not callable(getattr(self,attr)) and
@@ -119,17 +119,18 @@ class JobRecord(object):
                          not attr == 'jobid' and
                          not attr == 'submit_status')
         for attr in more_attrs:
-            rs += ", {0}={1}".format(attr,repr(getattr(self,attr)))
-        rs += ')'
-        return rs
+            s += ", {0}={1}".format(attr,repr(getattr(self,attr)))
+        s += ')'
+        return s
 
     def __str__(self):
         """Return readable string of JobRecord object attributes."""
-        attrs = (a for a in dir(self) if not a.startswith('__') and
-                         not callable(getattr(self,a)))
+        attr_list = (attr for attr in dir(self) 
+                     if not attr.startswith('__') and
+                        not callable(getattr(self,attr)))
         s = "JobRecord object"
-        for a in attrs:
-            s += "\n    {0}={1}".format(a,repr(getattr(self,a)))
+        for attr in attr_list:
+            s += "\n    {0}={1}".format(attr, repr(getattr(self, attr)))
         return s
 
 
