@@ -1,23 +1,18 @@
 """Functions to submit and register new jobs."""
 
-import sys
 import os
-import re
-import time
 import socket
 
-from .core import JobRecord
-from .scheduler import Scheduler
 
 def submit_and_stamp(counter, testname, scheduler, config):
     """Submit a job to the scheduler and produce a newstamp file.
 
     This function should be run from within the test directory.
-    If the submission fails an output log will be produced with the 
+    If the submission fails an output log will be produced with the
     standard output of the submitter.
 
     The name of the new stamp is returned."""
-    (jobid, timestamp, returncode, output) = scheduler.submit_job(counter, 
+    (jobid, timestamp, returncode, output) = scheduler.submit_job(counter,
                                                                   testname,
                                                                   config)
     newstamp = str(jobid) + ' ' + str(timestamp) + ' ' + str(returncode)
@@ -44,8 +39,8 @@ def get_job_counter():
 
     This should be called from within the test directory."""
     if os.path.exists('counter'):
-        with open('counter') as file:
-            count = file.read()
+        with open('counter') as handle:
+            count = handle.read()
     else:
         count = 1
     return int(count)
@@ -55,5 +50,5 @@ def set_job_counter(count):
     """Write the job counter to file.
 
     This should be called from within the test directory."""
-    with open('counter','w') as file:
-        file.write(str(count))
+    with open('counter','w') as handle:
+        handle.write(str(count))
