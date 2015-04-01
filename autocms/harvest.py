@@ -1,34 +1,30 @@
 """Collect information from and manage job log files.
 
-The functions in this module is used to collect and save information about 
+The functions in this module is used to collect and save information about
 submitted and completed jobs and purge old log files.
 """
 
-import sys
 import os
 import re
-import time
-import cPickle as pickle
 
 from .core import JobRecord
-from .scheduler import Scheduler
 
 
-def list_log_files(ls_result,scheduler,config):
+def list_log_files(ls_result, scheduler):
     """List files in given ls result that are log files.
 
-    Any file matching a regular expression corresponding to the 
-    scheduler or produced by the submission script is assumed to be the 
+    Any file matching a regular expression corresponding to the
+    scheduler or produced by the submission script is assumed to be the
     output log of a submitted job"""
     logs = list()
-    for file in ls_result:
-        if (re.search(scheduler.logfile_regexp(), file) or
-                re.search(r'.submission.[0-9]+.[0-9]+.log', file)):
-            logs.append(file)
+    for logfile in ls_result:
+        if (re.search(scheduler.logfile_regexp(), logfile) or
+                re.search(r'.submission.[0-9]+.[0-9]+.log', logfile)):
+            logs.append(logfile)
     return logs
 
 
-def register_new_stamps(ls_result,stamp_filename):
+def register_new_stamps(ls_result, stamp_filename):
     """Find new submission stamp files, append the stamp, and delete.
 
     The working directory of the script should be that of the stamps."""
@@ -73,9 +69,9 @@ def purge_old_stamps(stamplist, purgetime):
 
 def write_stamp_file(stamplist, stampfile):
     """Write a list of submission stamps to a file."""
-    with open(stampfile, 'w') as file:
+    with open(stampfile, 'w') as handle:
         for stamp in stamplist:
-            print>>file, stamp
+            print>>handle, stamp
 
 
 def parse_job_log(job, scheduler, testname, config):

@@ -105,7 +105,7 @@ def run_harvest():
             records[job].completed = True
 
     # Remove old log files and job records
-    for logfile_name in list_log_files(ls_result, scheduler, config):
+    for logfile_name in list_log_files(ls_result, scheduler):
         if int(os.path.getctime(logfile_name)) < purgetime:
             os.remove(logfile_name)
     old_records = [job for job in records.keys() if job < purgetime]

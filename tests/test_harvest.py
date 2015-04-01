@@ -28,7 +28,7 @@ class TestLogFiles(unittest.TestCase):
         self.scheduler = Scheduler.factory('slurm')
 
     def test_list_log_files(self):
-        logs = list_log_files(self.ls_result, self.scheduler, self.config)
+        logs = list_log_files(self.ls_result, self.scheduler)
         self.assertEqual(len(logs), 2)
         self.assertIn('unit_test.submission.5.1427385181.log', logs)
         self.assertIn('unit_test.slurm.o928417', logs)
