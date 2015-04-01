@@ -87,7 +87,7 @@ class JobRecord(object):
             log = handle.read().splitlines()
         for line in log:
             for tok in tokens:
-                if(re.match(config[tok], line)):
+                if re.match(config[tok], line):
                     t_name = tok.replace('AUTOCMS_', '').replace('_TOKEN', '')
                     t_val = line.replace(config[tok], '')
                     if t_name == 'SUCCESS':
@@ -140,7 +140,7 @@ def load_configuration(filename):
     with open(filename, 'r') as handle:
         config_raw = handle.read().splitlines()
     for line in config_raw:
-        if( re.match(r'export', line)):
+        if re.match(r'export', line):
             key = line.split('=')[0]
             key = key.replace("export", "")
             key = key.strip()
