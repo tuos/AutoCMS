@@ -1,10 +1,7 @@
 """Common functions and classes for AutoCMS components."""
 
-import re 
+import re
 import os
-import time
-import math
-import datetime
 import cPickle as pickle
 
 class JobRecord(object):
@@ -18,7 +15,7 @@ class JobRecord(object):
     The following properties are set during construction and should be 
     guaranteed to exist (with the specified type if listed):
 
-    jobid : the slurm job id or 'FAIL' if submission failed.
+    jobid : the slurm job id or 'FAIL' if submission failed
     submit_time (int): timestamp of submission time.
     submit_status (int): exit code of 'sbatch' submission.
     start_time (int): timestamp of when the job started running
@@ -28,7 +25,7 @@ class JobRecord(object):
     node: hostname of the worker node that runs the job or 'N/A'. 
     logfile: standard output of the job reported through slurm or 'N/A'.
     completed (boolean): completion status of the job.
-    exit_code (int): exit code returned by the job script.
+    exit_code (int): exit code returned by the job script
     exit_string: string describing the reason for job failure.
     """
 
@@ -45,27 +42,27 @@ class JobRecord(object):
         """
         self.submit_time = int(submit_time)
         self.jobid = jobid
-        self.submit_status = int(submit_status) 
-        if self.submit_status == 0 :
-            self.node = "N/A"    
+        self.submit_status = int(submit_status)
+        if self.submit_status == 0:
+            self.node = "N/A"
             self.start_time = 0
             self.end_time = 0
             self.exit_code = 255
             self.error_string = "Job did not report success."
             self.completed = False
-            self.logfile = "N/A"    
+            self.logfile = "N/A"
         else:
-            self.node = "N/A"    
+            self.node = "N/A"
             self.start_time = self.submit_time
             self.end_time = self.submit_time
             self.exit_code = submit_status
-            self.error_string = ("ERROR in job submission code " + 
-                                  str(submit_status))
+            self.error_string = ("ERROR in job submission code " +
+                                 str(submit_status))
             self.completed = True
-            self.logfile = "N/A" 
+            self.logfile = "N/A"
         for key, value in kwargs.iteritems():
-            setattr(self, key, value) 
-      
+            setattr(self, key, value)
+
     def run_time(self):
         """Return total wall clock running time in seconds."""
         return self.end_time - self.start_time
@@ -86,51 +83,52 @@ class JobRecord(object):
         tokens = [s for s in config.keys()
                      if re.match(r'AUTOCMS_.*_TOKEN', s)]
         self.logfile = logfile_name
-        with open(logfile_name,'r') as file:
-            log = file.read().splitlines()
+        with open(logfile_name,'r') as handle:
+            log = handle.read().splitlines()
         for line in log:
-            for t in tokens:
-                if(re.match(config[t], line)):
-                    t_name = t.replace('AUTOCMS_', '').replace('_TOKEN', '') 
-                    t_val = line.replace(config[t], '')
+            for tok in tokens:
+                if(re.match(config[tok], line)):
+                    t_name = tok.replace('AUTOCMS_', '').replace('_TOKEN', '')
+                    t_val = line.replace(config[tok], '')
                     if t_name == 'SUCCESS':
                         self.exit_code = 0
                         self.error_string = ''
                     else:
-                        setattr(self, t_name, t_val) 
+                        setattr(self, t_name, t_val)
         # ensure that required attributes remain ints - oddball log could 
         # mess this up
         self.exit_code = int(self.exit_code)
         self.start_time = int(self.start_time)
-        self.end_time = int(self.end_time)     
+        self.end_time = int(self.end_time)
         # odd log could result in zero for start, end times
         # set to reasonable values        
-        if self.start_time == 0: 
+        if self.start_time == 0:
             self.start_time = self.submit_time
         if self.end_time == 0:
             self.end_time = self.start_time
 
     def __repr__(self):
         """Return expression string to construct identical object."""
-        s = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
-                                             self.jobid,
-                                             self.submit_status)
-        more_attrs = (a for a in dir(self) if not a.startswith('__') and
-                         not callable(getattr(self,a)) and
-                         not a == 'submit_time' and 
-                         not a == 'jobid' and 
-                         not a == 'submit_status') 
+        rs = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
+                                              self.jobid,
+                                              self.submit_status)
+        more_attrs = (attr for attr in dir(self) 
+                      if not attr.startswith('__') and
+                         not callable(getattr(self,attr)) and
+                         not attr == 'submit_time' and
+                         not attr == 'jobid' and
+                         not attr == 'submit_status')
         for attr in more_attrs:
-            s += ", {0}={1}".format(attr,repr(getattr(self,attr)))
-        s += ')'
-        return s
+            rs += ", {0}={1}".format(attr,repr(getattr(self,attr)))
+        rs += ')'
+        return rs
 
     def __str__(self):
         """Return readable string of JobRecord object attributes."""
         attrs = (a for a in dir(self) if not a.startswith('__') and
                          not callable(getattr(self,a)))
         s = "JobRecord object"
-        for a in attrs: 
+        for a in attrs:
             s += "\n    {0}={1}".format(a,repr(getattr(self,a)))
         return s
 
@@ -138,12 +136,12 @@ class JobRecord(object):
 def load_configuration(filename):
     """Return configuration dict from filename."""
     config = dict()
-    with open(filename,'r') as file:
-        config_raw = file.read().splitlines()
+    with open(filename,'r') as handle:
+        config_raw = handle.read().splitlines()
     for line in config_raw:
-        if( re.match(r'export',line) ):
+        if( re.match(r'export', line) ):
             key = line.split('=')[0]
-            key = key.replace("export","")
+            key = key.replace("export", "")
             key = key.strip()
             val = line.split('=')[1]
             val = val.strip()
