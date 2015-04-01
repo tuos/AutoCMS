@@ -25,11 +25,11 @@ def submit_and_stamp(counter, testname, scheduler, config):
         log += "Submission command output:\n\n"
         for line in output:
             log += line + '\n'
-        with open(logfile_name,'w') as logfile:
+        with open(logfile_name, 'w') as logfile:
             logfile.write(log)
     newstamp += "\n"
     newstamp_filename = 'newstamp.' + str(timestamp)
-    with open(newstamp_filename,'w') as nsfile:
+    with open(newstamp_filename, 'w') as nsfile:
         nsfile.write(newstamp)
     return newstamp_filename
 
@@ -50,5 +50,5 @@ def set_job_counter(count):
     """Write the job counter to file.
 
     This should be called from within the test directory."""
-    with open('counter','w') as handle:
+    with open('counter', 'w') as handle:
         handle.write(str(count))
