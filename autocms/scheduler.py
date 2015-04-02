@@ -17,22 +17,22 @@ class UnknownScheduler(Exception):
 
 class Scheduler(object):
     """Base class for schedulers."""
-     
+
     @staticmethod
-    def factory(type):
+    def factory(sched_type):
         """Return a scheduler object of the specified type."""
-        if type == 'slurm':
+        if sched_type == 'slurm':
             return SlurmScheduler()
-        elif type == 'local':
+        elif sched_type == 'local':
             return LocalScheduler()
         else:
-            raise UknownScheduler("Scheduler type '" +
-                                  type +
-                                  "' is not implemented.")
+            raise UnknownScheduler("Scheduler type '" +
+                                   sched_type +
+                                   "' is not implemented.")
 
     def get_completed_jobs(self, joblist, config):
         """Return a list of recently completed jobs.
-        
+
         Joblist is a list of jobids to check for completion."""
         pass
 
@@ -43,7 +43,7 @@ class Scheduler(object):
     def submit_job(self, counter, testname, config):
         """Submit a new job to the queue.
 
-        Returns a tuple with a jobid timestamp, return code, and list of 
+        Returns a tuple with a jobid timestamp, return code, and list of
         lines from the standard output and error of the submission
         executable.
 
@@ -71,14 +71,14 @@ class SlurmScheduler(Scheduler):
     def get_completed_jobs(self, joblist, config):
         cmd = ('/usr/scheduler/slurm/bin/sacct --state=CA,CD,F,NF,TO '
                '-S $(date +%%Y-%%m-%%d -d @$(( $(date +%%s) - 172800 )) ) '
-               '--accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "' 
-               % (config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME'] ))
+               '--accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "'
+               % (config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
         completed_jobs = map(str.strip, result.stdout.readlines())
         for job in completed_jobs[:]:
             if not job in joblist:
-                completed_jobs.remove(job)      
+                completed_jobs.remove(job)
         return completed_jobs
 
     def enqueued_job_count(self, config):
@@ -86,7 +86,7 @@ class SlurmScheduler(Scheduler):
                %  (config['AUTOCMS_UNAME'], config['AUTOCMS_GNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
-        count = int( result.stdout.readlines()[0].strip() ) 
+        count = int(result.stdout.readlines()[0].strip())
         return count
 
     def submit_job(self, counter, testname, config):
@@ -95,18 +95,18 @@ class SlurmScheduler(Scheduler):
         cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
                '/usr/scheduler/slurm/bin/sbatch --account=%s %s '
                '--export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE  2>&1'
-               % (counter, 
-                  config_path, 
+               % (counter,
+                  config_path,
                   config['AUTOCMS_GNAME'],
                   slurm_script))
         result = subprocess.Popen(
-                cmd, 
-                shell=True, 
+                cmd,
+                shell=True,
                 stdout=subprocess.PIPE)
         result.wait()
         submit_stdout = map(str.strip, result.stdout.readlines())
         if result.returncode == 0:
-             jobid = re.sub('Submitted batch job ','',submit_stdout[0])
+             jobid = re.sub('Submitted batch job ', '', submit_stdout[0])
         else:
              jobid = 'FAIL'
         timestamp = int(time.time())
@@ -124,7 +124,7 @@ class LocalScheduler(Scheduler):
 
     def get_completed_jobs(self, joblist, config):
         # For the local scheduler, jobs are considered complete
-        # if they are older than the configuration variable 
+        # if they are older than the configuration variable
         # AUTOCMS_LOCAL_JOBTIME. The submission (and thus start)
         # time of a local job is encoded in its jobid.
         completed_jobs = []
@@ -146,13 +146,13 @@ class LocalScheduler(Scheduler):
         config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')
         cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
                ' nohup bash %s > %s  2>&1 &'
-               % (counter, 
-                  config_path, 
+               % (counter,
+                  config_path,
                   local_script,
                   logfile))
         result = subprocess.Popen(
-                cmd, 
-                shell=True, 
+                cmd,
+                shell=True,
                 stdout=subprocess.PIPE)
         result.wait()
         submit_stdout = map(str.strip, result.stdout.readlines())
