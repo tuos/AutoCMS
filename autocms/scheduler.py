@@ -34,11 +34,11 @@ class Scheduler(object):
         """Return a list of recently completed jobs.
 
         Joblist is a list of jobids to check for completion."""
-        pass
+        raise NotImplementedError
 
     def enqueued_job_count(self, config):
         """Count the number of jobs that user has on the queue."""
-        pass
+        raise NotImplementedError
 
     def submit_job(self, counter, testname, config):
         """Submit a new job to the queue.
@@ -49,11 +49,11 @@ class Scheduler(object):
 
         If the submission fails the jobid should be the string literal
         'FAIL'."""
-        pass
+        raise NotImplementedError
 
     def jobid_logfilename(self, jobid, testname):
         """Retun the filename of the job standard output."""
-        pass
+        raise NotImplementedError
 
     def logfile_regexp(self):
         """Return a regular expression matching only log files.
@@ -62,7 +62,7 @@ class Scheduler(object):
         and should not match anything that is not an old log file in
         the test directory, i.e. 'submission.stamps', 'records.pickle',
         'example_test.slurm', etc."""
-        pass
+        raise NotImplementedError
 
 
 class SlurmScheduler(Scheduler):
@@ -104,7 +104,7 @@ class SlurmScheduler(Scheduler):
                 shell=True,
                 stdout=subprocess.PIPE)
         result.wait()
-        submit_stdout = map(str.strip, result.stdout.readlines())
+        submit_stdout = [line.strip() for line in result.stdout.readlines()]
         if result.returncode == 0:
              jobid = re.sub('Submitted batch job ', '', submit_stdout[0])
         else:
@@ -123,16 +123,15 @@ class LocalScheduler(Scheduler):
     """Run jobs in the background of the local machine."""
 
     def get_completed_jobs(self, joblist, config):
-        # For the local scheduler, jobs are considered complete
-        # if they are older than the configuration variable
-        # AUTOCMS_LOCAL_JOBTIME. The submission (and thus start)
-        # time of a local job is encoded in its jobid.
-        completed_jobs = []
-        cutoff_time = int(time.time()) - config['AUTOCMS_LOCAL_JOBTIME']
+        cmd = ('ps -u {0}'.format(config['AUTOCMS_UNAME']))
+        result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        result.wait()
+        running_procs = [line.split()[0] for line 
+                         in result.stdout.readlines()]
+        completed_jobs = joblist[:]
         for job in joblist:
-            timestamp = jobid.split('.')[0]
-            if timestamp < cutoff_time:
-                completed_jobs.append(job)
+            if job in running_procs:
+                completed_jobs.remove(job)
         return completed_jobs
 
     def enqueued_job_count(self, config):
@@ -157,7 +156,7 @@ class LocalScheduler(Scheduler):
         result.wait()
         submit_stdout = map(str.strip, result.stdout.readlines())
         if result.returncode == 0:
-             jobid = str(timestamp) + '.' + str(counter)
+             jobid = result.pid
         else:
              jobid = 'FAIL'
         return (jobid, timestamp, result.returncode, submit_stdout)
