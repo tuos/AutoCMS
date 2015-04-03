@@ -4,64 +4,92 @@ import re
 import os
 import cPickle as pickle
 
+
 class JobRecord(object):
-    """Information about a specific AutoCMS test job.
+    """Complete information about a specific AutoCMS test job.
 
     A JobRecord may store arbitrarily many properties about a completed job
     depending on how the test is configured, but these are not guaranteed to
     exist until the logs are parsed and only if the corresponding token
-    exists in the output log (see README.md for details).
+    exists in the output log.
 
-    The following properties are set during construction and should be
+    The following attributes are set during construction and should be
     guaranteed to exist (with the specified type if listed):
 
-    jobid : the slurm job id or 'FAIL' if submission failed
-    submit_time (int): timestamp of submission time.
-    submit_status (int): exit code of 'sbatch' submission.
-    start_time (int): timestamp of when the job started running
-                      or zero if the job is not yet completed.
-    end_time (int): timestamp of when the job completed
-                    or zero if the job is not yet completed.
-    node: hostname of the worker node that runs the job or 'N/A'.
-    logfile: standard output of the job reported through slurm or 'N/A'.
-    completed (boolean): completion status of the job.
-    exit_code (int): exit code returned by the job script
-    exit_string: string describing the reason for job failure.
+        seq - the integer passed to the job execution script.
+        jobid - the scheduler job id or None if submission failed
+        submit_time (int): timestamp of submission time.
+        submit_status (int): exit code of the submission command.
+        start_time (int): timestamp of when the job started running
+                          or zero if the job is not yet completed.
+        end_time (int): timestamp of when the job completed
+                        or zero if the job is not yet completed.
+        node: hostname of the worker node that runs the job or None.
+        logfile: Expected file containing standard output of the job reported 
+                 through the scheduler. Note that due to scheduler errors
+                 this file may never actually exist.                 
+        completed (boolean): completion status of the job.
+        exit_code (int): exit code returned by the job script
+        exit_string: string describing the reason for job failure.
     """
 
-    def __init__(self, submit_time, jobid, submit_status, **kwargs):
-        """Construct JobRecord object from job information.
-
-        Minimally a job requires submit_time to be  a timestamp for the
-        submission time, jobid to either be a slurm job id or the literal
-        'FAIL' if submission failed, and submit_status to be the exit code
-        of the sbatch submission command.
-
-        Additional keyword arguments may be given and will be set as object
-        properties, but this is mainly for use with __repr__.
+    def __init__(self, counter, id, subtime, retval, log):
+        """Construct JobRecord object from job submission information.
+  
+        Arguments:
+            counter - value of the sequence counter for the job
+            id - the jobid from the scheduler
+            subtime - the unix timestamp of submission
+            retval - the return value of the submission command
+            log - name of the expected log file
         """
-        self.submit_time = int(submit_time)
-        self.jobid = jobid
-        self.submit_status = int(submit_status)
+        self.seq = counter
+        self.submit_time = int(subtime)
+        self.jobid = id
+        self.submit_status = int(retval)
+        self.logfile = log
         if self.submit_status == 0:
-            self.node = "N/A"
+            self.node = None
             self.start_time = 0
             self.end_time = 0
             self.exit_code = 255
             self.error_string = "Job did not report success."
             self.completed = False
-            self.logfile = "N/A"
         else:
-            self.node = "N/A"
+            self.node = None
             self.start_time = self.submit_time
             self.end_time = self.submit_time
-            self.exit_code = submit_status
+            self.exit_code = self.submit_status
             self.error_string = ("ERROR in job submission code " +
-                                 str(submit_status))
+                                 str(self.submit_status))
             self.completed = True
-            self.logfile = "N/A"
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+
+    @classmethod
+    def create_from_stamp(cls, stamp):
+        """Construct a JobRecord object from a submission stamp.
+
+        A submission stamp is just a space-delimited line of text with
+        the AutoCMS submission counter, scheduler jobid, 
+        submission timestamp, submission return value, and log filename."""
+        stamp = stamp.split()
+        if len(stamp) != 5:
+            raise MalformedStamp("Wrong number of arguments in stamp string.")
+        for index in range(0, 5):
+            if stamp[index] == 'None':
+                stamp[index] = None 
+        return cls(stamp[0], stamp[1], stamp[2], stamp[3], stamp[4])
+
+    def stamp(self):
+        """Return a submission stamp from a JobRecord object.
+
+        A submission stamp is just a space-delimited line of text with
+        the AutoCMS submission counter, scheduler jobid, 
+        submission timestamp, submission return value, and log filename."""
+        return (str(self.seq) + ' ' + 
+                str(self.jobid) + ' ' +
+                str(self.submit_time) + ' ' +
+                str(self.submit_status) + ' ' +
+                str(self.logfile))
 
     def run_time(self):
         """Return total wall clock running time in seconds."""
@@ -78,12 +106,11 @@ class JobRecord(object):
         else:
             return False
 
-    def parse_output(self, logfile_name, config):
-        """Parse job information from specified log file."""
+    def parse_output(self, config):
+        """Parse job information from the log file."""
         tokens = [s for s in config.keys()
                   if re.match(r'AUTOCMS_.*_TOKEN', s)]
-        self.logfile = logfile_name
-        with open(logfile_name, 'r') as handle:
+        with open(self.logfile, 'r') as handle:
             log = handle.read().splitlines()
         for line in log:
             for tok in tokens:
@@ -108,20 +135,14 @@ class JobRecord(object):
             self.end_time = self.start_time
 
     def __repr__(self):
-        """Return expression string to construct identical object."""
-        s = 'JobRecord({0}, {1}, {2}'.format(self.submit_time,
-                                             self.jobid,
-                                             self.submit_status)
-        more_attrs = (attr for attr in dir(self)
-                      if not attr.startswith('__') and
-                         not callable(getattr(self, attr)) and
-                         not attr == 'submit_time' and
-                         not attr == 'jobid' and
-                         not attr == 'submit_status')
-        for attr in more_attrs:
-            s += ", {0}={1}".format(attr, repr(getattr(self, attr)))
-        s += ')'
-        return s
+        """Describe object id, submission time, and counter."""
+        return ('<{0}.{1} object at {2} seq: {3} '
+                'submit_time: {4}>'.format(
+                    self.__class__.__module__,
+                    self.__class__.__name__,
+                    hex(id(self)),
+                    self.seq,
+                    self.submit_time))
 
     def __str__(self):
         """Return readable string of JobRecord object attributes."""
@@ -132,6 +153,15 @@ class JobRecord(object):
         for attr in attr_list:
             s += "\n    {0}={1}".format(attr, repr(getattr(self, attr)))
         return s
+
+
+class MalformedStamp(Exception):
+    """Raised when loading a JobRecord from improperly formatted stamp."""
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 
 def load_configuration(filename):
