@@ -11,11 +11,9 @@ def submit_and_stamp(counter, testname, scheduler, config):
     If the submission fails an output log will be produced with the
     standard output of the submitter.
 
-    The name of the new stamp is returned."""
-    (jobid, timestamp, returncode, output) = scheduler.submit_job(counter,
-                                                                  testname,
-                                                                  config)
-    newstamp = str(jobid) + ' ' + str(timestamp) + ' ' + str(returncode)
+    The name of the newstamp file is returned."""
+    result = scheduler.submit_job(counter, testname, config)
+    newstamp = str(result.id) + ' ' + str(timestamp) + ' ' + str(returncode)
     if returncode != 0:
         logfile_name = (testname + '.submission.' + str(counter) +
                         '.' + str(timestamp) + '.log')

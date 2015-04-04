@@ -7,6 +7,9 @@
 # Base directory for the AutoCMS system installation
 export AUTOCMS_BASEDIR=/home/appelte1/autocms_dev
 
+# Absolute path to this configuration file
+export AUTOCMS_CONFIGFILE=/home/appelte1/autocms_dev/autocms.cfg.example 
+
 # Web directory for output HTML files and graphs 
 export AUTOCMS_WEBDIR=/home/appelte1/web/autocms_dev
 

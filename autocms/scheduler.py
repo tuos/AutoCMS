@@ -90,12 +90,16 @@ class SlurmScheduler(Scheduler):
 
     def submit_job(self, counter, testname):
         slurm_script = testname + '.slurm'
+        testdir = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                               testname)
         # need to go ahead and export the config path in case
         # this was not called through autocms.sh
-        cmd = ('export AUTOCMS_COUNTER={0}; AUTOCMS_CONFIGFILE={1}; '
-               'sbatch --account={2} {3} '
+        cmd = ('cd {0}; export AUTOCMS_COUNTER={1}; '
+               'export AUTOCMS_CONFIGFILE={2}; '
+               'sbatch --account={3} {4} '
                '--export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE '
-               '2>&1'.format(counter,
+               '2>&1'.format(testdir,
+                             counter,
                              self.config['AUTOCMS_CONFIGFILE'],
                              self.config['AUTOCMS_GNAME'],
                              slurm_script))
@@ -147,9 +151,13 @@ class LocalScheduler(Scheduler):
         timestamp = int(time.time())
         logfile = (testname + '.local.o' + str(timestamp) +
                    '.' + str(counter) + '.log')
-        cmd = ('export AUTOCMS_COUNTER={0}; export AUTOCMS_CONFIGFILE={1}; '
-               ' nohup bash {2} > {3} '
-               ' 2>&1 &'.format(counter,
+        testdir = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                               testname)
+        cmd = ('cd {0}; export AUTOCMS_COUNTER={1}; '
+               ' export AUTOCMS_CONFIGFILE={2}; '
+               ' nohup bash {3} > {4} '
+               ' 2>&1 &'.format(testdir,
+                                counter,
                                 self.config['AUTOCMS_CONFIGFILE'],
                                 local_script,
                                 logfile))
