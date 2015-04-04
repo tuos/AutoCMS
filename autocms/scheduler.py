@@ -97,7 +97,7 @@ class SlurmScheduler(Scheduler):
                '--export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE '
                '2>&1'.format(counter,
                              self.config['AUTOCMS_CONFIGFILE'],
-                             config['AUTOCMS_GNAME'],
+                             self.config['AUTOCMS_GNAME'],
                              slurm_script))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         timestamp = int(time.time())
@@ -117,7 +117,7 @@ class SlurmScheduler(Scheduler):
                                    logfile)
             with open(logpath, 'w') as log:
                 log.write(sub_output)
-        return JobRecord(count, jobid, timestamp, result.returncode, logfile)
+        return JobRecord(counter, jobid, timestamp, result.returncode, logfile)
 
 
 class LocalScheduler(Scheduler):
@@ -127,7 +127,7 @@ class LocalScheduler(Scheduler):
         Scheduler.__init__(self, config)
 
     def get_completed_jobs(self, joblist):
-        cmd = ('ps -u {0}'.format(config['AUTOCMS_UNAME']))
+        cmd = ('ps -u {0}'.format(self.config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
         running_procs = [line.split()[0] for line
@@ -138,11 +138,11 @@ class LocalScheduler(Scheduler):
                 completed_jobs.remove(job)
         return completed_jobs
 
-    def enqueued_job_count(self, config):
+    def enqueued_job_count(self):
         # there is no queue, return 0
         return 0
 
-    def submit_job(self, counter, testname, config):
+    def submit_job(self, counter, testname):
         local_script = testname + '.local'
         timestamp = int(time.time())
         logfile = (testname + '.local.o' + str(timestamp) +
@@ -153,10 +153,9 @@ class LocalScheduler(Scheduler):
                                 self.config['AUTOCMS_CONFIGFILE'],
                                 local_script,
                                 logfile))
-        result = subprocess.Popen(
-                cmd,
-                shell=True,
-                stdout=subprocess.PIPE)
+        result = subprocess.Popen(cmd,
+                                  shell=True,
+                                  stdout=subprocess.PIPE)
         result.wait()
         sub_output = result.stdout.read()
         if result.returncode == 0:
@@ -169,4 +168,4 @@ class LocalScheduler(Scheduler):
             with open(logpath, 'w') as log:
                 log.write(sub_output)
 
-        return JobRecord(count, jobid, timestamp, result.returncode, logfile)
+        return JobRecord(counter, jobid, timestamp, result.returncode, logfile)
