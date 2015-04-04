@@ -6,22 +6,34 @@ submitted and completed jobs and purge old log files.
 
 import os
 import re
+import time
 
 from .core import JobRecord
 
 
-def list_log_files(ls_result, scheduler):
-    """List files in given ls result that are log files.
+def list_log_files(testname, config):
+    """List the absolute path of log files in a given test directory.
 
-    Any file matching a regular expression corresponding to the
-    scheduler or produced by the submission script is assumed to be the
-    output log of a submitted job"""
-    logs = list()
-    for logfile in ls_result:
-        if (re.search(scheduler.logfile_regexp(), logfile) or
-                re.search(r'.submission.[0-9]+.[0-9]+.log', logfile)):
+    Any file ending in '.log' in a test directory is considered
+    a log file."""
+    logs = []
+    testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
+    for logfile in os.listdir(testdir):
+        if (re.search(r'\.log$', logfile)):
             logs.append(logfile)
-    return logs
+    return [os.path.join(testdir, logfile) for logfile in logs]
+
+
+def purge_old_log_files(testname, config):
+    """Remove logs older than AUTOCMS_LOG_LIFETIME in the given test dir.
+
+    Any file ending in '.log' in a test directory is considered
+    a log file."""
+    loglist = list_log_files(testname, config)
+    purgetime = int(time.time()) - 3600*24*int(config['AUTOCMS_LOG_LIFETIME'])
+    for logfile in loglist:
+        if int(os.path.getmtime(logfile)) < purgetime:
+            os.remove(logfile)
 
 
 def register_new_stamps(ls_result, stamp_filename):
@@ -40,20 +52,9 @@ def register_new_stamps(ls_result, stamp_filename):
 
 def create_records_from_stamps(records, stamplist):
     """Create new job records from submission stamps."""
-    for line in stamplist:
-        # so skip lines  that have less than three columns
-        # (i.e. no job number, timestamp, or exit code)
-        if len(line.split()) > 2:
-            jobid = line.split()[0]
-            timestamp = int(line.split()[1])
-            submit_status = line.split()[2]
-            if timestamp not in records:
-                records[timestamp] = JobRecord(timestamp,
-                                               jobid,
-                                               submit_status)
-                # add submission log for failed submissions
-                if int(submit_status) != 0 and len(line.split()) > 3:
-                    records[timestamp].logfile = line.split()[3]
+    # get rid of this function
+    for stamp in stamplist:
+        records.append(JobRecord.create_from_stamp(stamp))
 
 
 def purge_old_stamps(stamplist, purgetime):
