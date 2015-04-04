@@ -54,9 +54,24 @@ class TestSubmission(unittest.TestCase):
         self.assertEqual(int(record.seq),1)
 
 
-#    def test_job_counter(self):
-#        os.chdir(self.basepath)
-#        os.chdir('tests/scratch/localsub')
-#        set_job_counter(42)
-#        count = get_job_counter()
-#        self.assertEqual(count, 42)
+    def test_submit_and_stamp(self):
+        """Test that proper stamp file is created on submission."""
+        stamp_path = submit_and_stamp(2,
+                                      'uscratch',
+                                      self.scheduler,
+                                      self.config)
+        self.assertTrue(os.path.isfile(stamp_path))
+        with open(stamp_path) as stampfile:
+            stamp = stampfile.read()
+        record = JobRecord.create_from_stamp(stamp)
+        self.assertEqual(int(record.seq),2)
+        self.assertEqual(record.logfile,
+                         stamp.split()[4])
+        time.sleep(3)
+        record.parse_output('uscratch', self.config)
+        self.assertTrue(record.is_success())
+
+    def test_job_counter(self):
+        set_job_counter(42, 'uscratch', self.config)
+        count = get_job_counter('uscratch', self.config)
+        self.assertEqual(count, 42)

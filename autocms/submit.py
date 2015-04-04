@@ -7,7 +7,7 @@ def submit_and_stamp(counter, testname, scheduler, config):
     """Submit a job to the scheduler and produce a newstamp file.
 
     The full path of the newstamp file is returned."""
-    result = scheduler.submit_job(counter, testname, config)
+    result = scheduler.submit_job(counter, testname)
     stamp_filename = ('stamp.' +
                       str(result.submit_time) +
                       str(counter))
