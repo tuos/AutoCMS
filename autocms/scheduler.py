@@ -146,7 +146,7 @@ class LocalScheduler(Scheduler):
         local_script = testname + '.local'
         timestamp = int(time.time())
         logfile = (testname + '.local.o' + str(timestamp) +
-                   '.' + str(counter) + '.log'
+                   '.' + str(counter) + '.log')
         cmd = ('export AUTOCMS_COUNTER={0}; export AUTOCMS_CONFIGFILE={1}; '
                ' nohup bash {2} > {3} '
                ' 2>&1 &'.format(counter,
