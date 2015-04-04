@@ -1,7 +1,6 @@
 """Submit and register one or more test jobs."""
 
 import sys
-import os
 import argparse
 
 from autocms.core import load_configuration
@@ -23,5 +22,5 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    exit_status = main()
-    sys.exit(exit_status)
+    status = main()
+    sys.exit(status)
