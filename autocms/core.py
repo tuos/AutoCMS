@@ -25,27 +25,27 @@ class JobRecord(object):
         end_time (int): timestamp of when the job completed
                         or zero if the job is not yet completed.
         node: hostname of the worker node that runs the job or None.
-        logfile: Expected file containing standard output of the job reported 
+        logfile: Expected file containing standard output of the job reported
                  through the scheduler. Note that due to scheduler errors
-                 this file may never actually exist.                 
+                 this file may never actually exist.
         completed (boolean): completion status of the job.
         exit_code (int): exit code returned by the job script
         exit_string: string describing the reason for job failure.
     """
 
-    def __init__(self, counter, id, subtime, retval, log):
+    def __init__(self, counter, jobid, subtime, retval, log):
         """Construct JobRecord object from job submission information.
-  
+
         Arguments:
             counter - value of the sequence counter for the job
-            id - the jobid from the scheduler
+            jobid - the jobid from the scheduler
             subtime - the unix timestamp of submission
             retval - the return value of the submission command
             log - name of the expected log file
         """
         self.seq = counter
         self.submit_time = int(subtime)
-        self.jobid = id
+        self.jobid = jobid
         self.submit_status = int(retval)
         self.logfile = log
         if self.submit_status == 0:
@@ -69,23 +69,23 @@ class JobRecord(object):
         """Construct a JobRecord object from a submission stamp.
 
         A submission stamp is just a space-delimited line of text with
-        the AutoCMS submission counter, scheduler jobid, 
+        the AutoCMS submission counter, scheduler jobid,
         submission timestamp, submission return value, and log filename."""
         stamp = stamp.split()
         if len(stamp) != 5:
             raise MalformedStamp("Wrong number of arguments in stamp string.")
         for index in range(0, 5):
             if stamp[index] == 'None':
-                stamp[index] = None 
+                stamp[index] = None
         return cls(stamp[0], stamp[1], stamp[2], stamp[3], stamp[4])
 
     def stamp(self):
         """Return a submission stamp from a JobRecord object.
 
         A submission stamp is just a space-delimited line of text with
-        the AutoCMS submission counter, scheduler jobid, 
+        the AutoCMS submission counter, scheduler jobid,
         submission timestamp, submission return value, and log filename."""
-        return (str(self.seq) + ' ' + 
+        return (str(self.seq) + ' ' +
                 str(self.jobid) + ' ' +
                 str(self.submit_time) + ' ' +
                 str(self.submit_status) + ' ' +
@@ -151,20 +151,21 @@ class JobRecord(object):
         """Return readable string of JobRecord object attributes."""
         attr_list = (attr for attr in dir(self)
                      if not attr.startswith('__') and
-                        not callable(getattr(self,attr)))
-        s = "JobRecord object"
+                     not callable(getattr(self, attr)))
+        jrs = "JobRecord object"
         for attr in attr_list:
-            s += "\n    {0}={1}".format(attr, repr(getattr(self, attr)))
-        return s
+            jrs += "\n    {0}={1}".format(attr, repr(getattr(self, attr)))
+        return jrs
 
 
 class MalformedStamp(Exception):
     """Raised when loading a JobRecord from improperly formatted stamp."""
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, message):
+        super(MalformedStamp, self).__init__(message)
+        self.message = message
 
     def __str__(self):
-        return repr(self.value)
+        return repr(self.message)
 
 
 def load_configuration(filename):
