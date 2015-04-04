@@ -111,7 +111,7 @@ class SlurmScheduler(Scheduler):
             jobid = re.sub('Submitted batch job ',
                            '',
                            sub_output.splitlines()[0].strip())
-            logifle = testname + '.' + 'slurm' + '.o' + str(jobid) + '.log'
+            logfile = testname + '.' + 'slurm' + '.o' + str(jobid) + '.log'
         else:
             jobid = None
             logfile = (testname + '.' + 'submission' + '.o' +
