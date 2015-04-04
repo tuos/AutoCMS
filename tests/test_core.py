@@ -16,9 +16,11 @@ class TestConfiguration(unittest.TestCase):
         self.config = load_configuration('autocms.cfg.example')
 
     def test_cmsrun_timeout(self):
+        """Check that config sets cmsrun timeout."""
         self.assertEqual(self.config['SKIMTEST_CMSRUN_TIMEOUT'], '14400')
 
     def test_input_file_token(self):
+        """Check that config sets the input file token."""
         self.assertEqual(self.config['AUTOCMS_input_file_TOKEN'],
                          'AutoCMS: input file ')
 
@@ -32,8 +34,8 @@ class TestJobRecord(unittest.TestCase):
     def test_jobrecord_parse(self):
         """Test that a job log is correctly parsed."""
         record = JobRecord(1, 928417, 1427266702, 0, 'data/example_A.log')
-        record.parse_output('unittests', self.config)
-        self.assertEqual(record.num_proc, '383')
+        record.parse_output('tests', self.config)
+        self.assertEqual(getattr(record,'num_proc'), '383')
         self.assertEqual(record.exit_code, 0)
         self.assertEqual(record.start_time, 1427266802)
         self.assertEqual(record.end_time, 1427267170)
@@ -51,7 +53,7 @@ class TestJobRecord(unittest.TestCase):
 
 class TestRecordPersistance(unittest.TestCase):
     """Test that jobrecord lists are loaded and saved correctly."""
-    
+
     def setUp(self):
         """Make a sample list of JobRecords and try to save it."""
         self.config = load_configuration('autocms.cfg.example')
@@ -59,9 +61,9 @@ class TestRecordPersistance(unittest.TestCase):
         self.records.append(JobRecord(1, '928417', 1427266702, 0, 'a.log'))
         self.records.append(JobRecord(2, '928423', 427266742, 0, 'b.log'))
         self.records.append(JobRecord(3, None, 427266792, 4, 'c.log'))
-        save_records(self.records, 'unittests', self.config)
+        save_records(self.records, 'tests', self.config)
         self.recordpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
-                                       'unittests',                        
+                                       'tests',
                                        'records.pickle')
 
     def tearDown(self):
@@ -76,11 +78,11 @@ class TestRecordPersistance(unittest.TestCase):
     def test_recordpersistance_load(self):
         """Check that records are accurately loaded."""
         rdict = {job.seq : job for job in self.records}
-        records_copy = load_records('unittests', self.config)
+        records_copy = load_records('tests', self.config)
         rdict_copy = {job.seq : job for job in records_copy}
         for key in rdict.viewkeys():
-           self.assertEqual(rdict[key].__dict__, 
-                            rdict_copy[key].__dict__)
+            self.assertEqual(rdict[key].__dict__,
+                             rdict_copy[key].__dict__)
 
 
 if __name__ == '__main__':
