@@ -106,11 +106,14 @@ class JobRecord(object):
         else:
             return False
 
-    def parse_output(self, config):
+    def parse_output(self, testname, config):
         """Parse job information from the log file."""
         tokens = [s for s in config.keys()
                   if re.match(r'AUTOCMS_.*_TOKEN', s)]
-        with open(self.logfile, 'r') as handle:
+        logpath = os.path.join(config['AUTOCMS_BASEDIR'],
+                               testname,
+                               self.logfile)
+        with open(logpath, 'r') as handle:
             log = handle.read().splitlines()
         for line in log:
             for tok in tokens:
@@ -182,14 +185,14 @@ def load_configuration(filename):
 
 
 def load_records(filename):
-    """Get the JobRecord dictionary from the pickle or make a new one."""
+    """Get the JobRecord list from the pickle or make a new one."""
     if os.path.isfile(filename):
         records = pickle.load(open(filename, "rb"))
     else:
-        records = dict()
+        records = []
     return records
 
 
 def save_records(records, filename):
-    """Write the JobRecord dictionary to a pickle."""
+    """Write the JobRecord list to a pickle."""
     pickle.dump(records, open(filename, "wb"))
