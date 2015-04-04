@@ -184,15 +184,21 @@ def load_configuration(filename):
     return config
 
 
-def load_records(filename):
+def load_records(testname, config):
     """Get the JobRecord list from the pickle or make a new one."""
-    if os.path.isfile(filename):
-        records = pickle.load(open(filename, "rb"))
+    filepath = os.path.join(config['AUTOCMS_BASEDIR'],
+                            testname,
+                            'records.pickle')
+    if os.path.isfile(filepath):
+        records = pickle.load(open(filepath, "rb"))
     else:
         records = []
     return records
 
 
-def save_records(records, filename):
+def save_records(records, testname, config):
     """Write the JobRecord list to a pickle."""
-    pickle.dump(records, open(filename, "wb"))
+    filepath = os.path.join(config['AUTOCMS_BASEDIR'],
+                            testname,
+                            'records.pickle')
+    pickle.dump(records, open(filepath, "wb"))
