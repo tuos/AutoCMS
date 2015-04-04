@@ -11,7 +11,7 @@ from .core import JobRecord
 class UnknownScheduler(Exception):
     """Exception for scheduler type not implemented."""
     def __init__(self, message):
-        super(MalformedStamp, self).__init__(message)
+        super(UnknownScheduler, self).__init__(message)
         self.message = message
 
     def __str__(self):
@@ -66,7 +66,6 @@ class SlurmScheduler(Scheduler):
         Scheduler.__init__(self, config)
 
     def get_completed_jobs(self, joblist):
-        __doc__ = Scheduler.get_completed_jobs.__doc__
         cmd = ('sacct --state=CA,CD,F,NF,TO '
                '-S $(date +%Y-%m-%d -d @$(( $(date +%s) - 172800 )) ) '
                '--accounts={0} --user={1} -n -o "jobid" | '
@@ -81,7 +80,6 @@ class SlurmScheduler(Scheduler):
         return completed_jobs
 
     def enqueued_job_count(self):
-        __doc__ = Scheduler.enqueued_job_count.__doc__
         cmd = ('squeue -h --user={0} --account={1} | '
                'wc -l'.format(self.config['AUTOCMS_UNAME'],
                               self.config['AUTOCMS_GNAME']))
@@ -91,7 +89,6 @@ class SlurmScheduler(Scheduler):
         return count
 
     def submit_job(self, counter, testname):
-        __doc__ = Scheduler.submit_job.__doc__
         slurm_script = testname + '.slurm'
         # need to go ahead and export the config path in case
         # this was not called through autocms.sh
@@ -107,19 +104,19 @@ class SlurmScheduler(Scheduler):
         result.wait()
         sub_output = result.stdout.read()
         if result.returncode == 0:
-             jobid = re.sub('Submitted batch job ',
-                            '',
-                            sub_output.splitlines()[0].strip())
-             logifle = testname + '.' + 'slurm' + '.o' + str(jobid) + '.log'
+            jobid = re.sub('Submitted batch job ',
+                           '',
+                           sub_output.splitlines()[0].strip())
+            logifle = testname + '.' + 'slurm' + '.o' + str(jobid) + '.log'
         else:
-             jobid = None
-             logfile = (testname + '.' + 'submission' + '.o' +
-                        str(timestamp) + "." + str(counter) + '.log')
-             logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
-                                    testname,
-                                    logfile)
-             with open(logpath,'w') as log:
-                  log.write(sub_output)
+            jobid = None
+            logfile = (testname + '.' + 'submission' + '.o' +
+                       str(timestamp) + "." + str(counter) + '.log')
+            logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                   testname,
+                                   logfile)
+            with open(logpath, 'w') as log:
+                log.write(sub_output)
         return JobRecord(count, jobid, timestamp, result.returncode, logfile)
 
 
@@ -129,7 +126,7 @@ class LocalScheduler(Scheduler):
     def __init__(self, config):
         Scheduler.__init__(self, config)
 
-    def get_completed_jobs(self, joblist, config):
+    def get_completed_jobs(self, joblist):
         cmd = ('ps -u {0}'.format(config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
@@ -148,26 +145,28 @@ class LocalScheduler(Scheduler):
     def submit_job(self, counter, testname, config):
         local_script = testname + '.local'
         timestamp = int(time.time())
-        logfile = testname + '.local.o' + str(timestamp) + '.' + str(counter)
-        config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')
-        cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
-               ' nohup bash %s > %s  2>&1 &'
-               % (counter,
-                  config_path,
-                  local_script,
-                  logfile))
+        logfile = (testname + '.local.o' + str(timestamp) +
+                   '.' + str(counter) + '.log'
+        cmd = ('export AUTOCMS_COUNTER={0}; export AUTOCMS_CONFIGFILE={1}; '
+               ' nohup bash {2} > {3} '
+               ' 2>&1 &'.format(counter,
+                                self.config['AUTOCMS_CONFIGFILE'],
+                                local_script,
+                                logfile))
         result = subprocess.Popen(
                 cmd,
                 shell=True,
                 stdout=subprocess.PIPE)
         result.wait()
-        submit_stdout = [line.strip() for line in result.stdout.readlines()]
+        sub_output = result.stdout.read()
         if result.returncode == 0:
-             jobid = result.pid
+            jobid = result.pid
         else:
-             jobid = None
-        return SubmissionResult(id = jobid,
-                                time = timestamp,
-                                retval = result.returncode,
-                                log = logfile,
-                                stdout = submit_stdout)
+            jobid = None
+            logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                   testname,
+                                   logfile)
+            with open(logpath, 'w') as log:
+                log.write(sub_output)
+
+        return JobRecord(count, jobid, timestamp, result.returncode, logfile)
