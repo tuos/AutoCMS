@@ -43,7 +43,7 @@ class JobRecord(object):
             retval - the return value of the submission command
             log - name of the expected log file
         """
-        self.seq = counter
+        self.seq = int(counter)
         self.submit_time = int(subtime)
         self.jobid = jobid
         self.submit_status = int(retval)

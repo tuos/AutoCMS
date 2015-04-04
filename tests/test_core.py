@@ -13,7 +13,7 @@ class TestConfiguration(unittest.TestCase):
     """Test that the configuration is loaded correctly."""
 
     def setUp(self):
-        self.config = load_configuration('tests/data/autocms.cfg.unittest')
+        self.config = load_configuration('autocms.cfg.example')
 
     def test_cmsrun_timeout(self):
         self.assertEqual(self.config['SKIMTEST_CMSRUN_TIMEOUT'], '14400')
@@ -27,56 +27,60 @@ class TestJobRecord(unittest.TestCase):
     """Test the JobRecord class methods."""
 
     def setUp(self):
-        self.config = load_configuration('tests/data/autocms.cfg.unittest')
+        self.config = load_configuration('autocms.cfg.example')
 
     def test_jobrecord_parse(self):
-        """Test that bash configuration is correctly parsed."""
-        record = JobRecord(1427266702, 928417, 0)
-        record.parse_output('tests/data/unit_test.slurm.o928417',
-                             self.config)
+        """Test that a job log is correctly parsed."""
+        record = JobRecord(1, 928417, 1427266702, 0, 'data/example_A.log')
+        record.parse_output('unittests', self.config)
         self.assertEqual(record.num_proc, '383')
         self.assertEqual(record.exit_code, 0)
         self.assertEqual(record.start_time, 1427266802)
         self.assertEqual(record.end_time, 1427267170)
 
-    def test_jobrecord_repr(self):
-        """Test that repr returns constructor for an identical object."""
-        record = JobRecord(1427266702, 928417, 0)
-        record.parse_output('tests/data/unit_test.slurm.o928417',
-                             self.config)
-        record_copy = eval(repr(record)) 
-        self.assertEqual(repr(record), repr(record_copy))
-
+    def test_jobrecord_stamp(self):
+        """Test writing and constructing from a stamp."""
+        record = JobRecord(1, '928417', 1427266702, 0, 'data/example_A.log')
+        stamp = record.stamp()
+        record_copy = JobRecord.create_from_stamp(stamp)
+        self.assertEqual(record.__dict__, record_copy.__dict__)
+        record = JobRecord(3, None, 427266792, 4, 'c.log')
+        stamp = record.stamp()
+        record_copy = JobRecord.create_from_stamp(stamp)
+        self.assertEqual(record.__dict__, record_copy.__dict__)
 
 class TestRecordPersistance(unittest.TestCase):
-    """Test that jobrecord dictionaries are loaded and saved correctly."""
+    """Test that jobrecord lists are loaded and saved correctly."""
     
     def setUp(self):
-        """Make a sample dictionary of JobRecords and try to save it."""
-        self.records = {}
-        self.records[1427266702] = JobRecord(1427266702, 928417, 0)
-        self.records[1427266742] = JobRecord(1427266742, 928423, 0)
-        self.records[1427266792] = JobRecord(1427266792, 'FAIL', 4)
-        save_records(self.records, 'tests/scratch/records.backup')
+        """Make a sample list of JobRecords and try to save it."""
+        self.config = load_configuration('autocms.cfg.example')
+        self.records = []
+        self.records.append(JobRecord(1, '928417', 1427266702, 0, 'a.log'))
+        self.records.append(JobRecord(2, '928423', 427266742, 0, 'b.log'))
+        self.records.append(JobRecord(3, None, 427266792, 4, 'c.log'))
+        save_records(self.records, 'unittests', self.config)
+        self.recordpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                       'unittests',                        
+                                       'records.pickle')
 
     def tearDown(self):
-        """Clean up tests/scratch upon exit."""
-        if os.path.exists('tests/scratch/records.backup'):
-            os.remove('tests/scratch/records.backup')
+        """Clean up temporary test files upon exit."""
+        if os.path.isfile(self.recordpath):
+            os.remove(self.recordpath)
 
     def test_recordpersistance_save(self):
         """Check that the records pickle file was created."""
-        self.assertTrue(os.path.exists('tests/scratch/records.backup'))
+        self.assertTrue(os.path.isfile(self.recordpath))
 
     def test_recordpersistance_load(self):
         """Check that records are accurately loaded."""
-        records_copy = load_records('tests/scratch/records.backup')
-        for key in self.records.iterkeys():
-            attrs = (a for a in dir(self.records[key]) if 
-                         not callable(getattr(self.records[key],a)))
-            for a in attrs:
-                self.assertEqual(getattr(records_copy[key], a), 
-                                 getattr(self.records[key], a))
+        rdict = {job.seq : job for job in self.records}
+        records_copy = load_records('unittests', self.config)
+        rdict_copy = {job.seq : job for job in records_copy}
+        for key in rdict.viewkeys():
+           self.assertEqual(rdict[key].__dict__, 
+                            rdict_copy[key].__dict__)
 
 
 if __name__ == '__main__':
