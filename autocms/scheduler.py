@@ -1,132 +1,139 @@
-"""Scheduler classes to handle job submission and queue status."""
+"""Scheduler related classes to handle job submission and queue status."""
 
 import os
 import re
 import subprocess
 import time
 
+from .core import JobRecord
+
+
 class UnknownScheduler(Exception):
     """Exception for scheduler type not implemented."""
-
-    def __init__(self, value):
-        self.value = value
+    def __init__(self, message):
+        super(MalformedStamp, self).__init__(message)
+        self.message = message
 
     def __str__(self):
-        return repr(self.value)
+        return repr(self.message)
+
+
+def create_scheduler(sched_type, config):
+    """Factory function for creating Scheduler subclasses."""
+    if sched_type == 'slurm':
+        return SlurmScheduler(config)
+    elif sched_type == 'local':
+        return LocalScheduler(config)
+    else:
+        raise UnknownScheduler("Scheduler type '" +
+                               sched_type +
+                               "' is not implemented.")
 
 
 class Scheduler(object):
     """Base class for schedulers."""
 
-    @staticmethod
-    def factory(sched_type):
-        """Return a scheduler object of the specified type."""
-        if sched_type == 'slurm':
-            return SlurmScheduler()
-        elif sched_type == 'local':
-            return LocalScheduler()
-        else:
-            raise UnknownScheduler("Scheduler type '" +
-                                   sched_type +
-                                   "' is not implemented.")
+    def __init__(self, config):
+        """Construct a scheduler object with AutoCMS config."""
+        self.config = config
 
-    def get_completed_jobs(self, joblist, config):
+    def get_completed_jobs(self, joblist):
         """Return a list of recently completed jobs.
 
         Joblist is a list of jobids to check for completion."""
         raise NotImplementedError
 
-    def enqueued_job_count(self, config):
+    def enqueued_job_count(self):
         """Count the number of jobs that user has on the queue."""
         raise NotImplementedError
 
-    def submit_job(self, counter, testname, config):
+    def submit_job(self, counter, testname):
         """Submit a new job to the queue.
 
-        Returns a tuple with a jobid timestamp, return code, and list of
-        lines from the standard output and error of the submission
-        executable.
+        Returns a JobRecord object with the status of the job.
 
-        If the submission fails the jobid should be the string literal
-        'FAIL'."""
-        raise NotImplementedError
-
-    def jobid_logfilename(self, jobid, testname):
-        """Retun the filename of the job standard output."""
-        raise NotImplementedError
-
-    def logfile_regexp(self):
-        """Return a regular expression matching only log files.
-
-        The returned expression will be used to delete old log files,
-        and should not match anything that is not an old log file in
-        the test directory, i.e. 'submission.stamps', 'records.pickle',
-        'example_test.slurm', etc."""
+        If the submission fails the jobid should be set to none. The
+        scheduler should write the standard output and error of the
+        submission command to a log file and pass the name of the
+        log file to the JobRecord."""
         raise NotImplementedError
 
 
 class SlurmScheduler(Scheduler):
     """Interface to slurm scheduler."""
 
-    def get_completed_jobs(self, joblist, config):
-        cmd = ('/usr/scheduler/slurm/bin/sacct --state=CA,CD,F,NF,TO '
-               '-S $(date +%%Y-%%m-%%d -d @$(( $(date +%%s) - 172800 )) ) '
-               '--accounts=%s --user=%s -n -o "jobid" | grep -e "^[0-9]* "'
-               % (config['AUTOCMS_GNAME'], config['AUTOCMS_UNAME']))
+    def __init__(self, config):
+        Scheduler.__init__(self, config)
+
+    def get_completed_jobs(self, joblist):
+        __doc__ = Scheduler.get_completed_jobs.__doc__
+        cmd = ('sacct --state=CA,CD,F,NF,TO '
+               '-S $(date +%Y-%m-%d -d @$(( $(date +%s) - 172800 )) ) '
+               '--accounts={0} --user={1} -n -o "jobid" | '
+               'grep -e "^[0-9]* "'.format(self.config['AUTOCMS_GNAME'],
+                                           self.config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
-        completed_jobs = map(str.strip, result.stdout.readlines())
+        completed_jobs = [line.strip() for line in result.stdout.readlines()]
         for job in completed_jobs[:]:
             if not job in joblist:
                 completed_jobs.remove(job)
         return completed_jobs
 
-    def enqueued_job_count(self, config):
-        cmd = ('squeue -h --user=%s --account=%s | wc -l'
-               %  (config['AUTOCMS_UNAME'], config['AUTOCMS_GNAME']))
+    def enqueued_job_count(self):
+        __doc__ = Scheduler.enqueued_job_count.__doc__
+        cmd = ('squeue -h --user={0} --account={1} | '
+               'wc -l'.format(self.config['AUTOCMS_UNAME'],
+                              self.config['AUTOCMS_GNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
         count = int(result.stdout.readlines()[0].strip())
         return count
 
-    def submit_job(self, counter, testname, config):
+    def submit_job(self, counter, testname):
+        __doc__ = Scheduler.submit_job.__doc__
         slurm_script = testname + '.slurm'
-        config_path = os.path.join( config['AUTOCMS_BASEDIR'], 'autocms.cfg')
-        cmd = ('export AUTOCMS_COUNTER=%d; export AUTOCMS_CONFIGFILE=%s; '
-               '/usr/scheduler/slurm/bin/sbatch --account=%s %s '
-               '--export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE  2>&1'
-               % (counter,
-                  config_path,
-                  config['AUTOCMS_GNAME'],
-                  slurm_script))
-        result = subprocess.Popen(
-                cmd,
-                shell=True,
-                stdout=subprocess.PIPE)
-        result.wait()
-        submit_stdout = [line.strip() for line in result.stdout.readlines()]
-        if result.returncode == 0:
-             jobid = re.sub('Submitted batch job ', '', submit_stdout[0])
-        else:
-             jobid = 'FAIL'
+        # need to go ahead and export the config path in case
+        # this was not called through autocms.sh
+        cmd = ('export AUTOCMS_COUNTER={0}; AUTOCMS_CONFIGFILE={1}; '
+               'sbatch --account={2} {3} '
+               '--export=AUTOCMS_COUNTER,AUTOCMS_CONFIGFILE '
+               '2>&1'.format(counter,
+                             self.config['AUTOCMS_CONFIGFILE'],
+                             config['AUTOCMS_GNAME'],
+                             slurm_script))
+        result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         timestamp = int(time.time())
-        return (jobid, timestamp, result.returncode, submit_stdout)
-
-    def jobid_logfilename(self, jobid, testname):
-        return testname + '.' + 'slurm' + '.o' + str(jobid)
-
-    def logfile_regexp(self):
-        return r'.slurm.o[0-9]+$'
+        result.wait()
+        sub_output = result.stdout.read()
+        if result.returncode == 0:
+             jobid = re.sub('Submitted batch job ',
+                            '',
+                            sub_output.splitlines()[0].strip())
+             logifle = testname + '.' + 'slurm' + '.o' + str(jobid) + '.log'
+        else:
+             jobid = None
+             logfile = (testname + '.' + 'submission' + '.o' +
+                        str(timestamp) + "." + str(counter) + '.log')
+             logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                    testname,
+                                    logfile)
+             with open(logpath,'w') as log:
+                  log.write(sub_output)
+        return JobRecord(count, jobid, timestamp, result.returncode, logfile)
 
 
 class LocalScheduler(Scheduler):
     """Run jobs in the background of the local machine."""
 
+    def __init__(self, config):
+        Scheduler.__init__(self, config)
+
     def get_completed_jobs(self, joblist, config):
         cmd = ('ps -u {0}'.format(config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         result.wait()
-        running_procs = [line.split()[0] for line 
+        running_procs = [line.split()[0] for line
                          in result.stdout.readlines()]
         completed_jobs = joblist[:]
         for job in joblist:
@@ -154,15 +161,13 @@ class LocalScheduler(Scheduler):
                 shell=True,
                 stdout=subprocess.PIPE)
         result.wait()
-        submit_stdout = map(str.strip, result.stdout.readlines())
+        submit_stdout = [line.strip() for line in result.stdout.readlines()]
         if result.returncode == 0:
              jobid = result.pid
         else:
-             jobid = 'FAIL'
-        return (jobid, timestamp, result.returncode, submit_stdout)
-
-    def jobid_logfilename(self, jobid, testname):
-        return testname + '.' + 'local' + '.o' + str(jobid)
-
-    def logfile_regexp(self):
-        return r'.local.o[0-9]+.[0-9]+$'
+             jobid = None
+        return SubmissionResult(id = jobid,
+                                time = timestamp,
+                                retval = result.returncode,
+                                log = logfile,
+                                stdout = submit_stdout)
