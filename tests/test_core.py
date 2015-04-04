@@ -35,7 +35,7 @@ class TestJobRecord(unittest.TestCase):
         """Test that a job log is correctly parsed."""
         record = JobRecord(1, 928417, 1427266702, 0, 'data/example_A.log')
         record.parse_output('tests', self.config)
-        self.assertEqual(getattr(record,'num_proc'), '383')
+        self.assertEqual(getattr(record, 'num_proc'), '383')
         self.assertEqual(record.exit_code, 0)
         self.assertEqual(record.start_time, 1427266802)
         self.assertEqual(record.end_time, 1427267170)
