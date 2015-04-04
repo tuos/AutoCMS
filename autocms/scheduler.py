@@ -175,5 +175,4 @@ class LocalScheduler(Scheduler):
                                    logfile)
             with open(logpath, 'w') as log:
                 log.write(sub_output)
-
         return JobRecord(counter, jobid, timestamp, result.returncode, logfile)
