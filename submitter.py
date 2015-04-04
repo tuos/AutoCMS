@@ -1,47 +1,26 @@
-"""Submit and register a test job."""
+"""Submit and register one or more test jobs."""
 
 import sys
 import os
+import argparse
 
-from autocms.core import (
-    JobRecord,
-    load_configuration
-)
-from autocms.submit import (
-    submit_and_stamp,
-    get_job_counter,
-    set_job_counter
-)
-from autocms.scheduler import Scheduler
-
-
-def run_submit():
-    """Submit a job, increment counter"""
-
-    # Basic setup: load configuration, determine test,
-    # enter test directory, get counter, instantiate scheduler
-    config = load_configuration('autocms.cfg')
-    testname = sys.argv[1]
-    testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
-    os.chdir(testdir)
-    counter = get_job_counter()
-    scheduler = Scheduler.factory(config['AUTOCMS_SCHEDULER'])
-
-    # Ensure that we don't have too many jobs already waiting
-    # in the queue before submitting another
-    jobcount = scheduler.enqueued_job_count(config) 
-    if jobcount >= int(config['AUTOCMS_MAXENQUEUE']):
-        return
-
-    # Submit new job, increment counter
-    submit_and_stamp(counter, testname, scheduler, config)
-    counter += 1
-    set_job_counter(counter)
+from autocms.core import load_configuration
+from autocms.submit import perform_test_submission
 
 
 def main():
-    run_submit()
-
+    """Call run_submission with arguments from the command line."""
+    parser = argparse.ArgumentParser(description='Submit one or more jobs.')
+    parser.add_argument('testname', help='test directory')
+    parser.add_argument('-n','--num_jobs', type=int, default=1,
+                        help='number of jobs to submit (max)')
+    parser.add_argument('-c', '--configfile', type=str,
+                        default='autocms.cfg',
+                        help='AutoCMS configuration file name')
+    args = parser.parse_args()
+    config = load_configuration(args.configfile)
+    perform_test_submission(args.num_jobs, args.testname, config)
+    return 0
 
 if __name__ == '__main__':
     status = main()
