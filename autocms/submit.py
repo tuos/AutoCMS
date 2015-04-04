@@ -50,7 +50,7 @@ def perform_test_submission(num_jobs, testname, config):
     jobcount = scheduler.enqueued_job_count()
     available_slots = int(config['AUTOCMS_MAXENQUEUE']) - jobcount
     counter = get_job_counter(testname, config)
-    while(num_jobs > 0 and available_slots > 0):
+    while num_jobs > 0 and available_slots > 0:
         submit_and_stamp(counter, testname, scheduler, config)
         num_jobs -= 1
         available_slots -= 1

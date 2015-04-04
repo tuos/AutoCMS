@@ -12,7 +12,7 @@ def main():
     """Call run_submission with arguments from the command line."""
     parser = argparse.ArgumentParser(description='Submit one or more jobs.')
     parser.add_argument('testname', help='test directory')
-    parser.add_argument('-n','--num_jobs', type=int, default=1,
+    parser.add_argument('-n', '--num_jobs', type=int, default=1,
                         help='number of jobs to submit (max)')
     parser.add_argument('-c', '--configfile', type=str,
                         default='autocms.cfg',
@@ -23,5 +23,5 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    status = main()
-    sys.exit(status)
+    exit_status = main()
+    sys.exit(exit_status)

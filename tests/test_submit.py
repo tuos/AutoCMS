@@ -1,7 +1,6 @@
 """Test job submission compnents using local scheduler."""
 
 import os
-import re
 import shutil
 import unittest
 import time
@@ -41,7 +40,7 @@ class TestSubmission(unittest.TestCase):
 
     def test_basic_job_submission(self):
         """Test if jobs are properly submitted with a valid record and log."""
-        record = self.scheduler.submit_job(1,'uscratch')
+        record = self.scheduler.submit_job(1, 'uscratch')
         time.sleep(3)
         logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
                                'uscratch',
@@ -51,7 +50,7 @@ class TestSubmission(unittest.TestCase):
                       self.scheduler.get_completed_jobs([record.jobid]))
         record.parse_output('uscratch', self.config)
         self.assertTrue(record.is_success())
-        self.assertEqual(int(record.seq),1)
+        self.assertEqual(int(record.seq), 1)
 
 
     def test_submit_and_stamp(self):
@@ -64,7 +63,7 @@ class TestSubmission(unittest.TestCase):
         with open(stamp_path) as stampfile:
             stamp = stampfile.read()
         record = JobRecord.create_from_stamp(stamp)
-        self.assertEqual(int(record.seq),2)
+        self.assertEqual(int(record.seq), 2)
         self.assertEqual(record.logfile,
                          stamp.split()[4])
         time.sleep(3)
@@ -72,6 +71,7 @@ class TestSubmission(unittest.TestCase):
         self.assertTrue(record.is_success())
 
     def test_job_counter(self):
+        """Test setting and retrieving the counter from file."""
         set_job_counter(42, 'uscratch', self.config)
         count = get_job_counter('uscratch', self.config)
         self.assertEqual(count, 42)
