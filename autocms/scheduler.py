@@ -4,6 +4,7 @@ import os
 import re
 import subprocess
 import time
+import socket
 
 from .core import JobRecord
 
@@ -28,6 +29,14 @@ def create_scheduler(sched_type, config):
         raise UnknownScheduler("Scheduler type '" +
                                sched_type +
                                "' is not implemented.")
+
+
+def submission_failure_preamble(timestamp):
+    """Return a string to be prepended to a submission failure log."""
+    preamble = "Job submission failed at {0}\n".format(timestamp)
+    preamble += "On node {0}\n".format(socket.gethostname())
+    preamble += "Submission command output:\n\n"
+    return preamble
 
 
 class Scheduler(object):
@@ -119,6 +128,7 @@ class SlurmScheduler(Scheduler):
             logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
                                    testname,
                                    logfile)
+            sub_output = submission_failure_preamble(timestamp) + sub_output
             with open(logpath, 'w') as log:
                 log.write(sub_output)
         return JobRecord(counter, jobid, timestamp, result.returncode, logfile)
@@ -173,6 +183,7 @@ class LocalScheduler(Scheduler):
             logpath = os.path.join(self.config['AUTOCMS_BASEDIR'],
                                    testname,
                                    logfile)
+            sub_output = submission_failure_preamble(timestamp) + sub_output
             with open(logpath, 'w') as log:
                 log.write(sub_output)
         return JobRecord(counter, jobid, timestamp, result.returncode, logfile)
