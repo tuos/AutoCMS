@@ -24,7 +24,7 @@ def list_log_files(testname, config):
     logs = []
     testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
     for logfile in os.listdir(testdir):
-        if (re.search(r'\.log$', logfile)):
+        if re.search(r'\.log$', logfile):
             logs.append(logfile)
     return [os.path.join(testdir, logfile) for logfile in logs]
 
@@ -46,7 +46,7 @@ def append_new_stamps(stampfile, testname, config):
     stamplist = []
     testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
     for item in os.listdir(testdir):
-        if re.match(r'^stamp\.[0-9]+\.[0-9]+',item):
+        if re.match(r'^stamp\.[0-9]+\.[0-9]+', item):
             stamplist.append(os.path.join(testdir, item))
     with open(stampfile, 'a') as shandle:
         for newstamp_filename in stamplist:
@@ -64,7 +64,7 @@ def purge_old_stamps(stampfile, config):
     for line in stamplist:
         if int(line.split()[2]) > purgetime:
             newstamplist.append(line)
-    with open(stampfile,'w') as shandle:
+    with open(stampfile, 'w') as shandle:
         for line in newstamplist:
             shandle.write(line)
 
