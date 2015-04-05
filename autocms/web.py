@@ -125,19 +125,19 @@ class AutoCMSWebpage(object):
     def __repr__(self):
         """Describe object id and page testname."""
         return ('<{0}.{1} object at {2} testname: {3}>'.format(
-                self.__class__.__module__,
-                self.__class__.__name__,
-                hex(id(self)),
-                self.testname))
+                    self.__class__.__module__,
+                    self.__class__.__name__,
+                    hex(id(self)),
+                    self.testname))
 
     def __str__(self):
         """Return page destination and text."""
         return ('{0}.{1} object.\n\nTest Name: {2}\n\n'
                 'Page content:\n\n{3}'.format(
-                self.__class__.__module__,
-                self.__class__.__name__,
-                self.testname,
-                self.page))
+                    self.__class__.__module__,
+                    self.__class__.__name__,
+                    self.testname,
+                    self.page))
 
 
 def produce_default_webpage(records, testname, config):
