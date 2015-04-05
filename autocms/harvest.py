@@ -9,6 +9,7 @@ import re
 import time
 
 from .core import JobRecord
+from .scheduler import create_scheduler
 
 
 def list_log_files(testname, config):
@@ -79,11 +80,26 @@ def add_untracked_jobs(stampfile, records):
             records.append(JobRecord.create_from_stamp(stamp))
 
 
-def parse_job_log(job, scheduler, testname, config):
-    """See if job log exists and parse it, or record the missing log."""
-    logfile = scheduler.jobid_logfilename(job.jobid, testname)
-    if os.path.isfile(logfile):
-        job.parse_output(logfile, config)
-    else:
-        job.exit_code = 1
-        job.error_string = "ERROR standard output of this job was not found."
+def purge_old_jobs(records, config):
+    """Remove old jobs from a JobRecords list."""
+    purgetime = int(time.time()) - 3600*24*int(config['AUTOCMS_LOG_LIFETIME'])
+    for job in records[:]:
+        if job.submit_time < purgetime:
+            records.remove(job)
+
+
+def parse_completed_job_logs(records, scheduler, testname, config):
+    """Check scheduler for completed jobs, and parse logs if they exist."""
+    jobids_to_check = [job.jobid for job in records if job.completed == False]
+    completed_jobids = scheduler.get_completed_jobs(jobids_to_check)
+    jobs_to_parse = [job for job in records if job.jobid in completed_jobids]
+    for job in jobs_to_parse:
+        job.completed = True
+        logpath = os.path.join(config['AUTOCMS_BASEDIR'], testname,
+                               job.logfile)
+        if os.path.isfile(logpath):
+            job.parse_output(testname, config)
+        else:
+            job.exit_code = 1
+            job.error_string = ("ERROR standard output of this job "
+                                "was not found.")

@@ -15,10 +15,12 @@ from autocms.harvest import (
     purge_old_log_files,
     append_new_stamps,
     purge_old_stamps,
-    add_untracked_jobs
+    add_untracked_jobs,
+    purge_old_jobs,
+    parse_completed_job_logs
 )
-from autocms.scheduler import Scheduler
-
+from autocms.scheduler import create_scheduler
+from autocms.submit import submit_and_stamp
 
 class TestRecordAndLogMaintenance(unittest.TestCase):
     """Test the maintenance of log files, stamps, and records"""
@@ -103,6 +105,55 @@ class TestRecordAndLogMaintenance(unittest.TestCase):
                 sfile.write(stamp)
         add_untracked_jobs(stampfile, records)
         self.assertEqual(len(records), 14)
+
+    def test_purge_old_jobs(self):
+        time.sleep(2)
+        log_lifetime = int(self.config['AUTOCMS_LOG_LIFETIME'])
+        stampfile = os.path.join(self.testdir, 'stest4')
+        append_new_stamps(stampfile, 'uscratch', self.config)
+        records = []
+        add_untracked_jobs(stampfile, records)
+        purge_old_jobs(records, self.config)
+        self.assertEqual(len(records),log_lifetime)
+
+class TestRecordHarvesting(unittest.TestCase):
+    """Comprehensive test submitting and then parsing jobs."""
+
+    def setUp(self):
+        self.config = load_configuration('autocms.cfg.example')
+        self.config['AUTOCMS_SCHEDULER'] = 'local'
+        # call the scratch directory 'uscratch' instead of 'scratch'
+        # so that in pathological cases one does not resolve to
+        # /scratch which is often used.
+        self.testdir = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                    'uscratch')
+        os.makedirs(self.testdir)
+        src_testscript = os.path.join(self.config['AUTOCMS_BASEDIR'], 
+                                      'tests/data/testscript.local')
+        dst_testscript = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                      'uscratch/uscratch.local')
+        shutil.copyfile(src_testscript, dst_testscript)
+        self.scheduler = create_scheduler('local', self.config)
+        for count in range(0, 4):
+            submit_and_stamp(count, 'uscratch', self.scheduler, self.config) 
+
+    def tearDown(self):
+        pass
+        shutil.rmtree(os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                   'uscratch'))
+
+    def test_parse_completed_job_logs(self):
+        time.sleep(2)
+        stampfile = os.path.join(self.testdir, 'stest')
+        append_new_stamps(stampfile, 'uscratch', self.config)
+        records = []
+        add_untracked_jobs(stampfile, records)
+        parse_completed_job_logs(records, self.scheduler, 
+                                 'uscratch', self.config)
+        self.assertEqual(len(records), 4)
+        for job in records:
+            self.assertEqual(int(job.exit_code), 0)
+            self.assertTrue(job.completed)
 
 
 if __name__ == '__main__':
