@@ -8,7 +8,11 @@ import os
 import re
 import time
 
-from .core import JobRecord
+from .core import (
+    JobRecord,
+    load_records,
+    save_records
+)
 from .scheduler import create_scheduler
 
 
@@ -103,3 +107,18 @@ def parse_completed_job_logs(records, scheduler, testname, config):
             job.exit_code = 1
             job.error_string = ("ERROR standard output of this job "
                                 "was not found.")
+
+
+def perform_test_harvesting(testname, config):
+    """Track new submitted jobs, parse logs, and purge old information."""
+    records = load_records(testname, config)
+    scheduler = create_scheduler(config['AUTOCMS_SCHEDULER'], config)
+    stampfile = os.path.join(config['AUTOCMS_BASEDIR'],
+                             testname, 'submission.stamps')
+    append_new_stamps(stampfile, testname, config)
+    add_untracked_jobs(stampfile, records)
+    parse_completed_job_logs(records, scheduler, testname, config)
+    purge_old_jobs(records, config)
+    purge_old_stamps(stampfile, config)
+    purge_old_log_files(testname, config)
+    save_records(records, testname, config)
