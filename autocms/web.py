@@ -2,6 +2,7 @@
 
 import os
 import time
+import re
 
 from .core import load_records
 
@@ -125,10 +126,10 @@ class AutoCMSWebpage(object):
     def __repr__(self):
         """Describe object id and page testname."""
         return ('<{0}.{1} object at {2} testname: {3}>'.format(
-                    self.__class__.__module__,
-                    self.__class__.__name__,
-                    hex(id(self)),
-                    self.testname))
+                self.__class__.__module__,
+                self.__class__.__name__,
+                hex(id(self)),
+                self.testname))
 
     def __str__(self):
         """Return page destination and text."""
