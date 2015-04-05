@@ -85,10 +85,10 @@ class AutoCMSWebpage(object):
             min_time = int(time.time()) - t*3600
             failures = sum(1 for job in self.records
                            if not job.is_success() and
-                           job.start_time > min_time )
+                           job.start_time > min_time)
             successes = sum(1 for job in self.records
                             if job.is_success() and
-                            job.start_time > min_time )
+                            job.start_time > min_time)
             self.page += ("Successful jobs in the last {0} hours: {1}"
                           "<br />\n".format(t, successes))
             self.page += ("Failed jobs in the last {0} hours: {1}"
@@ -125,19 +125,19 @@ class AutoCMSWebpage(object):
     def __repr__(self):
         """Describe object id and page testname."""
         return ('<{0}.{1} object at {2} testname: {3}>'.format(
-                    self.__class__.__module__,
-                    self.__class__.__name__,
-                    hex(id(self)),
-                    self.testname))
+                self.__class__.__module__,
+                self.__class__.__name__,
+                hex(id(self)),
+                self.testname))
 
     def __str__(self):
         """Return page destination and text."""
         return ('{0}.{1} object.\n\nTest Name: {2}\n\n'
                 'Page content:\n\n{3}'.format(
-                    self.__class__.__module__,
-                    self.__class__.__name__,
-                    self.testname,
-                    self.page))
+                self.__class__.__module__,
+                self.__class__.__name__,
+                self.testname,
+                self.page))
 
 
 def produce_default_webpage(records, testname, config):
