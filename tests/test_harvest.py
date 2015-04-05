@@ -79,6 +79,16 @@ class TestLogFilesAndStamps(unittest.TestCase):
             recorded_stamps = shandle.read().splitlines()
         self.assertEqual(len(recorded_stamps),10)
 
+    def test_purge_old_stamps(self):
+        time.sleep(2)
+        log_lifetime = int(self.config['AUTOCMS_LOG_LIFETIME'])
+        stampfile = os.path.join(self.testdir, 'stest2')
+        append_new_stamps(stampfile, 'uscratch', self.config)
+        purge_old_stamps(stampfile, self.config)
+        with open(stampfile) as shandle:
+            recorded_stamps = shandle.read().splitlines()
+        self.assertEqual(len(recorded_stamps),log_lifetime) 
+
 
 if __name__ == '__main__':
     unittest.main()

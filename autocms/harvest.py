@@ -50,23 +50,19 @@ def append_new_stamps(stampfile, testname, config):
             os.remove(newstamp_filename)
 
 
-def create_records_from_stamps(records, stamplist):
-    """Create new job records from submission stamps."""
-    # get rid of this function
-    for stamp in stamplist:
-        records.append(JobRecord.create_from_stamp(stamp))
-
-
-def purge_old_stamps(stamplist, purgetime):
-    """Remove old stamps from the list, return truncated list"""
+def purge_old_stamps(stampfile, config):
+    """Remove old stamps from a merged stamp file."""
+    purgetime = int(time.time()) - 3600*24*int(config['AUTOCMS_LOG_LIFETIME'])
+    with open(stampfile) as shandle:
+        stamplist = [line.strip() for line in shandle.readlines()]
     newstamplist = []
+    testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
     for line in stamplist:
-        if len(line.split()) > 1:
-            timestamp = int(line.split()[1])
-            if timestamp >= purgetime:
-                newstamplist.append(line)
-    return newstamplist
-
+        if int(line.split()[2]) > purgetime:
+            newstamplist.append(line)
+    with open(stampfile,'w') as shandle:
+        for line in newstamplist:
+            shandle.write(line)
 
 def write_stamp_file(stamplist, stampfile):
     """Write a list of submission stamps to a file."""
