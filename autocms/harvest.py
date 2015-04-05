@@ -36,17 +36,17 @@ def purge_old_log_files(testname, config):
             os.remove(logfile)
 
 
-def register_new_stamps(ls_result, stamp_filename):
-    """Find new submission stamp files, append the stamp, and delete.
-
-    The working directory of the script should be that of the stamps."""
-    newstamp_list = (nsf for nsf in ls_result
-                        if re.match(r'newstamp', nsf))
-    with open(stamp_filename, 'a') as sfile:
-        for newstamp_filename in newstamp_list:
+def append_new_stamps(stampfile, testname, config):
+    """Find new submission stamp files, append the stamp, and delete."""
+    stamplist = []
+    testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
+    for item in os.listdir(testdir):
+        if re.match(r'^stamp\.[0-9]+\.[0-9]+',item):
+            stamplist.append(os.path.join(testdir, item))
+    with open(stampfile, 'a') as shandle:
+        for newstamp_filename in stamplist:
             with open(newstamp_filename, 'r') as nsfile:
-                newstamp = nsfile.read().strip()
-            print>>sfile, newstamp
+                shandle.write(nsfile.read() + '\n')
             os.remove(newstamp_filename)
 
 
