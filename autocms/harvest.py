@@ -54,9 +54,8 @@ def purge_old_stamps(stampfile, config):
     """Remove old stamps from a merged stamp file."""
     purgetime = int(time.time()) - 3600*24*int(config['AUTOCMS_LOG_LIFETIME'])
     with open(stampfile) as shandle:
-        stamplist = [line.strip() for line in shandle.readlines()]
+        stamplist = shandle.readlines()
     newstamplist = []
-    testdir = os.path.join(config['AUTOCMS_BASEDIR'], testname)
     for line in stamplist:
         if int(line.split()[2]) > purgetime:
             newstamplist.append(line)

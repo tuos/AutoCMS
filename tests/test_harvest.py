@@ -14,7 +14,6 @@ from autocms.harvest import (
     list_log_files,
     purge_old_log_files,
     append_new_stamps,
-    create_records_from_stamps,
     write_stamp_file,
     parse_job_log,
     purge_old_stamps
