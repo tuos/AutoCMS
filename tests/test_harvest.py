@@ -14,15 +14,14 @@ from autocms.harvest import (
     list_log_files,
     purge_old_log_files,
     append_new_stamps,
-    write_stamp_file,
-    parse_job_log,
-    purge_old_stamps
+    purge_old_stamps,
+    add_untracked_jobs
 )
 from autocms.scheduler import Scheduler
 
 
-class TestLogFilesAndStamps(unittest.TestCase):
-    """Test the maintenance of log files and stamps."""
+class TestRecordAndLogMaintenance(unittest.TestCase):
+    """Test the maintenance of log files, stamps, and records"""
 
     def setUp(self):
         self.config = load_configuration('autocms.cfg.example')
@@ -86,7 +85,24 @@ class TestLogFilesAndStamps(unittest.TestCase):
         purge_old_stamps(stampfile, self.config)
         with open(stampfile) as shandle:
             recorded_stamps = shandle.read().splitlines()
-        self.assertEqual(len(recorded_stamps),log_lifetime) 
+        self.assertEqual(len(recorded_stamps),log_lifetime)
+
+    def test_add_untracked_jobs(self):
+        stampfile = os.path.join(self.testdir, 'stest3')
+        append_new_stamps(stampfile, 'uscratch', self.config)
+        records = []
+        add_untracked_jobs(stampfile, records)
+        self.assertEqual(len(records), 10)
+        # make a few more stamps and add them
+        with open(stampfile,'a') as sfile:
+            mtime = int(time.time())
+            for count in range(0,4):
+                stamp = (str(count + 200) + ' ' + str(count*100 + 5) +
+                         ' ' + str(mtime) + ' ' + '0 ' +
+                         'test_a_' + str(count) + '.log\n')
+                sfile.write(stamp)
+        add_untracked_jobs(stampfile, records)
+        self.assertEqual(len(records), 14)
 
 
 if __name__ == '__main__':

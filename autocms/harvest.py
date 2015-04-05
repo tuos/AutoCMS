@@ -63,11 +63,20 @@ def purge_old_stamps(stampfile, config):
         for line in newstamplist:
             shandle.write(line)
 
-def write_stamp_file(stamplist, stampfile):
-    """Write a list of submission stamps to a file."""
-    with open(stampfile, 'w') as handle:
-        for stamp in stamplist:
-            print>>handle, stamp
+
+def add_untracked_jobs(stampfile, records):
+    """Add new jobs to a JobRecords list from stamps.
+
+    If the stamp corresponds to a job already in the list, it is not added."""
+    jobkeys = [str(job.seq) + '.' + str(job.submit_time) for job in records]
+    with open(stampfile) as shandle:
+        stamplist = shandle.readlines()
+    for stamp in stamplist:
+        stampkey = stamp.split()[0] + '.' + stamp.split()[2]
+        if stampkey in jobkeys:
+            continue
+        else:
+            records.append(JobRecord.create_from_stamp(stamp))
 
 
 def parse_job_log(job, scheduler, testname, config):
