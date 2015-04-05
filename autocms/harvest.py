@@ -107,7 +107,8 @@ def parse_completed_job_logs(records, scheduler, testname, config):
             job.exit_code = 1
             job.error_string = ("ERROR standard output of this job "
                                 "was not found.")
-
+            job.start_time = job.submit_time
+            job.end_time = job.submit_time
 
 def perform_test_harvesting(testname, config):
     """Track new submitted jobs, parse logs, and purge old information."""
