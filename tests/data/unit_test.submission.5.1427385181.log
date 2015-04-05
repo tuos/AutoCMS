@@ -1,5 +1,0 @@
-Job submission failed at Thu Mar 26 10:53:01 CDT 2015
-On node vmps65
-Submission command output:
-
-sbatch: error: Batch job submission failed: Access/permission denied
