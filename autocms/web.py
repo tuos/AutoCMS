@@ -3,7 +3,7 @@
 import os
 import time
 
-from .core import (load_records, save_records)
+from .core import load_records
 
 
 class AutoCMSWebpage(object):
@@ -35,7 +35,7 @@ class AutoCMSWebpage(object):
                 self.testname,
                 self.config['AUTOCMS_SITE_NAME'],
                 self.testname,
-                time.strftime("%c (%Z)") )
+                time.strftime("%c (%Z)"))
         )
 
     def end_page(self):
@@ -47,8 +47,8 @@ class AutoCMSWebpage(object):
         webpath = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
         if not os.path.exists(webpath):
             os.makedirs(webpath)
-        # write a 'index.html.new' file and then rename it to 
-        # 'index.html'. This prevents users from viewing a half 
+        # write a 'index.html.new' file and then rename it to
+        # 'index.html'. This prevents users from viewing a half
         # completed webpage when the page refreshes.
         newpagepath = os.path.join(webpath, 'index.html.new')
         pagepath = os.path.join(webpath, 'index.html')
@@ -61,9 +61,9 @@ class AutoCMSWebpage(object):
 
         Reads a 'description.html' file in the test directory, or
         reports in the webpage that no description was found."""
-        desc_file  = os.path.join(self.config['AUTOCMS_BASEDIR'],
-                                  self.testname,
-                                  "description.html")
+        desc_file = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                 self.testname,
+                                 "description.html")
         if os.path.isfile(desc_file):
             with open(desc_file) as handle:
                 description = handle.read()
@@ -84,15 +84,15 @@ class AutoCMSWebpage(object):
         for t in times:
             min_time = int(time.time()) - t*3600
             failures = sum(1 for job in self.records
-                               if not job.is_success() and
-                                   job.start_time > min_time )
-            successes = sum( 1 for job in self.records
-                               if job.is_success() and
-                                   job.start_time > min_time )
+                           if not job.is_success() and
+                           job.start_time > min_time )
+            successes = sum(1 for job in self.records
+                            if job.is_success() and
+                            job.start_time > min_time )
             self.page += ("Successful jobs in the last {0} hours: {1}"
                           "<br />\n".format(t, successes))
             self.page += ("Failed jobs in the last {0} hours: {1}"
-                           "<br />\n".format(t, failures))
+                          "<br />\n".format(t, failures))
             # print success rates if jobs have actually run
             if successes + failures > 0:
                 rate = float(100 * successes) / float(failures + successes)
@@ -123,20 +123,20 @@ class AutoCMSWebpage(object):
         self.page += '<img src="{0}" /></div>\n'.format(image_file)
 
     def __repr__(self):
-        """Describe object id and page destination path."""
-        return '<{0}.{1} object at {2} output_path: {3}>'.format(
-                   self.__class__.__module__,
-                   self.__class__.__name__,
-                   hex(id(self)),
-                   self.output_path)
+        """Describe object id and page testname."""
+        return ('<{0}.{1} object at {2} testname: {3}>'.format(
+                    self.__class__.__module__,
+                    self.__class__.__name__,
+                    hex(id(self)),
+                    self.testname))
 
     def __str__(self):
         """Return page destination and text."""
-        return ('{0}.{1} object.\n\nDestination Path: {2}\n\n'
+        return ('{0}.{1} object.\n\nTest Name: {2}\n\n'
                 'Page content:\n\n{3}'.format(
                     self.__class__.__module__,
                     self.__class__.__name__,
-                    self.output_path,
+                    self.testname,
                     self.page))
 
 
