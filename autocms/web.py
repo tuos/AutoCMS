@@ -50,8 +50,9 @@ class AutoCMSWebpage(object):
         self.page += '</body></html>'
 
     def write_page(self):
-        """Writes the web page and styleshee to file."""
+        """Writes the web page and stylesheet to file, copy logs"""
         self._write_page_stylesheet()
+        self._copy_job_logs()
         webpath = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
         if not os.path.exists(webpath):
             os.makedirs(webpath)
@@ -71,6 +72,22 @@ class AutoCMSWebpage(object):
                                       'default.css')
         dst_stylesheet = os.path.join(webpath, 'autocms.css')
         shutil.copyfile(src_stylesheet, dst_stylesheet)
+
+    def _copy_job_logs(self):
+        """Copy job logs with displayed links to webdir."""
+        basedir = os.path.join(self.config['AUTOCMS_BASEDIR'], self.testname)
+        webdir = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
+        for log in self.logs_to_copy:
+            src_file = os.path.join(basedir, log)
+            dst_file = os.path.join(webdir, log)
+            if not os.path.isfile(src_file):
+                continue
+            # dont copy logs already at the destination 
+            # not only does it waste time, they will not be 
+            # removed until much later as their mtime is now
+            if os.path.isfile(dst_file):
+                continue
+            shutil.copy(src_file, dst_file)
 
     def add_test_description(self, width):
         """Writes the webpage description.
@@ -148,6 +165,7 @@ class AutoCMSWebpage(object):
         and the string 'itemheader' is displayed for each item."""
         if not records:
             return
+        self.logs_to_copy += [job.logfile for job in records]
         self.page += '<div class="textbox" style="max-width:95%;">\n'
         self.page += ('<div class="textbox-header">'
                       '{0}</div><br />\n'.format(header))
@@ -189,7 +207,6 @@ class AutoCMSWebpage(object):
         itemheader = '<span style="font-weight:bold">Error </span>'
         self.add_job_listing(records_to_print, header,      
                              itemheader, **attr_desc)
-        self.logs_to_copy += records_to_print
 
     def add_divider(self):
         """Write a <hr /> divider and clear floats."""
