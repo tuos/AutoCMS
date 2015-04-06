@@ -3,9 +3,12 @@
 import os
 import time
 import re
+import shutil
 
 from .core import load_records
-
+from .plot import (
+    create_run_and_waittime_plot
+)
 
 class AutoCMSWebpage(object):
     """Class for building and writing a page to report on an AutoCMS test."""
@@ -27,7 +30,7 @@ class AutoCMSWebpage(object):
         self.page += (
             "<html><head>\n"
             "<title>{0} Internal Site Test: {1}</title>\n"
-            "<style>div.fcontent {{float:left; margin-right:4em;}}</style>\n"
+            '<link rel="stylesheet" type="text/css" href="autocms.css">'
             "</head>\n"
             "<body>\n"
             "<h2>{2} Internal Site Test: {3}</h2>\n"
@@ -39,20 +42,13 @@ class AutoCMSWebpage(object):
                 time.strftime("%c (%Z)"))
         )
 
-    def add_mobile_style_fix(self):
-        """Make floating elements as wide as the screen on mobiles."""
-        self.page += ('<style> @media screen and '
-                      '(max-device-width: 50em){\n'
-                      '    div.fcontent { width:100% !important; \n'
-                      '                   float:none!important; }\n'
-                      '}</style>\n')
-
     def end_page(self):
         """Close webpage body"""
         self.page += '</body></html>'
 
     def write_page(self):
-        """Writes the web page to file."""
+        """Writes the web page and styleshee to file."""
+        self._write_page_stylesheet()
         webpath = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
         if not os.path.exists(webpath):
             os.makedirs(webpath)
@@ -65,31 +61,48 @@ class AutoCMSWebpage(object):
             output_file.write(self.page)
         os.rename(newpagepath, pagepath)
 
-    def add_test_description(self):
+    def _write_page_stylesheet(self):
+        """Copy the default or custom test stylesheet to the webdir."""
+        webpath = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
+        src_stylesheet = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                      'default.css')
+        dst_stylesheet = os.path.join(webpath, 'autocms.css')
+        shutil.copyfile(src_stylesheet, dst_stylesheet)
+
+    def add_test_description(self, width):
         """Writes the webpage description.
+
+        'width' is the max-width of the description box.
 
         Reads a 'description.html' file in the test directory, or
         reports in the webpage that no description was found."""
         desc_file = os.path.join(self.config['AUTOCMS_BASEDIR'],
                                  self.testname,
                                  "description.html")
+        self.page += ('<div class="textbox" '
+                      'style="max-width:{0}%;">\n'.format(width))
+        self.page += ('<div class="textbox-header">Test Description:'
+                      '</div><br /><br />\n')
         if os.path.isfile(desc_file):
             with open(desc_file) as handle:
                 description = handle.read()
-            self.page += description + '<br />\n'
+            self.page += description + '\n'
         else:
-            self.page += "No test description found.<br />\n"
+            self.page += "No test description found.\n"
+        self.page += '</div>\n'
 
     def add_job_failure_rates(self, width, times, warn_rate):
         """Writes basic statistics on failed and successful jobs.
 
         Arguments:
-            width - width of element on the page in percent
+            width - max-width of element on the page in percent
             times - list of time intervals in hours
             warn_rate - percent of jobs failing below which to display
                         text in red"""
-        self.page += ('<div class="fcontent" '
-                      'style="width:{0}%;">'.format(width))
+        self.page += ('<div class="textbox" '
+                      'style="max-width:{0}%;">\n'.format(width))
+        self.page += ('<div class="textbox-header">'
+                      'Recent job success rates:</div>\n')
         for t in times:
             min_time = int(time.time()) - t*3600
             failures = sum(1 for job in self.records
@@ -98,37 +111,35 @@ class AutoCMSWebpage(object):
             successes = sum(1 for job in self.records
                             if job.is_success() and
                             job.start_time > min_time)
-            self.page += ("Successful jobs in the last {0} hours: {1}"
-                          "<br />\n".format(t, successes))
-            self.page += ("Failed jobs in the last {0} hours: {1}"
-                          "<br />\n".format(t, failures))
+            self.page += ("<br /><br />\nSuccessful jobs in the last "
+                          "{0} hours: {1}".format(t, successes))
+            self.page += ("<br />\nFailed jobs in the last "
+                          "{0} hours: {1}".format(t, failures))
             # print success rates if jobs have actually run
             if successes + failures > 0:
                 rate = float(100 * successes) / float(failures + successes)
-                self.page += "Success rate ({0} hours): ".format(t)
+                self.page += "<br />\nSuccess rate ({0} hours): ".format(t)
                 if rate < warn_rate:
                     self.page += '<span style="color:red;">'
                 self.page += "{0:.2f}%".format(rate)
                 if rate < warn_rate:
                     self.page += '</span>'
-                self.page += '<br />\n'
-            self.page += '<br />\n'
         self.page += '</div>\n'
 
     def add_divider(self):
-        """Write a <hr /> divider and spacing to filehandle webpage."""
-        self.page += '<br style="clear:both;"/>\n<hr />\n<br />\n'
+        """Write a <hr /> divider and clear floats."""
+        self.page += '<hr style="clear:both;"/>\n'
 
 
     def add_floating_image(self, width, image_file):
         """Adds a floating image to open filehandle webpage.
 
         Arguments:
-            width - the minimum width of the image, in percent
+            width - the maximum width of the image, in percent
             image_file - the name of the path to the image relative
                          to self.path"""
-        self.page += ('<div class="fcontent" '
-                      'style="width:{0}%;">\n'.format(width))
+        self.page += ('<div class="plotbox" '
+                      'style="max-width:{0}%;">\n'.format(width))
         self.page += '<img src="{0}" /></div>\n'.format(image_file)
 
     def __repr__(self):
@@ -151,11 +162,16 @@ class AutoCMSWebpage(object):
 
 def produce_default_webpage(records, testname, config):
     """Create a basic test webpage applicable to any AutoCMS test."""
+    webpath = os.path.join(config['AUTOCMS_WEBDIR'], testname)
+    runtime_plot_path = os.path.join(webpath, 'runtime.png')
+    recent_records = [job for job in records
+                      if job.start_time > int(time.time()) - 3600*24]
+    create_run_and_waittime_plot(recent_records, (8,4), runtime_plot_path)
     webpage = AutoCMSWebpage(records, testname, config)
     webpage.begin_page()
-    webpage.add_mobile_style_fix()
     webpage.add_divider()
-    webpage.add_test_description()
+    webpage.add_test_description(50)
+    webpage.add_floating_image(45, 'runtime.png')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
     webpage.add_divider()
