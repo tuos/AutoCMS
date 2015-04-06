@@ -5,7 +5,7 @@ import time
 import re
 import shutil
 
-from .core import load_records
+from .core import (load_records, __version__)
 from .plot import (
     create_run_and_waittime_plot
 )
@@ -28,18 +28,20 @@ class AutoCMSWebpage(object):
     def begin_page(self):
         """Write head and open webpage body, state name and time."""
         self.page += (
-            "<html><head>\n"
-            "<title>{0} Internal Site Test: {1}</title>\n"
+            '<html><head>\n'
+            '<title>{0} Site Test: {1}</title>\n'
             '<link rel="stylesheet" type="text/css" href="autocms.css">'
-            "</head>\n"
-            "<body>\n"
-            "<h2>{2} Internal Site Test: {3}</h2>\n"
-            "Page generated at: {4}\n".format(
+            '</head>\n<body>\n<div class="page-header-box">\n'
+            '<div class="timestamp">{2}</div>\n'
+            '<div class="version">AutoCMS version {3}</div>\n'
+            '{4} Site Test: {5}'
+            '</div>\n'.format(
                 self.config['AUTOCMS_SITE_NAME'],
                 self.testname,
+                time.strftime("%c (%Z)"),
+                __version__,
                 self.config['AUTOCMS_SITE_NAME'],
-                self.testname,
-                time.strftime("%c (%Z)"))
+                self.testname)
         )
 
     def end_page(self):
@@ -166,15 +168,15 @@ def produce_default_webpage(records, testname, config):
     runtime_plot_path = os.path.join(webpath, 'runtime.png')
     recent_records = [job for job in records
                       if job.start_time > int(time.time()) - 3600*24]
-    create_run_and_waittime_plot(recent_records, (8,4), runtime_plot_path)
     webpage = AutoCMSWebpage(records, testname, config)
     webpage.begin_page()
     webpage.add_divider()
     webpage.add_test_description(50)
-    webpage.add_floating_image(45, 'runtime.png')
+    if len(recent_records) > 1:
+        create_run_and_waittime_plot(recent_records, (8,4), runtime_plot_path)
+        webpage.add_floating_image(45, 'runtime.png')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
-    webpage.add_divider()
     webpage.end_page()
     webpage.write_page()
 

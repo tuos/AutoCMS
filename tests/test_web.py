@@ -38,7 +38,10 @@ class TestWebPageCreation(unittest.TestCase):
         produce_default_webpage(records, 'uscratch', self.config)
         webpage_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
                                     'uscratch/index.html')
+        stylesheet_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
+                                    'uscratch/autocms.css')
         self.assertTrue(os.path.isfile(webpage_path))
+        self.assertTrue(os.path.isfile(stylesheet_path))
         with open(webpage_path) as webpage:
             webpage_contents = webpage.read()
         self.assertTrue(re.search(self.page_description, webpage_contents))
