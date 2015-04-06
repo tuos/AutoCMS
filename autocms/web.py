@@ -24,6 +24,7 @@ class AutoCMSWebpage(object):
         self.testname = testname
         self.config = config
         self.page = ""
+        self.logs_to_copy = []
 
     def begin_page(self):
         """Write head and open webpage body, state name and time."""
@@ -128,6 +129,68 @@ class AutoCMSWebpage(object):
                     self.page += '</span>'
         self.page += '</div>\n'
 
+    def add_job_listing(self, records, header, itemheader, **attr_desc):
+        """Display information a list of JobRecords.
+
+        All JobRecords in the list 'records' are reported.
+        By default, the start time, node, and error type are shown.
+        If records is empty nothing is displayed.
+
+        Additional jobrecord attributes may be shown by adding 
+        keyword arguments of the form attribute=description, where
+        attribute is the JobRecord attribute and description is a 
+        string which will be displayed preceding the attribute value.
+
+        A link is given to the job log, and the log is appended to the
+        logs_to_copy list.
+
+        The string 'header' is displayed at the top of the text box,
+        and the string 'itemheader' is displayed for each item."""
+        if not records:
+            return
+        self.page += '<div class="textbox" style="max-width:95%;">\n'
+        self.page += ('<div class="textbox-header">'
+                      '{0}</div><br />\n'.format(header))
+        records.sort(key=lambda x: x.start_time, reverse=True)
+        for counter, job in enumerate(records):
+            self.page += '<br />\n'
+            self.page += '{0}&nbsp;{1}:<br />\n'.format(itemheader, counter+1)
+            self.page += ('Start time: {0} <br />\n'.format(
+                          time.strftime('%c (%Z)', 
+                              time.localtime(job.start_time))))
+            self.page += 'Node name: {0} <br />\n'.format(job.node)
+            self.page += ('Log file: <a href="{0}">{1}</a>'
+                          '<br />\n'.format(job.logfile, job.logfile))
+            self.page += 'Error Type: {0} <br />\n'.format(job.error_string)
+            for attr,desc in attr_desc.viewitems():
+                if not hasattr(job, attr):
+                    continue
+                self.page += desc + ": " + getattr(job,attr) + '<br />\n'
+
+    def add_failed_job_listing(self, hours, **attr_desc):
+        """Display information about failed jobs.
+
+        All completed jobs not returning is_success True with 
+        start times within 'hours' of the present are listed.
+        By default, the start time, node, and error type are shown.
+ 
+        Additional jobrecord attributes may be shown by adding 
+        keyword arguments of the form attribute=description, where
+        attribute is the JobRecord attribute and description is a 
+        string which will be displayed preceding the attribute value.
+
+        A link is given to the job log, and the log is appended to the
+        logs_to_copy list."""
+        min_time = int(time.time()) - 3600*hours
+        records_to_print = [job for job in self.records if
+                            job.completed and job.start_time > min_time
+                            and not job.is_success()]
+        header = 'Failed jobs from the last {0}  hours:'.format(hours)
+        itemheader = '<span style="font-weight:bold">Error </span>'
+        self.add_job_listing(records_to_print, header,      
+                             itemheader, **attr_desc)
+        self.logs_to_copy += records_to_print
+
     def add_divider(self):
         """Write a <hr /> divider and clear floats."""
         self.page += '<hr style="clear:both;"/>\n'
@@ -177,6 +240,8 @@ def produce_default_webpage(records, testname, config):
         webpage.add_floating_image(45, 'runtime.png')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
+    webpage.add_divider()
+    webpage.add_failed_job_listing(24)
     webpage.end_page()
     webpage.write_page()
 
