@@ -27,7 +27,7 @@ class AutoCMSWebpage(object):
         self.page += (
             "<html><head>\n"
             "<title>{0} Internal Site Test: {1}</title>\n"
-            "<style>div.fcontent {{ float:left;}}</style>\n"
+            "<style>div.fcontent {{float:left; margin-right:4em;}}</style>\n"
             "</head>\n"
             "<body>\n"
             "<h2>{2} Internal Site Test: {3}</h2>\n"
@@ -39,8 +39,16 @@ class AutoCMSWebpage(object):
                 time.strftime("%c (%Z)"))
         )
 
+    def add_mobile_style_fix(self):
+        """Make floating elements as wide as the screen on mobiles."""
+        self.page += ('<style> @media screen and '
+                      '(max-device-width: 50em){\n'
+                      '    div.fcontent { width:100% !important; \n'
+                      '                   float:none!important; }\n'
+                      '}</style>\n')
+
     def end_page(self):
-        """Close webpage body."""
+        """Close webpage body"""
         self.page += '</body></html>'
 
     def write_page(self):
@@ -81,7 +89,7 @@ class AutoCMSWebpage(object):
             warn_rate - percent of jobs failing below which to display
                         text in red"""
         self.page += ('<div class="fcontent" '
-                      'style="min-width:{0}%;">'.format(width))
+                      'style="width:{0}%;">'.format(width))
         for t in times:
             min_time = int(time.time()) - t*3600
             failures = sum(1 for job in self.records
@@ -120,7 +128,7 @@ class AutoCMSWebpage(object):
             image_file - the name of the path to the image relative
                          to self.path"""
         self.page += ('<div class="fcontent" '
-                      'style="min-width:{0}%;">\n'.format(width))
+                      'style="width:{0}%;">\n'.format(width))
         self.page += '<img src="{0}" /></div>\n'.format(image_file)
 
     def __repr__(self):
@@ -145,6 +153,7 @@ def produce_default_webpage(records, testname, config):
     """Create a basic test webpage applicable to any AutoCMS test."""
     webpage = AutoCMSWebpage(records, testname, config)
     webpage.begin_page()
+    webpage.add_mobile_style_fix()
     webpage.add_divider()
     webpage.add_test_description()
     webpage.add_divider()
