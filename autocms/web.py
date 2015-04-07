@@ -4,6 +4,7 @@ import os
 import time
 import re
 import shutil
+import importlib
 
 from .core import (load_records, __version__)
 from .plot import (
@@ -26,8 +27,15 @@ class AutoCMSWebpage(object):
         self.page = ""
         self.logs_to_copy = []
 
-    def begin_page(self):
-        """Write head and open webpage body, state name and time."""
+    def begin_page(self,descriptive_name=None):
+        """Write head and open webpage body, state name and time.
+
+        A descriptive name string to be printed at the top of the page
+        and header may optionally be given."""
+        if descriptive_name:
+            name_to_print = descriptive_name
+        else:
+            name_to_print = self.testname
         self.page += (
             '<html><head>\n'
             '<title>{0} Site Test: {1}</title>\n'
@@ -40,9 +48,9 @@ class AutoCMSWebpage(object):
             '<div class="version">AutoCMS version {5}</div>\n'
             '</div>\n'.format(
                 self.config['AUTOCMS_SITE_NAME'],
-                self.testname,
+                name_to_print,
                 self.config['AUTOCMS_SITE_NAME'],
-                self.testname,
+                name_to_print,
                 time.strftime("%c (%Z)"),
                 __version__)
         )
@@ -358,4 +366,13 @@ def purge_old_web_logs(testname, config):
 def perform_test_reporting(testname, config):
     """Analyze job records for given test and create webpage report."""
     records = load_records(testname, config)
-    produce_default_webpage(records, testname, config)
+    # use a custom webpage if the test has configured one
+    produce_webpage = produce_default_webpage
+    try:
+        test_custom = importlib.import_module('autocms.custom.' + testname)
+        if hasattr(test_custom, 'produce_webpage'):
+            produce_webpage = getattr(test_custom, 'produce_webpage')
+    except ImportError:
+        print "nope!"
+        pass
+    produce_webpage(records, testname, config)

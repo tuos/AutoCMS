@@ -37,7 +37,7 @@ main ()
   #-----------------------------------------------------------------------
   printbanner "Sleeping for a while"
 
-  SLEEPTIME=$(( $RANDOM % 10 ))
+  SLEEPTIME=$(( $RANDOM % 60 ))
   echo "EXAMPLE_TEST: Sleeping for $SLEEPTIME seconds"
   sleep $SLEEPTIME
 
