@@ -120,7 +120,9 @@ class AutoCMSWebpage(object):
             records - list of JobRecords to consider
             attr - JobRecord attribute to count
             header - html string to go above start of table but inside textbox
-            width - max width of textbox"""
+            width - max width of textbox
+
+        Don't add anything to the page if records is empty"""
         records_with_attr = (job for job in records if hasattr(job, attr))
         attr_counts = dict()
         for job in records_with_attr:
@@ -129,6 +131,8 @@ class AutoCMSWebpage(object):
                 attr_counts[key] += 1
             else:
                 attr_counts[key] = 1 
+        if not attr_counts:
+            return
         self.page += ('<div class="textbox" '
                       'style="max-width:{0}%;">\n'.format(width))
         self.page += '{0}\n<table>\n'.format(header)
@@ -153,6 +157,23 @@ class AutoCMSWebpage(object):
                   '<br />(previous {0} hours)<br />'
                   '<br />\n<table>'.format(hours))
         self.add_count_jobs_by_attribute(failures, 'node', header, width)
+
+    def add_failures_by_reason(self, width, hours):
+        """Writes a list of error strings by number of errors.
+
+        Looks at only jobs starting in the last 'hours' hours.
+
+        Does not do anything if no jobs have failed in the last hours."""
+        min_time = int(time.time()) - 3600*hours
+        failures = (job for job in self.records if
+                        job.completed and not job.is_success() and
+                        job.start_time > min_time)
+        header = ('<div class="textbox-header">'
+                  'Number of failed jobs by reason:</div>\n'
+                  '<br />(previous {0} hours)<br />'
+                  '<br />\n<table>'.format(hours))
+        self.add_count_jobs_by_attribute(failures, 'error_string',
+                                         header, width)
 
     def add_job_failure_rates(self, width, times, warn_rate):
         """Writes basic statistics on failed and successful jobs.
@@ -300,7 +321,8 @@ def produce_default_webpage(records, testname, config):
         webpage.add_floating_image(45, 'runtime.png')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
-    webpage.add_failures_by_node(30, 24)
+    webpage.add_failures_by_node(25, 24)
+    webpage.add_failures_by_reason(40, 24)
     webpage.add_divider()
     webpage.add_failed_job_listing(24)
     webpage.end_page()
