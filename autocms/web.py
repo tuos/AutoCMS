@@ -277,15 +277,19 @@ class AutoCMSWebpage(object):
         self.page += '<hr style="clear:both;"/>\n'
 
 
-    def add_floating_image(self, width, image_file):
+    def add_floating_image(self, width, image_file, description=None):
         """Adds a floating image to open filehandle webpage.
 
         Arguments:
             width - the maximum width of the image, in percent
             image_file - the name of the path to the image relative
-                         to self.path"""
+                         to self.path
+            description - banner to print above the image"""
         self.page += ('<div class="plotbox" '
                       'style="max-width:{0}%;">\n'.format(width))
+        if description:
+            self.page += ('<div class="plotbox-header">'
+                          '{0}</div>\n'.format(description))
         self.page += '<img src="{0}" /></div>\n'.format(image_file)
 
     def __repr__(self):
@@ -310,15 +314,19 @@ def produce_default_webpage(records, testname, config):
     """Create a basic test webpage applicable to any AutoCMS test."""
     webpath = os.path.join(config['AUTOCMS_WEBDIR'], testname)
     runtime_plot_path = os.path.join(webpath, 'runtime.png')
-    recent_records = [job for job in records
-                      if job.start_time > int(time.time()) - 3600*24]
+    recent_successes = [job for job in records
+                        if job.start_time > int(time.time()) - 3600*24 and
+                        job.completed and job.is_success()]
     webpage = AutoCMSWebpage(records, testname, config)
     webpage.begin_page()
     webpage.add_divider()
     webpage.add_test_description(50)
-    if len(recent_records) > 1:
-        create_run_and_waittime_plot(recent_records, (8,4), runtime_plot_path)
-        webpage.add_floating_image(45, 'runtime.png')
+    if len(recent_successes) > 1:
+        plot_desc = ('Successful job running and waiting times '
+                     '(last 24 hours):')
+        create_run_and_waittime_plot(recent_successes, (8,4), 
+                                     runtime_plot_path)
+        webpage.add_floating_image(45, 'runtime.png', plot_desc)
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
     webpage.add_failures_by_node(25, 24)

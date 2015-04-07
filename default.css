@@ -65,6 +65,14 @@
     color: rgb(40,70,90);
 }
 
+.plotbox-header {
+    font-weight: bold;
+    font-size: 1.2em;
+    display: block;
+    padding: 0.5em;
+    color: rgb(40,70,90);
+}
+
 hr {
     height: 1em;
     border: 0;
