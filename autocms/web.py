@@ -32,17 +32,19 @@ class AutoCMSWebpage(object):
             '<html><head>\n'
             '<title>{0} Site Test: {1}</title>\n'
             '<link rel="stylesheet" type="text/css" href="autocms.css">'
+            '<meta name="viewport" content="width=device-width, '
+            'initial-scale=1">'
             '</head>\n<body>\n<div class="page-header-box">\n'
-            '<div class="timestamp">{2}</div>\n'
-            '<div class="version">AutoCMS version {3}</div>\n'
-            '{4} Site Test: {5}'
+            '{2} Site Test: {3}'
+            '<div class="timestamp">{4}</div>\n'
+            '<div class="version">AutoCMS version {5}</div>\n'
             '</div>\n'.format(
                 self.config['AUTOCMS_SITE_NAME'],
                 self.testname,
-                time.strftime("%c (%Z)"),
-                __version__,
                 self.config['AUTOCMS_SITE_NAME'],
-                self.testname)
+                self.testname,
+                time.strftime("%c (%Z)"),
+                __version__)
         )
 
     def end_page(self):
@@ -82,8 +84,8 @@ class AutoCMSWebpage(object):
             dst_file = os.path.join(webdir, log)
             if not os.path.isfile(src_file):
                 continue
-            # dont copy logs already at the destination 
-            # not only does it waste time, they will not be 
+            # dont copy logs already at the destination
+            # not only does it waste time, they will not be
             # removed until much later as their mtime is now
             if os.path.isfile(dst_file):
                 continue
@@ -110,6 +112,47 @@ class AutoCMSWebpage(object):
         else:
             self.page += "No test description found.\n"
         self.page += '</div>\n'
+
+    def add_count_jobs_by_attribute(self, records, attr, header, width):
+        """Writes a table of job counts by attribute.
+
+        Arguments:
+            records - list of JobRecords to consider
+            attr - JobRecord attribute to count
+            header - html string to go above start of table but inside textbox
+            width - max width of textbox"""
+        records_with_attr = (job for job in records if hasattr(job, attr))
+        attr_counts = dict()
+        for job in records_with_attr:
+            key = getattr(job, attr)
+            if key in attr_counts:
+                attr_counts[key] += 1
+            else:
+                attr_counts[key] = 1 
+        self.page += ('<div class="textbox" '
+                      'style="max-width:{0}%;">\n'.format(width))
+        self.page += '{0}\n<table>\n'.format(header)
+        for attr in sorted(attr_counts, key=attr_counts.get, reverse=True):
+            self.page += ('<tr><td>{0}</td><td>{1}'
+                          '</td></tr> \n'.format(
+                          attr_counts[attr], attr))
+        self.page += '</table></div>\n'
+
+    def add_failures_by_node(self, width, hours):
+        """Writes a list of nodes by number of errors.
+
+        Looks at only jobs starting in the last 'hours' hours.
+
+        Does not do anything if no jobs have failed in the last hours."""
+        min_time = int(time.time()) - 3600*hours
+        failures = (job for job in self.records if
+                        job.completed and not job.is_success() and
+                        job.start_time > min_time)
+        header = ('<div class="textbox-header">'
+                  'Number of failed jobs by worker node:</div>\n'
+                  '<br />(previous {0} hours)<br />'
+                  '<br />\n<table>'.format(hours))
+        self.add_count_jobs_by_attribute(failures, 'node', header, width)
 
     def add_job_failure_rates(self, width, times, warn_rate):
         """Writes basic statistics on failed and successful jobs.
@@ -153,9 +196,9 @@ class AutoCMSWebpage(object):
         By default, the start time, node, and error type are shown.
         If records is empty nothing is displayed.
 
-        Additional jobrecord attributes may be shown by adding 
+        Additional jobrecord attributes may be shown by adding
         keyword arguments of the form attribute=description, where
-        attribute is the JobRecord attribute and description is a 
+        attribute is the JobRecord attribute and description is a
         string which will be displayed preceding the attribute value.
 
         A link is given to the job log, and the log is appended to the
@@ -174,7 +217,7 @@ class AutoCMSWebpage(object):
             self.page += '<br />\n'
             self.page += '{0}&nbsp;{1}:<br />\n'.format(itemheader, counter+1)
             self.page += ('Start time: {0} <br />\n'.format(
-                          time.strftime('%c (%Z)', 
+                          time.strftime('%c (%Z)',
                               time.localtime(job.start_time))))
             self.page += 'Node name: {0} <br />\n'.format(job.node)
             self.page += ('Log file: <a href="{0}">{1}</a>'
@@ -188,13 +231,13 @@ class AutoCMSWebpage(object):
     def add_failed_job_listing(self, hours, **attr_desc):
         """Display information about failed jobs.
 
-        All completed jobs not returning is_success True with 
+        All completed jobs not returning is_success True with
         start times within 'hours' of the present are listed.
         By default, the start time, node, and error type are shown.
- 
-        Additional jobrecord attributes may be shown by adding 
+
+        Additional jobrecord attributes may be shown by adding
         keyword arguments of the form attribute=description, where
-        attribute is the JobRecord attribute and description is a 
+        attribute is the JobRecord attribute and description is a
         string which will be displayed preceding the attribute value.
 
         A link is given to the job log, and the log is appended to the
@@ -205,7 +248,7 @@ class AutoCMSWebpage(object):
                             and not job.is_success()]
         header = 'Failed jobs from the last {0}  hours:'.format(hours)
         itemheader = '<span style="font-weight:bold">Error </span>'
-        self.add_job_listing(records_to_print, header,      
+        self.add_job_listing(records_to_print, header,
                              itemheader, **attr_desc)
 
     def add_divider(self):
@@ -257,6 +300,7 @@ def produce_default_webpage(records, testname, config):
         webpage.add_floating_image(45, 'runtime.png')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
+    webpage.add_failures_by_node(30, 24)
     webpage.add_divider()
     webpage.add_failed_job_listing(24)
     webpage.end_page()
