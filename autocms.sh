@@ -25,6 +25,8 @@ main ()
       ;;
     statsharvest) autocms_statsharvest
       ;;
+    travis_setup) autocms_travis_setup
+      ;;
     *) if [ -n "${commandline_args[0]}" ]; then 
          echo "${commandline_args[0]} is not a valid command"
        fi
@@ -179,6 +181,17 @@ crontab_overwrite_warning()
   else
     exit 0
   fi
+}
+
+autocms_travis_setup()
+{
+  mkdir webdir
+  cat autocms.cfg.example  | grep -v 'AUTOCMS_CONFIGFILE\|AUTOCMS_BASEDIR\|AUTOCMS_WEBDIR\|AUTOCMS_UNAME' > autocms.cfg
+  echo "export AUTOCMS_CONFIGFILE=$(pwd)/autocms.cfg" >> autocms.cfg
+  echo "export AUTOCMS_BASEDIR=$(pwd)" >> autocms.cfg
+  echo "export AUTOCMS_UNAME=$(whoami)" >> autocms.cfg
+  echo "export AUTOCMS_WEBDIR=$(pwd)/webdir" >> autocms.cfg
+  exit 0
 }
 
 commandline_args=("$@")

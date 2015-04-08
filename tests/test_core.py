@@ -13,7 +13,7 @@ class TestConfiguration(unittest.TestCase):
     """Test that the configuration is loaded correctly."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
 
     def test_cmsrun_timeout(self):
         """Check that config sets cmsrun timeout."""
@@ -29,7 +29,7 @@ class TestJobRecord(unittest.TestCase):
     """Test the JobRecord class methods."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
 
     def test_jobrecord_parse(self):
         """Test that a job log is correctly parsed."""
@@ -56,7 +56,7 @@ class TestRecordPersistance(unittest.TestCase):
 
     def setUp(self):
         """Make a sample list of JobRecords and try to save it."""
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
         self.records = []
         self.records.append(JobRecord(1, '928417', 1427266702, 0, 'a.log'))
         self.records.append(JobRecord(2, '928423', 427266742, 0, 'b.log'))

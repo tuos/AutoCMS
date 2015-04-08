@@ -23,7 +23,7 @@ class TestSubmission(unittest.TestCase):
     Note that the local scheduler is used for all unit tests."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
         self.scheduler = create_scheduler('local', self.config)
         basedir = self.config['AUTOCMS_BASEDIR']
         # call the scratch directory 'uscratch' instead of 'scratch'

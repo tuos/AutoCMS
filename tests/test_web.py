@@ -15,7 +15,7 @@ class TestWebPageCreation(unittest.TestCase):
     """Test the accurate creation of test webpages."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
         self.config['AUTOCMS_WEBDIR'] = self.config['AUTOCMS_BASEDIR']
         # call the scratch directory 'uscratch' instead of 'scratch'
         # so that in pathological cases one does not resolve to

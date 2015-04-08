@@ -23,7 +23,7 @@ class TestRecordAndLogMaintenance(unittest.TestCase):
     """Test the maintenance of log files, stamps, and records"""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
         # call the scratch directory 'uscratch' instead of 'scratch'
         # so that in pathological cases one does not resolve to
         # /scratch which is often used.
@@ -123,7 +123,7 @@ class TestRecordHarvesting(unittest.TestCase):
     """Comprehensive test submitting and then parsing jobs."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg.example')
+        self.config = load_configuration('autocms.cfg')
         self.config['AUTOCMS_SCHEDULER'] = 'local'
         # call the scratch directory 'uscratch' instead of 'scratch'
         # so that in pathological cases one does not resolve to
