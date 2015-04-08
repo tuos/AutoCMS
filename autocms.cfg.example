@@ -7,6 +7,9 @@
 # Base directory for the AutoCMS system installation
 export AUTOCMS_BASEDIR=/home/appelte1/autocms_dev
 
+# Absolute path to this configuration file
+export AUTOCMS_CONFIGFILE=/home/appelte1/autocms_dev/autocms.cfg.example 
+
 # Web directory for output HTML files and graphs 
 export AUTOCMS_WEBDIR=/home/appelte1/web/autocms_dev
 
@@ -71,12 +74,22 @@ export AUTOCMS_SITE_NAME=T2_US_Vanderbilt
 # startTime, endTime, and errorCode are stored as integers. SUCCESS does not
 # set an attribute, but is required to be present in the output for a job to be
 # counted as successful.
-export AUTOCMS_startTime_TOKEN="AutoCMS: timestamp_start "
-export AUTOCMS_endTime_TOKEN="AutoCMS: timestamp_end "
+export AUTOCMS_start_time_TOKEN="AutoCMS: timestamp_start "
+export AUTOCMS_end_time_TOKEN="AutoCMS: timestamp_end "
 export AUTOCMS_node_TOKEN="AutoCMS: worker node "
-export AUTOCMS_exitCode_TOKEN="AutoCMS: exit code "
-export AUTOCMS_errorString_TOKEN="AutoCMS ERROR Message: "
+export AUTOCMS_exit_code_TOKEN="AutoCMS: exit code "
+export AUTOCMS_error_string_TOKEN="AutoCMS ERROR Message: "
 export AUTOCMS_SUCCESS_TOKEN="AutoCMS: ALL TESTS SUCCESSFUL"
+
+# Name of the scheduler and regular expression for the expected form of
+# logs returned by the scheduler. Note that test scripts will be expected
+# to be named "some_test/some_test.schedulername", for example the 
+# skim_test using the slurm scheduler will have the script name to be 
+# submitted as "slim_test/skim_test.slurm"
+#
+# Note that only the slurm scheduler is implemented, but the scheduler 
+# logic is separated so that other schedulers may be implemented.
+export AUTOCMS_SCHEDULER="slurm"
 
 #################################################################
 #
@@ -86,8 +99,8 @@ export AUTOCMS_SUCCESS_TOKEN="AutoCMS: ALL TESTS SUCCESSFUL"
 
 # additional tokens for example_test
 
-export AUTOCMS_numProc_TOKEN="AutoCMS: Number of processes on this node is "
-export AUTOCMS_diceSum_TOKEN="AutoCMS: I rolled a "
+export AUTOCMS_num_proc_TOKEN="AutoCMS: Number of processes on this node is "
+export AUTOCMS_dice_sum_TOKEN="AutoCMS: I rolled a "
 
 #################################################################
 #
@@ -109,7 +122,7 @@ export AUTOCMS_VANDYRM=/usr/local/cms-stageout/vandyRmDev.sh
 # export X509_USER_CERT=/home/username/.globus/usercert.pem 
 
 # token for input file
-export AUTOCMS_inputFile_TOKEN="AutoCMS: input file "
+export AUTOCMS_input_file_TOKEN="AutoCMS: input file "
 
 # CMSSW version 
 export AUTOCMS_CMSSW_VERSION=CMSSW_5_3_20
@@ -135,4 +148,4 @@ export SKIMTEST_STAGEOUT_DIR=/cms/store/autocms/autocms_dev/skim_test
 
 # number of other cmsRun processes running on the node
 # averaged from before and after cmsRun is executed
-export AUTOCMS_cmsRunProcCount_TOKEN="AutoCMS: Number of other cmsRun processes "
+export AUTOCMS_cmsrun_proc_count_TOKEN="AutoCMS: Number of other cmsRun processes "

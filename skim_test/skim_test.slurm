@@ -2,7 +2,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=2G
-#SBATCH --output=skim_test.slurm.o%A
+#SBATCH --output=skim_test.slurm.o%A.log
 #SBATCH --time=0-12:00:00
 #SBATCH --job-name="skim_test"
 
@@ -17,7 +17,7 @@ main ()
   # run the AutoCMS Configuration File
   source $AUTOCMS_CONFIGFILE
 
-  echo "${AUTOCMS_startTime_TOKEN}$(date +%s)"
+  echo "${AUTOCMS_start_time_TOKEN}$(date +%s)"
   echo "SKIM_TEST: Beginning at $(date)"
   echo "${AUTOCMS_node_TOKEN}${HOSTNAME}"
 
@@ -40,7 +40,7 @@ main ()
 
 
   if [ -n "$INPUTFILE" ]; then
-    echo "${AUTOCMS_inputFile_TOKEN}${INPUTFILE}"
+    echo "${AUTOCMS_input_file_TOKEN}${INPUTFILE}"
     echo "-------------------------------------"
     echo "Running lio-inspection on $INPUTFILE"
     lio_inspect -i 20 -d 20 -log /tmp/inspect.${SLURM_JOB_ID} ${INPUTFILE/file:/} | tee /tmp/check.${SLURM_JOB_ID}
@@ -49,20 +49,25 @@ main ()
     echo "-------------------------------------"
 
   else
-    echo "${AUTOCMS_inputFile_TOKEN}Default"
+    echo "${AUTOCMS_input_file_TOKEN}Default"
     echo "SKIM_TEST: WARNING: no input file specified, using default"
   fi
 
   #-----------------------------------------------------------------------
   printbanner "Setting up SCRAM environment"
 
+  # I don't know why this is a problem, but if one runs a 
+  # 'setpkgs -a python' from the submitting node, then 
+  # the CMS environment breaks python on the worker node
+  # unsetting the PYTHONAPATH fixes this.
   unset PYTHONPATH
+
   source /cvmfs/cms.cern.ch/cmsset_default.sh
   SCRAM_TEST_RESULT=$?
   if [ $SCRAM_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: SCRAM Enviornment setup from /cvmfs OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}SCRAM Enviornment setup ERROR $SCRAM_TEST_RESULT"
+    echo "${AUTOCMS_error_string_TOKEN}SCRAM Enviornment setup ERROR $SCRAM_TEST_RESULT"
     exitclean $SCRAM_TEST_RESULT
   fi
 
@@ -79,7 +84,7 @@ main ()
   if [ $TEMPFS_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: touch in directory $TMP_WORKDIR OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}touch in directory $TMP_WORKDIR ERROR $TEMPFS_TEST_RESULT"
+    echo "${AUTOCMS_error_string_TOKEN}touch in directory $TMP_WORKDIR ERROR $TEMPFS_TEST_RESULT"
     exitclean $TEMPFS_TEST_RESULT
   fi
 
@@ -91,7 +96,7 @@ main ()
   if [ $PROJECT_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: CMSSW project area setup OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}CMSSW project area setup ERROR $PROJECT_TEST_RESULT"
+    echo "${AUTOCMS_error_string_TOKEN}CMSSW project area setup ERROR $PROJECT_TEST_RESULT"
     exitclean $PROJECT_TEST_RESULT
   fi
 
@@ -137,9 +142,9 @@ main ()
     echo "SKIM_TEST: CMSSW execution OK"
   else
     if [  $CMSSW_TEST_RESULT -eq 137 ]; then
-      echo "${AUTOCMS_errorString_TOKEN}CMMSW received KILL signal (likely excessive wall clock time) ERROR $CMSSW_TEST_RESULT"
+      echo "${AUTOCMS_error_string_TOKEN}CMMSW received KILL signal (likely excessive wall clock time) ERROR $CMSSW_TEST_RESULT"
     else
-      echo "${AUTOCMS_errorString_TOKEN}CMSSW execution ERROR $CMSSW_TEST_RESULT"
+      echo "${AUTOCMS_error_string_TOKEN}CMSSW execution ERROR $CMSSW_TEST_RESULT"
     fi
     exitclean $CMSSW_TEST_RESULT
   fi
@@ -178,7 +183,7 @@ main ()
   if [ $UPLOAD_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: lio Upload OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}lio Upload ERROR $UPLOAD_TEST_RESULT"
+    echo "${AUTOCMS_error_string_TOKEN}lio Upload ERROR $UPLOAD_TEST_RESULT"
     exitclean $UPLOAD_TEST_RESULT
   fi
 
@@ -194,7 +199,7 @@ main ()
   echo "    Local size = $LOCAL_OUTPUT_SIZE"
   echo "    LStore size = $LSTORE_OUTPUT_SIZE"
   if [ $LOCAL_OUTPUT_SIZE -ne $LSTORE_OUTPUT_SIZE ]; then
-    echo "${AUTOCMS_errorString_TOKEN}ERROR vandyCp returned 0 but file sizes do not match!"
+    echo "${AUTOCMS_error_string_TOKEN}ERROR vandyCp returned 0 but file sizes do not match!"
     exitclean 255
   fi 
 
@@ -220,7 +225,7 @@ main ()
   if [ $DELETE_TEST_RESULT -eq 0 ]; then
     echo "SKIM_TEST: /lio/lfs file delete OK"
   else
-    echo "${AUTOCMS_errorString_TOKEN}/lio/lfs file delete ERROR $DELETE_TEST_RESULT"
+    echo "${AUTOCMS_error_string_TOKEN}/lio/lfs file delete ERROR $DELETE_TEST_RESULT"
     exitclean $DELETE_TEST_RESULT
   fi
 
@@ -239,8 +244,8 @@ exitclean ()
       rmdir $TMP_WORKDIR
     fi
     echo -n "SKIM_TEST: Ending at "; date
-    echo "${AUTOCMS_endTime_TOKEN}$(date +%s)"
-    echo "${AUTOCMS_exitCode_TOKEN}$1"
+    echo "${AUTOCMS_end_time_TOKEN}$(date +%s)"
+    echo "${AUTOCMS_exit_code_TOKEN}$1"
     exit $1
 }
 

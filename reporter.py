@@ -1,60 +1,24 @@
-import os
+"""Report job statistics and graphs to webpage."""
+
 import sys
-import re
-import shutil
-import time
-import datetime
-import cPickle as pickle
-from JobRecord import JobRecord
-import AutoCMSUtil
+import argparse
 
-# load configuration, determine test, and enter test directory
-config = AutoCMSUtil.LoadConfiguration('autocms.cfg')
-config['AUTOCMS_TEST_NAME'] = sys.argv[1]
-testdir = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']
-os.chdir(testdir)
+from autocms.core import load_configuration
+from autocms.web import perform_test_reporting
 
-# initialize JobRecord dictionary, or load saved state
-autocms_pkl = 'records.pickle'
-if os.path.isfile(autocms_pkl):
-  records = pickle.load( open(autocms_pkl, "rb") )
-else:
-  records = dict()
+def main():
+    """Call perform_test_reporting with command line arguments."""
+    parser = argparse.ArgumentParser(description='Submit one or more jobs.')
+    parser.add_argument('testname', help='test directory')
+    parser.add_argument('-c', '--configfile', type=str,
+                        default='autocms.cfg',
+                        help='AutoCMS configuration file name')
+    args = parser.parse_args()
+    config = load_configuration(args.configfile)
+    perform_test_reporting(args.testname, config)
+    return 0
 
-webpageName = config['AUTOCMS_WEBDIR']+"/"+config['AUTOCMS_TEST_NAME']+".html"
-newWebpageName = config['AUTOCMS_WEBDIR']+"/"+config['AUTOCMS_TEST_NAME']+".html.new"
-  
-yesterday = int(time.time()) - 24 * 3600
 
-# build new webpage using custom module for the test (if it exists)
-# or the default page builder module
-customWebPageBuilderModule = config['AUTOCMS_BASEDIR']+"/"+config['AUTOCMS_TEST_NAME']+"/WebPageBuilder.py"
-if os.path.isfile(customWebPageBuilderModule):
-  AutoCMSWebPageBuilder = __import__(config['AUTOCMS_TEST_NAME']+".WebPageBuilder",
-                                     globals(), locals(), ['WebPageBuilder'], -1)
-else:
-  AutoCMSWebPageBuilder = __import__("WebPageBuilder")
-
-printedJobs = AutoCMSWebPageBuilder.build(newWebpageName,config,records)
-
-# copy logs for printed jobs
-for subTime in printedJobs:
-  srcFile = testdir+"/"+records[subTime].logFile
-  destFile = config['AUTOCMS_WEBDIR']+"/"+records[subTime].logFile+".txt"
-  if os.path.isfile(srcFile):
-    shutil.copyfile(srcFile, destFile)
-
-# get rid of other logs in the webdir
-logsToKeep = list()
-for subTime in printedJobs:
-  logsToKeep.append( records[subTime].logFile+".txt" )
-for logFile in filter(lambda x:re.search('%s.slurm.o[0-9]+.txt' % config['AUTOCMS_TEST_NAME'], x), 
-                      os.listdir(config['AUTOCMS_WEBDIR'])): 
-  if logFile not in logsToKeep:
-    os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
-for logFile in filter(lambda x:re.search('%s.submission.[0-9]+.[0-9]+.log.txt' % config['AUTOCMS_TEST_NAME'], x), 
-                      os.listdir(config['AUTOCMS_WEBDIR'])): 
-  if logFile not in logsToKeep:
-    os.remove(config['AUTOCMS_WEBDIR']+"/"+logFile)
-
-os.rename(newWebpageName,webpageName)  
+if __name__ == '__main__':
+    status = main()
+    sys.exit(status)

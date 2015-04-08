@@ -1,14 +1,13 @@
-"""Collect information from and manage job log files."""
+"""Print all records in the pickle for the specified test"""
 
 import sys
 import argparse
 
-from autocms.core import load_configuration
-from autocms.harvest import perform_test_harvesting
+from autocms.core import (load_configuration, load_records)
 
 
 def main():
-    """Call perform_test_harvesting with command line arguments."""
+    """Print all records corresponding to test given as an argument"""
     parser = argparse.ArgumentParser(description='Submit one or more jobs.')
     parser.add_argument('testname', help='test directory')
     parser.add_argument('-c', '--configfile', type=str,
@@ -16,9 +15,10 @@ def main():
                         help='AutoCMS configuration file name')
     args = parser.parse_args()
     config = load_configuration(args.configfile)
-    perform_test_harvesting(args.testname, config)
+    records = load_records(args.testname,config)
+    for job in records:
+        print str(job)+'\n'
     return 0
-
 
 if __name__ == '__main__':
     status = main()

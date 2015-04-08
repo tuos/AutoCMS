@@ -25,6 +25,8 @@ main ()
       ;;
     statsharvest) autocms_statsharvest
       ;;
+    travis_setup) autocms_travis_setup
+      ;;
     *) if [ -n "${commandline_args[0]}" ]; then 
          echo "${commandline_args[0]} is not a valid command"
        fi
@@ -97,7 +99,7 @@ autocms_stop ()
 autocms_submit ()
 {
   if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
-    $AUTOCMS_BASEDIR/submitter.sh ${commandline_args[1]} 
+    python submitter.py ${commandline_args[1]}
     exit 0
   else
     echo "Request to submit non-existent test ${commandline_args[1]} failed"
@@ -179,6 +181,17 @@ crontab_overwrite_warning()
   else
     exit 0
   fi
+}
+
+autocms_travis_setup()
+{
+  mkdir ${TRAVIS_BUILD_DIR}/webdir
+  cat autocms.cfg.example  | grep -v 'AUTOCMS_CONFIGFILE\|AUTOCMS_BASEDIR\|AUTOCMS_WEBDIR\|AUTOCMS_UNAME' > autocms.cfg
+  echo "export AUTOCMS_CONFIGFILE=${TRAVIS_BUILD_DIR}/autocms.cfg" >> autocms.cfg
+  echo "export AUTOCMS_BASEDIR=${TRAVIS_BUILD_DIR}" >> autocms.cfg
+  echo "export AUTOCMS_UNAME=$(whoami)" >> autocms.cfg
+  echo "export AUTOCMS_WEBDIR=${TRAVIS_BUILD_DIR}/webdir" >> autocms.cfg
+  exit 0
 }
 
 commandline_args=("$@")
