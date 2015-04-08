@@ -1,5 +1,7 @@
 # AutoCMS: Testing and Monitoring System
 
+[![Travs-CI status](https://travis-ci.org/appeltel/AutoCMS.png)](https://travis-ci.org/appeltel/AutoCMS)
+
 AutoCMS is a simple python-based system for regularly submitting 
 and monitoring the results of arbitrarily complex test jobs to a computing
 cluster. 
