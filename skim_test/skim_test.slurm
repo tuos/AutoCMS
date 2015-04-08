@@ -56,6 +56,7 @@ main ()
   #-----------------------------------------------------------------------
   printbanner "Setting up SCRAM environment"
 
+  unset PYTHONPATH
   source /cvmfs/cms.cern.ch/cmsset_default.sh
   SCRAM_TEST_RESULT=$?
   if [ $SCRAM_TEST_RESULT -eq 0 ]; then
