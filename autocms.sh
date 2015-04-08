@@ -185,12 +185,12 @@ crontab_overwrite_warning()
 
 autocms_travis_setup()
 {
-  mkdir webdir
+  mkdir ${TRAVIS_BUILD_DIR}/webdir
   cat autocms.cfg.example  | grep -v 'AUTOCMS_CONFIGFILE\|AUTOCMS_BASEDIR\|AUTOCMS_WEBDIR\|AUTOCMS_UNAME' > autocms.cfg
-  echo "export AUTOCMS_CONFIGFILE=$(pwd)/autocms.cfg" >> autocms.cfg
-  echo "export AUTOCMS_BASEDIR=$(pwd)" >> autocms.cfg
+  echo "export AUTOCMS_CONFIGFILE=${TRAVIS_BUILD_DIR}/autocms.cfg" >> autocms.cfg
+  echo "export AUTOCMS_BASEDIR=${TRAVIS_BUILD_DIR}" >> autocms.cfg
   echo "export AUTOCMS_UNAME=$(whoami)" >> autocms.cfg
-  echo "export AUTOCMS_WEBDIR=$(pwd)/webdir" >> autocms.cfg
+  echo "export AUTOCMS_WEBDIR=${TRAVIS_BUILD_DIR}/webdir" >> autocms.cfg
   exit 0
 }
 
