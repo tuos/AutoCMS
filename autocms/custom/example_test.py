@@ -12,6 +12,7 @@ def produce_webpage(records, testname, config):
     webpath = os.path.join(config['AUTOCMS_WEBDIR'], testname)
     runtime_plot_path = os.path.join(webpath, 'runtime.png')
     dice_plot_path = os.path.join(webpath, 'dice.png')
+    proc_plot_path = os.path.join(webpath, 'proc.png')
     recent_successes = [job for job in records
                         if job.start_time > int(time.time()) - 3600*24 and
                         job.completed and job.is_success()]
@@ -28,10 +29,14 @@ def produce_webpage(records, testname, config):
     webpage.add_divider()
     if len(recent_successes) > 1:
         create_histogram('dice_sum', recent_successes, 'Sum of the Dice',
-                         (3, 3), dice_plot_path)
-   
+                         (5, 3), dice_plot_path)
         webpage.add_floating_image(30, 'dice.png',
                                    'Dice Rolls (last 24 hours):')
+        create_histogram('num_proc', recent_successes, 
+                         'Processes on the Node',
+                         (5, 3), proc_plot_path)
+        webpage.add_floating_image(30, 'proc.png',
+                                   'Processes on the Node (last 24 hours):')
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
     webpage.add_failures_by_node(25, 24)
