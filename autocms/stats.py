@@ -22,8 +22,8 @@ def harvest_default_stats(records, config):
         max_runtime = max(runtimes)
         min_runtime = min(runtimes)
         mean_runtime = sum(runtimes)/float(len(runtimes))
-    successes = sum(1 for job in stat_records if job.is_successs())
-    failures = sum(1 for job in stat_records if not job.is_successs())
+    successes = sum(1 for job in stat_records if job.is_success())
+    failures = sum(1 for job in stat_records if not job.is_success())
     return "{} {} {} {} {} {}".format(now, successes, failures, min_runtime,
                                       mean_runtime, max_runtime)
 
