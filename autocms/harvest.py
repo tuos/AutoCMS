@@ -110,6 +110,7 @@ def parse_completed_job_logs(records, scheduler, testname, config):
             job.start_time = job.submit_time
             job.end_time = job.submit_time
 
+
 def perform_test_harvesting(testname, config):
     """Track new submitted jobs, parse logs, and purge old information."""
     records = load_records(testname, config)

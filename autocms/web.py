@@ -11,6 +11,7 @@ from .plot import (
     create_run_and_waittime_plot
 )
 
+
 class AutoCMSWebpage(object):
     """Class for building and writing a page to report on an AutoCMS test."""
 
