@@ -374,6 +374,5 @@ def perform_test_reporting(testname, config):
         if hasattr(test_custom, 'produce_webpage'):
             produce_webpage = getattr(test_custom, 'produce_webpage')
     except ImportError:
-        print "nope!"
         pass
     produce_webpage(records, testname, config)
