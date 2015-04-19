@@ -29,6 +29,7 @@ def harvest_default_stats(records, config):
 
 
 def append_stats_row(row, testname, config):
+    """Add a line to the persistent statistics log of a test."""
     statfile = os.path.join(config['AUTOCMS_BASEDIR'], testname,
                             'statistics.dat')
     with open(statfile, 'a') as stat_handle:
