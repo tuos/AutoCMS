@@ -61,7 +61,7 @@ def create_run_and_waittime_plot(joblist, size, filepath, logscale=False):
     ax = df.plot(kind='scatter', figsize=size, x='start', y='run',
                  color='DarkGreen', label='Run Time')
     df.plot(kind='scatter', figsize=size, x='start', y='wait',
-            color='DarkRed', label='Wait Time', ax=ax)
+            color='Red', label='Wait Time', ax=ax)
     ax.set_xlabel('Job Start Time')
     ax.set_ylabel('Wall Clock Time [seconds]')
     y_minimum = 0
