@@ -2,12 +2,12 @@
 
 main ()
 {
-  source autocms.cfg
   if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
   elif [ -f /etc/bashrc ]; then
         . 
   fi
+  source autocms.cfg
 
   case "${commandline_args[0]}" in
   
