@@ -57,12 +57,6 @@ def load_stats(testname, config):
     return pd.DataFrame.from_csv(statfile)
 
 
-def load_default_stats(testname, config):
-    """Return a pandas DataFrame from a default statistics file."""
-    statcol = ["time", "success", "failure", "minrun", "meanrun", "maxrun"]
-    return load_stats(statcol, testname, config)
-
-
 def perform_stats_harvesting(testname, config):
     """Analyze job records for given test and create row of statistics."""
     records = load_records(testname, config)
