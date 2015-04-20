@@ -6,10 +6,13 @@ import re
 import shutil
 import importlib
 
+from .stats import load_stats
 from .core import (load_records, __version__)
 from .plot import (
+    create_default_statistics_plot,
     create_run_and_waittime_plot
 )
+
 
 
 class AutoCMSWebpage(object):
@@ -100,6 +103,14 @@ class AutoCMSWebpage(object):
                 continue
             shutil.copy(src_file, dst_file)
 
+    def copy_statistics_csv_file(self):
+        """Copy the statistics file to the webdir."""
+        webpath = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
+        src_stats = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                 self.testname, 'statistics.csv')
+        dst_stats = os.path.join(webpath, 'statistics.csv')
+        shutil.copyfile(src_stats, dst_stats)
+
     def add_test_description(self, width):
         """Writes the webpage description.
 
@@ -139,7 +150,7 @@ class AutoCMSWebpage(object):
             if key in attr_counts:
                 attr_counts[key] += 1
             else:
-                attr_counts[key] = 1 
+                attr_counts[key] = 1
         if not attr_counts:
             return
         self.page += ('<div class="textbox" '
@@ -286,20 +297,26 @@ class AutoCMSWebpage(object):
         self.page += '<hr style="clear:both;"/>\n'
 
 
-    def add_floating_image(self, width, image_file, description=None):
+    def add_floating_image(self, width, image_file, description=None,
+                           caption=None):
         """Adds a floating image to open filehandle webpage.
 
         Arguments:
             width - the maximum width of the image, in percent
             image_file - the name of the path to the image relative
                          to self.path
-            description - banner to print above the image"""
+            description - banner to print above the image
+            caption - text to print below the image"""
         self.page += ('<div class="plotbox" '
                       'style="max-width:{0}%;">\n'.format(width))
         if description:
             self.page += ('<div class="plotbox-header">'
                           '{0}</div>\n'.format(description))
-        self.page += '<img src="{0}" /></div>\n'.format(image_file)
+        self.page += '<img src="{0}" />\n'.format(image_file)
+        if caption:
+            self.page += ('<div style="padding:0.5em">'
+                          '{}</div>\n'.format(caption))
+        self.page += '</div>\n'
 
     def __repr__(self):
         """Describe object id and page testname."""
@@ -329,13 +346,24 @@ def produce_default_webpage(records, testname, config):
     webpage = AutoCMSWebpage(records, testname, config)
     webpage.begin_page()
     webpage.add_divider()
-    webpage.add_test_description(50)
+    webpage.add_test_description(100)
+    webpage.add_divider()
     if len(recent_successes) > 1:
         plot_desc = ('Successful job running and waiting times '
                      '(last 24 hours):')
-        create_run_and_waittime_plot(recent_successes, (8,4), 
+        create_run_and_waittime_plot(recent_successes, (8,4),
                                      runtime_plot_path)
         webpage.add_floating_image(45, 'runtime.png', plot_desc)
+    df = load_stats(testname, config)
+    if not df.empty:
+        webpage.copy_statistics_csv_file()
+        stat_plot_path = os.path.join(webpath, 'stats.png')
+        create_default_statistics_plot(df, stat_plot_path)
+        plot_desc = 'Recent job statistics:'
+        plot_caption = ('Full test statistics <a href="statistics.csv">'
+                        'CSV file</a>.')
+        webpage.add_floating_image(45, 'stats.png', plot_desc,
+                                   caption=plot_caption)
     webpage.add_divider()
     webpage.add_job_failure_rates(30, [24, 3], 90.0)
     webpage.add_failures_by_node(25, 24)

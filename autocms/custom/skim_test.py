@@ -4,13 +4,17 @@ import os
 import time
 
 from ..web import AutoCMSWebpage
-from ..plot import (create_run_and_waittime_plot, create_histogram)
+from ..stats import load_stats
+from ..plot import (
+    create_run_and_waittime_plot,
+    create_histogram,
+    create_default_statistics_plot
+)
 
 
 def produce_webpage(records, testname, config):
     """Create a webpage specific to the skim_test."""
     webpath = os.path.join(config['AUTOCMS_WEBDIR'], testname)
-    dice_plot_path = os.path.join(webpath, 'dice.png')
     recent_successes = [job for job in records
                         if job.start_time > int(time.time()) - 3600*24 and
                         job.completed and job.is_success()]
@@ -30,6 +34,17 @@ def produce_webpage(records, testname, config):
         create_run_and_waittime_plot(recent_successes, (8,4),
                                      runtime_plot_path, logscale=True)
         webpage.add_floating_image(45, 'runtimelog.png', plot_desc)
+    webpage.add_divider()
+    df = load_stats(testname, config)
+    if not df.empty:
+        webpage.copy_statistics_csv_file()
+        stat_plot_path = os.path.join(webpath, 'stats.png')
+        create_default_statistics_plot(df, stat_plot_path)
+        plot_desc = 'Recent job statistics:'
+        plot_caption = ('Full test statistics <a href="statistics.csv">'
+                        'CSV file</a>.')
+        webpage.add_floating_image(45, 'stats.png', plot_desc, 
+                                   caption=plot_caption)
     webpage.add_divider()
     webpage.add_test_description(100)
     webpage.add_divider()
