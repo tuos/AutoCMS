@@ -29,8 +29,8 @@ def create_cmsrun_runtime_plot(joblist, filepath):
     data = [(convert_timestamp(job.start_time), job.run_time(),
              float(job.cmsrun_proc_count)) for job in records]
     df = pd.DataFrame(data, columns=['start', 'run', 'nproc'])
-    ax = df.plot(kind='scatter', figsize=(8, 4), x='start', y='run',
-                 c=df['nproc'], s=50, cmap=matplotlib.cm.jet,
+    ax = df.plot(kind='scatter', figsize=(10, 4), x='start', y='run',
+                 c=df['nproc'], s=75, cmap=matplotlib.cm.jet,
                  vmin=0, vmax=16)
     ax.set_xlabel('Job Start Time')
     ax.set_ylabel('Wall Clock Time [seconds]')
@@ -58,31 +58,31 @@ def produce_webpage(records, testname, config):
         runtime_plot_path = os.path.join(webpath, 'runtime.png')
         plot_desc = ('Successful job running and waiting times '
                      '(last 24 hours):')
-        create_run_and_waittime_plot(recent_successes, (8,4),
+        create_run_and_waittime_plot(recent_successes, (10, 4),
                                      runtime_plot_path)
-        webpage.add_floating_image(45, 'runtime.png', plot_desc)
+        webpage.add_floating_image(48, 'runtime.png', plot_desc)
         runtime_plot_path = os.path.join(webpath, 'runtimelog.png')
         plot_desc = ('Successful job running and waiting times '
                      '(last 24 hours, log scaled):')
-        create_run_and_waittime_plot(recent_successes, (8,4),
+        create_run_and_waittime_plot(recent_successes, (10, 4),
                                      runtime_plot_path, logscale=True)
-        webpage.add_floating_image(45, 'runtimelog.png', plot_desc)
+        webpage.add_floating_image(48, 'runtimelog.png', plot_desc)
     webpage.add_divider()
     df = load_stats(testname, config)
     if not df.empty:
         webpage.copy_statistics_csv_file()
         stat_plot_path = os.path.join(webpath, 'stats.png')
-        create_default_statistics_plot(df, stat_plot_path)
+        create_default_statistics_plot(df, stat_plot_path, size=(10, 4))
         plot_desc = 'Recent job statistics:'
         plot_caption = ('Full test statistics <a href="statistics.csv">'
                         'CSV file</a>.')
-        webpage.add_floating_image(45, 'stats.png', plot_desc, 
+        webpage.add_floating_image(48, 'stats.png', plot_desc, 
                                    caption=plot_caption)
     if len(recent_successes) > 1:
         cmsrun_plot_path = os.path.join(webpath, 'cmsrun.png')
         create_cmsrun_runtime_plot(recent_successes, cmsrun_plot_path)
         plot_desc = 'Running Times by Number of cmsRun Processes on the Node:'
-        webpage.add_floating_image(45, 'cmsrun.png', plot_desc)
+        webpage.add_floating_image(48, 'cmsrun.png', plot_desc)
     webpage.add_divider()
     webpage.add_test_description(100)
     webpage.add_divider()
