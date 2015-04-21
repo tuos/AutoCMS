@@ -58,6 +58,10 @@ def produce_webpage(records, testname, config):
     webpage.add_failures_by_node(25, 24)
     webpage.add_failures_by_reason(40, 24)
     webpage.add_divider()
-    webpage.add_failed_job_listing(24)
+    webpage.add_failed_job_listing(24, dice_sum='Sum of the dice')
+    if config['AUTOCMS_PRINT_SUCCESS'] == 'TRUE':
+        webpage.add_job_listing(recent_successes,
+                                'Successful jobs in the last 24 hours:',
+                                'Success', dice_sum='Sum of the dice')
     webpage.end_page()
     webpage.write_page()

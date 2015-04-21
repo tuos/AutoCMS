@@ -90,6 +90,17 @@ def produce_webpage(records, testname, config):
     webpage.add_failures_by_node(25, 24)
     webpage.add_failures_by_reason(40, 24)
     webpage.add_divider()
-    webpage.add_failed_job_listing(24)
+    webpage.add_failed_job_listing(24,input_file='Input File')
+    long_running_jobs = [job for job in recent_successes if
+                         job.run_time() >
+                         int(config['SKIMTEST_RUNTIME_WARNING'])]
+    if long_running_jobs:
+       webpage.add_job_listing(long_running_jobs,
+                               'Long running jobs from the last 24 hours:',
+                               'Warning', input_file='Input File') 
+    if config['AUTOCMS_PRINT_SUCCESS'] == 'TRUE':
+        webpage.add_job_listing(recent_successes,
+                                'Successful jobs in the last 24 hours:',
+                                'Success', input_file='Input File')
     webpage.end_page()
     webpage.write_page()

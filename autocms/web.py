@@ -14,7 +14,6 @@ from .plot import (
 )
 
 
-
 class AutoCMSWebpage(object):
     """Class for building and writing a page to report on an AutoCMS test."""
 
@@ -263,11 +262,11 @@ class AutoCMSWebpage(object):
             self.page += 'Node name: {0} <br />\n'.format(job.node)
             self.page += ('Log file: <a href="{0}">{1}</a>'
                           '<br />\n'.format(job.logfile, job.logfile))
-            self.page += 'Error Type: {0} <br />\n'.format(job.error_string)
             for attr,desc in attr_desc.viewitems():
                 if not hasattr(job, attr):
                     continue
                 self.page += desc + ": " + getattr(job,attr) + '<br />\n'
+        self.page += '</div>\n'
 
     def add_failed_job_listing(self, hours, **attr_desc):
         """Display information about failed jobs.
@@ -289,8 +288,8 @@ class AutoCMSWebpage(object):
                             and not job.is_success()]
         header = 'Failed jobs from the last {0}  hours:'.format(hours)
         itemheader = '<span style="font-weight:bold">Error </span>'
-        self.add_job_listing(records_to_print, header,
-                             itemheader, **attr_desc)
+        self.add_job_listing(records_to_print, header, itemheader,
+                             error_string='Error Type', **attr_desc)
 
     def add_divider(self):
         """Write a <hr /> divider and clear floats."""
@@ -370,6 +369,10 @@ def produce_default_webpage(records, testname, config):
     webpage.add_failures_by_reason(40, 24)
     webpage.add_divider()
     webpage.add_failed_job_listing(24)
+    if config['AUTOCMS_PRINT_SUCCESS'] == 'TRUE':
+        webpage.add_job_listing(recent_successes,
+                                'Successful jobs in the last 24 hours:',
+                                'Success')
     webpage.end_page()
     webpage.write_page()
 
