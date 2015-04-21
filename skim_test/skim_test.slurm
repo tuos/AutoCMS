@@ -133,7 +133,7 @@ main ()
   echo;echo "Number of cmsRun processes on node: $CMSRUNPROCAFTER ";echo
 
   CMSRUNPROCAVG=$(echo "($CMSRUNPROCBEFORE + $CMSRUNPROCAFTER ) / 2.0" | bc -l)
-  echo "${AUTOCMS_cmsRunProcCount_TOKEN}${CMSRUNPROCAVG}"
+  echo "${AUTOCMS_cmsrun_proc_count_TOKEN}${CMSRUNPROCAVG}"
 
   echo;echo "Current system load:";echo
   dstat --nocolor -cdngy 1 10

@@ -3,13 +3,46 @@
 import os
 import time
 
+import matplotlib
+matplotlib.use('Agg')
+import pandas as pd
+import matplotlib.pyplot as plt
+
 from ..web import AutoCMSWebpage
 from ..stats import load_stats
 from ..plot import (
     create_run_and_waittime_plot,
     create_histogram,
-    create_default_statistics_plot
+    create_default_statistics_plot,
+    convert_timestamp
 )
+
+
+def create_cmsrun_runtime_plot(joblist, filepath):
+    """Create a scatterplot of runtimes with colors based on node occupancy.
+   
+    Plot of start times versus runtimes for listed jobs
+    with the color of each point given by the number of 
+    cmsRun processes the node."""
+    # make sure all job records have the cmsrun_proc_count attr
+    records = [job for job in joblist if hasattr(job,'cmsrun_proc_count')]
+    data = [(convert_timestamp(job.start_time), job.run_time(),
+             float(job.cmsrun_proc_count)) for job in records]
+    df = pd.DataFrame(data, columns=['start', 'run', 'nproc'])
+    ax = df.plot(kind='scatter', figsize=(8, 4), x='start', y='run',
+                 c=df['nproc'], s=50, cmap=matplotlib.cm.jet,
+                 vmin=0, vmax=16)
+    ax.set_xlabel('Job Start Time')
+    ax.set_ylabel('Wall Clock Time [seconds]')
+    ax.xaxis.set_major_locator(matplotlib.dates.HourLocator(interval=4))
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%a\n%H:%M'))
+    # pad the y-axis max a bit, force y-axis min to zero (1 if log scaled)
+    x1, x2, y1, y2 = ax.axis()
+    ax.axis((x1, x2, 0, y2 * 1.1))
+    ax.figure.savefig(filepath,
+                      dpi=80,
+                      bbox_inches='tight',
+                      pad_inches=0.2)
 
 
 def produce_webpage(records, testname, config):
@@ -45,6 +78,11 @@ def produce_webpage(records, testname, config):
                         'CSV file</a>.')
         webpage.add_floating_image(45, 'stats.png', plot_desc, 
                                    caption=plot_caption)
+    if len(recent_successes) > 1:
+        cmsrun_plot_path = os.path.join(webpath, 'cmsrun.png')
+        create_cmsrun_runtime_plot(recent_successes, cmsrun_plot_path)
+        plot_desc = 'Running Times by Number of cmsRun Processes on the Node:'
+        webpage.add_floating_image(45, 'cmsrun.png', plot_desc)
     webpage.add_divider()
     webpage.add_test_description(100)
     webpage.add_divider()
