@@ -31,7 +31,7 @@ def create_cmsrun_runtime_plot(joblist, filepath):
     df = pd.DataFrame(data, columns=['start', 'run', 'nproc'])
     ax = df.plot(kind='scatter', figsize=(10, 4), x='start', y='run',
                  c=df['nproc'], s=75, cmap=matplotlib.cm.jet,
-                 vmin=0, vmax=16)
+                 vmin=0, vmax=12)
     ax.set_xlabel('Job Start Time')
     ax.set_ylabel('Wall Clock Time [seconds]')
     ax.xaxis.set_major_locator(matplotlib.dates.HourLocator(interval=4))
