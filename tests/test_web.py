@@ -6,12 +6,9 @@ import unittest
 import re
 
 from autocms.core import load_configuration
-from autocms.web import (
-    perform_test_reporting
-)
-
-# mark this imported function as a non-test
-perform_test_reporting.test = False
+# cannot import perform_test_reporting function from autocms.web
+# as nose thinks it is a test
+import autocms.web
 
 class TestWebPageCreation(unittest.TestCase):
     """Test the accurate creation of test webpages."""
@@ -43,7 +40,7 @@ class TestWebPageCreation(unittest.TestCase):
 
     def test_create_webpage_with_description(self):
         """Test that a default webpage is created with description."""
-        perform_test_reporting('uscratch', self.config)
+        autocms.web.perform_test_reporting('uscratch', self.config)
         webpage_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
                                     'uscratch/index.html')
         stylesheet_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
