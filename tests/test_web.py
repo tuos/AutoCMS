@@ -10,6 +10,8 @@ from autocms.web import (
     perform_test_reporting
 )
 
+# mark this imported function as a non-test
+perform_test_reporting.test = False
 
 class TestWebPageCreation(unittest.TestCase):
     """Test the accurate creation of test webpages."""
