@@ -7,7 +7,7 @@ import re
 
 from autocms.core import load_configuration
 from autocms.web import (
-    produce_default_webpage
+    perform_test_reporting
 )
 
 
@@ -23,6 +23,11 @@ class TestWebPageCreation(unittest.TestCase):
         self.testdir = os.path.join(self.config['AUTOCMS_BASEDIR'],
                                     'uscratch')
         os.makedirs(self.testdir)
+        # make a fake web directory
+        webdir = os.path.join(self.config['AUTOCMS_BASEDIR'],
+                              'uscratch_web')
+        self.config['AUTOCMS_WEBDIR'] = webdir
+        os.makedirs(webdir)
         self.page_description = 'AutoCMS Web Unit Test Description'
         description_file = os.path.join(self.testdir, 'description.html')
         with open(description_file, 'w') as description_filehandle:
@@ -31,11 +36,12 @@ class TestWebPageCreation(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(os.path.join(self.config['AUTOCMS_BASEDIR'],
                                    'uscratch'))
+        shutil.rmtree(os.path.join(self.config['AUTOCMS_BASEDIR'],
+                                   'uscratch_web'))
 
     def test_create_webpage_with_description(self):
         """Test that a default webpage is created with description."""
-        records = []
-        produce_default_webpage(records, 'uscratch', self.config)
+        perform_test_reporting('uscratch', self.config)
         webpage_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
                                     'uscratch/index.html')
         stylesheet_path = os.path.join(self.config['AUTOCMS_WEBDIR'],
