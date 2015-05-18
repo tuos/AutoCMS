@@ -397,6 +397,11 @@ def purge_old_web_logs(testname, config):
 
 def perform_test_reporting(testname, config):
     """Analyze job records for given test and create webpage report."""
+    # test subdirectory of the web directory may not exist yet if this
+    # is the first time running. Make it if needed.
+    webdir = os.path.join(config['AUTOCMS_WEBDIR'], testname)
+    if not os.path.exists(webdir):
+        os.makedirs(webdir)
     records = load_records(testname, config)
     # use a custom webpage if the test has configured one
     produce_webpage = produce_default_webpage
