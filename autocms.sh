@@ -99,7 +99,11 @@ autocms_stop ()
 autocms_submit ()
 {
   if [ -d "${AUTOCMS_BASEDIR}/${commandline_args[1]}" ]; then
-    python submitter.py ${commandline_args[1]}
+    NJOBS=1
+    if [ ${#commandline_args[@]} -ge 3 ]; then
+        NJOBS=${commandline_args[2]}
+    fi
+    python submitter.py ${commandline_args[1]} -n $NJOBS
     exit 0
   else
     echo "Request to submit non-existent test ${commandline_args[1]} failed"
@@ -149,15 +153,16 @@ print_autocms_crontab ()
 
   echo "MAILTO=\"\"" >> autocms.crontab
   SUBWAIT=( $( echo $AUTOCMS_TEST_SUBWAITS | tr ":" " " ) )
+  SUBCOUNT=( $( echo $AUTOCMS_TEST_SUBCOUNTS | tr ":" " " ) )
   COUNT=0
   for TESTNAME in $( echo $AUTOCMS_TEST_NAMES | tr ":" "\n" ); do
     if [ ${SUBWAIT[$COUNT]} -lt 60 ]; then
-      echo "*/${SUBWAIT[$COUNT]} * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh submit $TESTNAME"  >> autocms.crontab
+      echo "*/${SUBWAIT[$COUNT]} * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh submit $TESTNAME ${SUBCOUNT[$COUNT]}"  >> autocms.crontab
       echo "0,10,20,30,40,50 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh logharvest $TESTNAME" >> autocms.crontab
       echo "5,15,25,35,45,55 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh report $TESTNAME" >> autocms.crontab
     else
       SUBWAIT[$COUNT]=$(( ${SUBWAIT[$COUNT]} / 60 )) 
-      echo "0 */${SUBWAIT[$COUNT]} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh submit $TESTNAME"  >> autocms.crontab
+      echo "0 */${SUBWAIT[$COUNT]} * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh submit $TESTNAME ${SUBCOUNT[$COUNT]}"  >> autocms.crontab
       echo "10,40 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh logharvest $TESTNAME" >> autocms.crontab
       echo "20,50 * * * * cd $AUTOCMS_BASEDIR && $AUTOCMS_BASEDIR/autocms.sh report $TESTNAME" >> autocms.crontab
     fi

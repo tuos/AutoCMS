@@ -26,6 +26,11 @@ export AUTOCMS_TEST_NAMES=example_test:skim_test
 # times should be given as a ":" delimited list.
 export AUTOCMS_TEST_SUBWAITS=120:10  
 
+# How many jobs to submit at each submission time.
+# If multiple different tests are to be run, these 
+# times should be given as a ":" delimited list.
+export AUTOCMS_TEST_SUBCOUNTS=5:1
+
 # how often to harvest job statistics (in hours)  
 # for long term performance monitoring
 # this should be a divisor of 24 (i.e. 1,2,3,4,...,12 )  
