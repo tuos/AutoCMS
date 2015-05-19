@@ -17,6 +17,9 @@ export AUTOCMS_WEBDIR=/home/appelte1/web/autocms_dev
 export AUTOCMS_UNAME=appelte1
 export AUTOCMS_GNAME=cms_stage2
 
+# name of the site
+export AUTOCMS_SITE_NAME=T2_US_Vanderbilt
+
 # Array of test names to run. This should be delimited by ":"
 export AUTOCMS_TEST_NAMES=example_test:skim_test
 
@@ -48,14 +51,8 @@ export AUTOCMS_LOG_LIFETIME=5
 # allowance if more time is needed
 export AUTOCMS_CMSRUN_TIMEOUT=14400
 
-# LFS directory for stageout
-export AUTOCMS_STAGEOUT_DIR=/cms/store/autocms/autocms_dev/skim_test
-
 # print logs of successful jobs to webpage? (set to TRUE for yes) 
 export AUTOCMS_PRINT_SUCCESS=FALSE
-
-# name of the site
-export AUTOCMS_SITE_NAME=T2_US_Vanderbilt
 
 # The following strings are tokens to be put in the beginning
 # of lines in the test pbs script for the logharvester to read 
