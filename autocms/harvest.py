@@ -62,6 +62,8 @@ def purge_old_stamps(stampfile, config):
         stamplist = shandle.readlines()
     newstamplist = []
     for line in stamplist:
+        if len(line.split()) != 5:
+            continue
         if int(line.split()[2]) > purgetime:
             newstamplist.append(line)
     with open(stampfile, 'w') as shandle:
@@ -72,16 +74,46 @@ def purge_old_stamps(stampfile, config):
 def add_untracked_jobs(stampfile, records):
     """Add new jobs to a JobRecords list from stamps.
 
-    If the stamp corresponds to a job already in the list, it is not added."""
+    If the stamp corresponds to a job already in the list, it is not added.
+    Any line that is not five space-delimited entries is considered a
+    a corrupted submission record and treated as an error."""
+    stampfile_corruption = False
     jobkeys = [str(job.seq) + '.' + str(job.submit_time) for job in records]
     with open(stampfile) as shandle:
         stamplist = shandle.readlines()
     for stamp in stamplist:
+        if len(stamp.split()) != 5:
+            if stampfile_corruption == False:
+                record_malformed_stamp(records)
+            stampfile_corruption = True
+            continue
         stampkey = stamp.split()[0] + '.' + stamp.split()[2]
         if stampkey in jobkeys:
             continue
         else:
             records.append(JobRecord.create_from_stamp(stamp))
+    if stampfile_corruption:
+        purge_malformed_stamps(stampfile)
+
+
+def record_malformed_stamp(records):
+    job = JobRecord(0, 0, int(time.time()), -1, None)
+    job.error_string = ('AutoCMS internal error: A malformed submission '
+                        'record was encountered. Some jobs may be lost.')
+    records.append(job)
+
+
+def purge_malformed_stamps(stampfile):
+    """Remove malformed stamps from a merged stamp file."""
+    with open(stampfile) as shandle:
+        stamplist = shandle.readlines()
+    goodstamplist = []
+    for line in stamplist:
+        if len(line.split()) == 5:
+            goodstamplist.append(line)
+    with open(stampfile, 'w') as shandle:
+        for line in goodstamplist:
+            shandle.write(line)
 
 
 def purge_old_jobs(records, config):

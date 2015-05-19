@@ -91,6 +91,8 @@ class AutoCMSWebpage(object):
         basedir = os.path.join(self.config['AUTOCMS_BASEDIR'], self.testname)
         webdir = os.path.join(self.config['AUTOCMS_WEBDIR'], self.testname)
         for log in self.logs_to_copy:
+            if log is None:
+                continue
             src_file = os.path.join(basedir, log)
             dst_file = os.path.join(webdir, log)
             if not os.path.isfile(src_file):
@@ -260,8 +262,11 @@ class AutoCMSWebpage(object):
                           time.strftime('%c (%Z)',
                               time.localtime(job.start_time))))
             self.page += 'Node name: {0} <br />\n'.format(job.node)
-            self.page += ('Log file: <a href="{0}">{1}</a>'
-                          '<br />\n'.format(job.logfile, job.logfile))
+            if job.logfile is not None:
+                self.page += ('Log file: <a href="{0}">{1}</a>'
+                              '<br />\n'.format(job.logfile, job.logfile))
+            else:
+                self.page += 'Log file: None <br />\n'
             for attr,desc in attr_desc.viewitems():
                 if not hasattr(job, attr):
                     continue
