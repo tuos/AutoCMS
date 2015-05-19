@@ -21,18 +21,18 @@ export AUTOCMS_GNAME=cms_stage2
 export AUTOCMS_SITE_NAME=T2_US_Vanderbilt
 
 # Array of test names to run. This should be delimited by ":"
-export AUTOCMS_TEST_NAMES=example_test:bare_test
+export AUTOCMS_TEST_NAMES=skim_test
 
 # time to wait between job submissions. This should be given in 
 # minutes either as a divisor of 60 (i.e. 1,2,3,5,6,10,12,...) or 
 # as a multiple of 60. If multiple different tests are to be run, these 
 # times should be given as a ":" delimited list.
-export AUTOCMS_TEST_SUBWAITS=120:10  
+export AUTOCMS_TEST_SUBWAITS=10  
 
 # How many jobs to submit at each submission time.
 # If multiple different tests are to be run, these 
 # times should be given as a ":" delimited list.
-export AUTOCMS_TEST_SUBCOUNTS=5:1
+export AUTOCMS_TEST_SUBCOUNTS=1
 
 # how often to harvest job statistics (in hours)  
 # for long term performance monitoring
@@ -103,3 +103,51 @@ export AUTOCMS_SCHEDULER="slurm"
 
 export AUTOCMS_num_proc_TOKEN="AutoCMS: Number of processes on this node is "
 export AUTOCMS_dice_sum_TOKEN="AutoCMS: I rolled a "
+
+#################################################################
+#
+# Settings common to CMSSW/LIO-based and possibly other tests
+#
+#################################################################
+
+# location of Vanderbilt stageout scripts
+# these may be changed for performing development 
+# on the stageout scripts.
+export AUTOCMS_VANDYCP=/usr/local/cms-stageout/vandyCp2.sh
+export AUTOCMS_VANDYRM=/usr/local/cms-stageout/vandyRm2.sh
+
+# grid proxy and/or certificate location. This may needed
+# for the T2 Vanderbilt stageout scripts, which need to be 
+# able to access your grid DN from the worker node.
+#
+# export X509_USER_PROXY=/home/username/.proxy/x509up_uusername
+# export X509_USER_CERT=/home/username/.globus/usercert.pem 
+
+# token for input file
+export AUTOCMS_input_file_TOKEN="AutoCMS: input file "
+
+# CMSSW version 
+export AUTOCMS_CMSSW_VERSION=CMSSW_5_3_20
+
+#################################################################
+#
+# Settings used by skim_test
+#
+#################################################################
+
+# running time above which the reporter will print a warning for a job
+# in seconds
+export SKIMTEST_RUNTIME_WARNING=3600
+
+# Max wallclock time for cmsRun before timeout (seconds)
+# Note that this should be shorter than the total time for the PBS 
+# script (default 12 hours). Make sure to change the PBS wall clock
+# allowance if more time is needed
+export SKIMTEST_CMSRUN_TIMEOUT=14400
+
+# LFS directory for stageout
+export SKIMTEST_STAGEOUT_DIR=/cms/store/autocms/autocms_dev/skim_test
+
+# number of other cmsRun processes running on the node
+# averaged from before and after cmsRun is executed
+export AUTOCMS_cmsrun_proc_count_TOKEN="AutoCMS: Number of other cmsRun processes "
