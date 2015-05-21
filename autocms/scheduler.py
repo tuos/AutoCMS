@@ -81,8 +81,8 @@ class SlurmScheduler(Scheduler):
                'grep -e "^[0-9]* "'.format(self.config['AUTOCMS_GNAME'],
                                            self.config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        result.wait()
-        completed_jobs = [line.strip() for line in result.stdout.readlines()]
+        output = result.communicate()[0].splitlines()
+        completed_jobs = [line.strip() for line in output]
         for job in completed_jobs[:]:
             if not job in joblist:
                 completed_jobs.remove(job)
@@ -93,8 +93,8 @@ class SlurmScheduler(Scheduler):
                'wc -l'.format(self.config['AUTOCMS_UNAME'],
                               self.config['AUTOCMS_GNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        result.wait()
-        count = int(result.stdout.readlines()[0].strip())
+        output = result.communicate()[0].splitlines()
+        count = int(output[0].strip())
         return count
 
     def submit_job(self, counter, testname):
@@ -114,8 +114,7 @@ class SlurmScheduler(Scheduler):
                              slurm_script))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         timestamp = int(time.time())
-        result.wait()
-        sub_output = result.stdout.read()
+        sub_output = result.communicate()[0]
         if result.returncode == 0:
             jobid = re.sub('Submitted batch job ',
                            '',
@@ -143,9 +142,8 @@ class LocalScheduler(Scheduler):
     def get_completed_jobs(self, joblist):
         cmd = ('ps -u {0}'.format(self.config['AUTOCMS_UNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        result.wait()
-        running_procs = [line.split()[0] for line
-                         in result.stdout.readlines()]
+        output = result.communicate()[0].splitlines()
+        running_procs = [line.split()[0] for line in output]
         completed_jobs = joblist[:]
         for job in joblist:
             if job in running_procs:
@@ -174,8 +172,7 @@ class LocalScheduler(Scheduler):
         result = subprocess.Popen(cmd,
                                   shell=True,
                                   stdout=subprocess.PIPE)
-        result.wait()
-        sub_output = result.stdout.read()
+        sub_output = result.communicate()[0]
         if result.returncode == 0:
             jobid = result.pid
         else:
