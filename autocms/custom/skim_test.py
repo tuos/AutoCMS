@@ -20,9 +20,9 @@ from ..plot import (
 
 def create_cmsrun_runtime_plot(joblist, filepath):
     """Create a scatterplot of runtimes with colors based on node occupancy.
-   
+
     Plot of start times versus runtimes for listed jobs
-    with the color of each point given by the number of 
+    with the color of each point given by the number of
     cmsRun processes the node."""
     # make sure all job records have the cmsrun_proc_count attr
     records = [job for job in joblist if hasattr(job,'cmsrun_proc_count')]
@@ -76,7 +76,7 @@ def produce_webpage(records, testname, config):
         plot_desc = 'Recent job statistics:'
         plot_caption = ('Full test statistics <a href="statistics.csv">'
                         'CSV file</a>.')
-        webpage.add_floating_image(48, 'stats.png', plot_desc, 
+        webpage.add_floating_image(48, 'stats.png', plot_desc,
                                    caption=plot_caption)
     if len(recent_successes) > 1:
         cmsrun_plot_path = os.path.join(webpath, 'cmsrun.png')
@@ -97,10 +97,37 @@ def produce_webpage(records, testname, config):
     if long_running_jobs:
        webpage.add_job_listing(long_running_jobs,
                                'Long running jobs from the last 24 hours:',
-                               'Warning', input_file='Input File') 
+                               'Warning', input_file='Input File')
     if config['AUTOCMS_PRINT_SUCCESS'] == 'TRUE':
         webpage.add_job_listing(recent_successes,
                                 'Successful jobs in the last 24 hours:',
                                 'Success', input_file='Input File')
     webpage.end_page()
     webpage.write_page()
+
+
+stat_columns = ["time", "success", "failure", "min_runtime",
+                "mean_runtime", "max_runtime", "submission_failure"]
+
+
+def harvest_stats(records, config):
+    """Add a row to the long term statistics record for a given test."""
+    now = int(time.time())
+    harvest_time = now - int(config['AUTOCMS_STAT_INTERVAL'])*3600
+    stat_records = [job for job in records if job.completed and
+                    job.end_time > harvest_time]
+    runtimes = [job.run_time() for job in stat_records if job.is_success()]
+    if len(runtimes) == 0:
+        max_runtime = 0
+        min_runtime = 0
+        mean_runtime = 0
+    else:
+        max_runtime = max(runtimes)
+        min_runtime = min(runtimes)
+        mean_runtime = sum(runtimes)/float(len(runtimes))
+    successes = sum(1 for job in stat_records if job.is_success())
+    failures = sum(1 for job in stat_records if not job.is_success())
+    sub_failures = sum(1 for job in stat_records if job.submit_status != 0)
+    return "{},{},{},{},{},{},{}".format(now, successes, failures,
+                                         min_runtime, mean_runtime,
+                                         max_runtime, sub_failures)
