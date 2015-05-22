@@ -115,6 +115,9 @@ class JobRecord(object):
         logpath = os.path.join(config['AUTOCMS_BASEDIR'],
                                testname,
                                self.logfile)
+        # jobs that do not specifically report success will
+        # be marked as failed.
+        reported_success = False
         with open(logpath, 'r') as handle:
             log = handle.read().splitlines()
         for line in log:
@@ -123,6 +126,7 @@ class JobRecord(object):
                     t_name = tok.replace('AUTOCMS_', '').replace('_TOKEN', '')
                     t_val = line.replace(config[tok], '')
                     if t_name == 'SUCCESS':
+                        reported_success = True
                         self.exit_code = 0
                         self.error_string = ''
                     else:
@@ -138,6 +142,9 @@ class JobRecord(object):
             self.start_time = self.submit_time
         if self.end_time == 0:
             self.end_time = self.start_time
+        # make sure jobs not reporting success are marked failed
+        if (not reported_success) and (self.exit_code == 0):
+            self.exit_code = 255
 
     def __repr__(self):
         """Describe object id, submission time, and counter."""
