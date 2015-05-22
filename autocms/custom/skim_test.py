@@ -2,6 +2,7 @@
 
 import os
 import time
+import math
 
 import matplotlib
 matplotlib.use('Agg')
@@ -12,8 +13,6 @@ from ..web import AutoCMSWebpage
 from ..stats import load_stats
 from ..plot import (
     create_run_and_waittime_plot,
-    create_histogram,
-    create_default_statistics_plot,
     convert_timestamp
 )
 
@@ -72,8 +71,9 @@ def produce_webpage(records, testname, config):
     if not df.empty:
         webpage.copy_statistics_csv_file()
         stat_plot_path = os.path.join(webpath, 'stats.png')
-        create_default_statistics_plot(df, stat_plot_path, size=(10, 4))
-        plot_desc = 'Recent job statistics:'
+        create_skimtest_statistics_plot(df, stat_plot_path, size=(10, 4))
+        plot_desc = 'Recent job statistics (trailing {} hours):'.format(
+                        config['AUTOCMS_STAT_INTERVAL'])
         plot_caption = ('Full test statistics <a href="statistics.csv">'
                         'CSV file</a>.')
         webpage.add_floating_image(48, 'stats.png', plot_desc,
@@ -131,3 +131,52 @@ def harvest_stats(records, config):
     return "{},{},{},{},{},{},{}".format(now, successes, failures,
                                          min_runtime, mean_runtime,
                                          max_runtime, sub_failures)
+
+
+def create_skimtest_statistics_plot(df, filepath, size=(8,4), days=7):
+    """Create a basic job statistics plot from DataFrame."""
+    min_time = int(time.time()) - 24*3600*days
+    df = df[df.index > min_time]
+    df.index = [convert_timestamp(ts) for ts in df.index]
+    df['failure'] = df['failure'].astype('float')
+    fig, ax = plt.subplots()
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Number of Failures')
+    ax2 = ax.twinx()
+    ax2.set_xlabel('Date')
+    ax2.set_ylabel('Wall Clock Time [seconds]')
+    df.plot(kind='area', figsize=size, x=df.index, y=['failure'],
+            color='LightBlue', label='Date', ax=ax)
+    df.plot(kind='line', figsize=size, x=df.index, y=['failure'],
+            color='Black', label='Date', ax=ax)
+    df.plot(kind='area', figsize=size, x=df.index, y=['submission_failure'],
+            color='#ffbfaa', label='Date', ax=ax)
+    df.plot(kind='line', figsize=size, x=df.index, y=['submission_failure'],
+            color='Black', label='Date', ax=ax)
+    df.plot(kind='line', figsize=size, x=df.index, y=['max_runtime'],
+            color='Red', lw=2, label='Max. Run Time', ax=ax2)
+    df.plot(kind='line', figsize=size, x=df.index, y=['mean_runtime'],
+            color='Blue', lw=2, label='Mean Run Time', ax=ax2)
+    df.plot(kind='line', figsize=size, x=df.index, y=['min_runtime'],
+            color='Green', lw=2, label='Min. Run Time', ax=ax2)
+    lines, labels = ax2.get_legend_handles_labels()
+    lines = lines + [matplotlib.patches.Patch(color='LightBlue', ec='Black')]
+    lines = lines + [matplotlib.patches.Patch(color='#ffbfaa', ec='Black')]
+    labels2 = ['Max. Runtime', 'Mean Runtime', 'Min. Runtime',
+               'Total Failures', 'Submission Failures']
+    ax2.legend(lines, labels2, loc='best', fontsize=12, framealpha=0.7)
+    ax.legend_.remove()
+    tickw = int(math.ceil(days/6))
+    ax.xaxis.set_major_locator(matplotlib.dates.DayLocator(interval=tickw))
+    ax.xaxis.set_major_formatter(
+        matplotlib.dates.DateFormatter('%b %d')
+    )
+    # pad the y-axis max a bit, force y-axis min to zero
+    x1, x2, y1, y2 = ax.axis()
+    ax.axis((x1, x2, 0, y2 * 1.1))
+    ax.grid(False)
+    #ax2.grid(False)
+    ax.figure.savefig(filepath,
+                      dpi=80,
+                      bbox_inches='tight',
+                      pad_inches=0.2)
