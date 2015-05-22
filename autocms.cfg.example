@@ -45,12 +45,6 @@ export AUTOCMS_MAXENQUEUE=20
 # Number of days to wait before deleting logs
 export AUTOCMS_LOG_LIFETIME=5
 
-# Max wallclock time for cmsRun before timeout (seconds)
-# Note that this should be shorter than the total time for the PBS 
-# script (default 12 hours). Make sure to change the PBS wall clock
-# allowance if more time is needed
-export AUTOCMS_CMSRUN_TIMEOUT=14400
-
 # print logs of successful jobs to webpage? (set to TRUE for yes) 
 export AUTOCMS_PRINT_SUCCESS=FALSE
 
