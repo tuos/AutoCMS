@@ -97,11 +97,19 @@ def produce_webpage(records, testname, config):
     if not df.empty:
         webpage.copy_statistics_csv_file()
         stat_plot_path = os.path.join(webpath, 'stats.png')
+        month_stat_plot_path = os.path.join(webpath, 'stats_month.png')
+        year_stat_plot_path = os.path.join(webpath, 'stats_year.png')
         create_skimtest_statistics_plot(df, stat_plot_path, size=(10, 4))
+        create_skimtest_statistics_plot(df, month_stat_plot_path,
+                                        size=(10, 4), days=30)
+        create_skimtest_statistics_plot(df, year_stat_plot_path,
+                                        size=(10, 4), days=365)
         plot_desc = 'Recent job statistics (trailing {} hours):'.format(
                         config['AUTOCMS_STAT_INTERVAL'])
         plot_caption = ('Full test statistics <a href="statistics.csv">'
-                        'CSV file</a>.')
+                        'CSV file</a>.<br /><br />\n'
+                        'Statistics plot for last <a href="stats_month.png">'
+                        'month</a> and <a href="stats_year.png">year</a>.')
         webpage.add_floating_image(48, 'stats.png', plot_desc,
                                    caption=plot_caption)
     if len(recent_successes) > 1:
