@@ -68,7 +68,7 @@ def perform_stats_harvesting(testname, config):
         if hasattr(test_custom, 'harvest_stats'):
             harvest_stats = getattr(test_custom, 'harvest_stats')
         if hasattr(test_custom, 'stat_columns'):
-            harvest_stats = getattr(test_custom, 'stat_columns')
+            stat_columns = getattr(test_custom, 'stat_columns')
     except ImportError:
         pass
     row = harvest_stats(records, config)
