@@ -145,3 +145,4 @@ export SKIMTEST_STAGEOUT_DIR=/cms/store/autocms/autocms_dev/skim_test
 # number of other cmsRun processes running on the node
 # averaged from before and after cmsRun is executed
 export AUTOCMS_cmsrun_proc_count_TOKEN="AutoCMS: Number of other cmsRun processes "
+export AUTOCMS_node_jobs_count_TOKEN="AutoCMS: Number of jobs assigned to this node "

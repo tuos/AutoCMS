@@ -118,6 +118,9 @@ main ()
   CMSRUNPROCBEFORE=$(ps aux | grep "[c]msRun" | grep -v "/usr/bin/time" | wc -l)
   echo;echo "Number of cmsRun processes on node: $CMSRUNPROCBEFORE ";echo
 
+  NODEJOBBEFORE=$( squeue --nodes=$HOSTNAME  -h | wc -l)
+  echo;echo "Number of SLURM jobs running on node: $NODEJOBBEFORE ";echo
+
 
   echo;echo;echo;echo "BEGIN CMSSW EXECUTION: $(date)";echo;echo
   if [ -z "$INPUTFILE" ]; then
@@ -132,8 +135,14 @@ main ()
   CMSRUNPROCAFTER=$(ps aux | grep "[c]msRun" | grep -v "/usr/bin/time" | wc -l)
   echo;echo "Number of cmsRun processes on node: $CMSRUNPROCAFTER ";echo
 
+  NODEJOBAFTER=$( squeue --nodes=$HOSTNAME  -h | wc -l)
+  echo;echo "Number of SLURM jobs running on node: $NODEJOBAFTER ";echo
+
   CMSRUNPROCAVG=$(echo "($CMSRUNPROCBEFORE + $CMSRUNPROCAFTER ) / 2.0" | bc -l)
   echo "${AUTOCMS_cmsrun_proc_count_TOKEN}${CMSRUNPROCAVG}"
+
+  NODEJOBAVG=$(echo "($NODEJOBBEFORE + $NODEJOBAFTER ) / 2.0" | bc -l)
+  echo "${AUTOCMS_node_jobs_count_TOKEN}${NODEJOBAVG}"
 
   echo;echo "Current system load:";echo
   dstat --nocolor -cdngy 1 10

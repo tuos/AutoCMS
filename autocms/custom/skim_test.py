@@ -44,6 +44,32 @@ def create_cmsrun_runtime_plot(joblist, filepath):
                       pad_inches=0.2)
 
 
+def create_nodejob_runtime_plot(joblist, filepath):
+    """Create a scatterplot of runtimes with colors based on node occupancy.
+
+    Plot of start times versus runtimes for listed jobs
+    with the color of each point given by the number of
+    SLURM jobs running on the node."""
+    records = [job for job in joblist if hasattr(job,'node_jobs_count')]
+    data = [(convert_timestamp(job.start_time), job.run_time(),
+             float(job.node_jobs_count)) for job in records]
+    df = pd.DataFrame(data, columns=['start', 'run', 'nproc'])
+    ax = df.plot(kind='scatter', figsize=(10, 4), x='start', y='run',
+                 c=df['nproc'], s=75, cmap=matplotlib.cm.jet,
+                 vmin=0, vmax=12)
+    ax.set_xlabel('Job Start Time')
+    ax.set_ylabel('Wall Clock Time [seconds]')
+    ax.xaxis.set_major_locator(matplotlib.dates.HourLocator(interval=4))
+    ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%a\n%H:%M'))
+    # pad the y-axis max a bit, force y-axis min to zero (1 if log scaled)
+    x1, x2, y1, y2 = ax.axis()
+    ax.axis((x1, x2, 0, y2 * 1.1))
+    ax.figure.savefig(filepath,
+                      dpi=80,
+                      bbox_inches='tight',
+                      pad_inches=0.2)
+
+
 def produce_webpage(records, testname, config):
     """Create a webpage specific to the skim_test."""
     webpath = os.path.join(config['AUTOCMS_WEBDIR'], testname)
@@ -79,10 +105,10 @@ def produce_webpage(records, testname, config):
         webpage.add_floating_image(48, 'stats.png', plot_desc,
                                    caption=plot_caption)
     if len(recent_successes) > 1:
-        cmsrun_plot_path = os.path.join(webpath, 'cmsrun.png')
-        create_cmsrun_runtime_plot(recent_successes, cmsrun_plot_path)
-        plot_desc = 'Running Times by Number of cmsRun Processes on the Node:'
-        webpage.add_floating_image(48, 'cmsrun.png', plot_desc)
+        nodejob_plot_path = os.path.join(webpath, 'nodejob.png')
+        create_nodejob_runtime_plot(recent_successes, nodejob_plot_path)
+        plot_desc = 'Running Times by Number of SLURM jobs on the Node:'
+        webpage.add_floating_image(48, 'nodejob.png', plot_desc)
     webpage.add_divider()
     webpage.add_test_description(100)
     webpage.add_divider()
