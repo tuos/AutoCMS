@@ -13,16 +13,17 @@ class TestConfiguration(unittest.TestCase):
     """Test that the configuration is loaded correctly."""
 
     def setUp(self):
-        self.config = load_configuration('autocms.cfg')
+        self.config = load_configuration('autocms.cfg.example')
 
     def test_cmsrun_timeout(self):
-        """Check that config sets cmsrun timeout."""
-        self.assertEqual(self.config['SKIMTEST_CMSRUN_TIMEOUT'], '14400')
+        """Check that config sets the test names."""
+        self.assertEqual(self.config['AUTOCMS_TEST_NAMES'],
+                                     'example_test:bare_test')
 
     def test_input_file_token(self):
-        """Check that config sets the input file token."""
-        self.assertEqual(self.config['AUTOCMS_input_file_TOKEN'],
-                         'AutoCMS: input file ')
+        """Check that config sets the start time token."""
+        self.assertEqual(self.config['AUTOCMS_start_time_TOKEN'],
+                         'AutoCMS: timestamp_start ')
 
 
 class TestJobRecord(unittest.TestCase):
