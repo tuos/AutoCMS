@@ -7,7 +7,7 @@
 AutoCMS is a simple python-based system for regularly submitting 
 and monitoring the results of arbitrarily complex test jobs to a computing
 cluster. You can see the capabilities of the system in this 
-[snapshot](docs/snapshot/index.html) of a generated AutoCMS webpage
+[snapshot](http://rawgit.com/appeltel/AutoCMS/docs/snapshot/index.html) of a generated AutoCMS webpage
 from an actual test.
 
 AutoCMS is not officially an acronym for anything, but you may think of it 
