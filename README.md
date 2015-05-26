@@ -128,6 +128,8 @@ maybe get a cup of coffee?
 
 * [Creating and Running Tests](docs/tests.md)
 
+* [AutoCMS Tokens](docs/tokens.md)
+
 * [Customizing AutoCMS Reporting](docs/custom.md)
 
 * [Troubleshooting](docs/troubleshooting.md)
