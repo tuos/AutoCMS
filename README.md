@@ -2,9 +2,13 @@
 
 [![Travs-CI status](https://travis-ci.org/appeltel/AutoCMS.png)](https://travis-ci.org/appeltel/AutoCMS)
 
+![Example AutoCMS Plot](docs/snapshot/runtime.png)
+
 AutoCMS is a simple python-based system for regularly submitting 
 and monitoring the results of arbitrarily complex test jobs to a computing
-cluster. 
+cluster. You can see the capabilities of the system in this 
+[snapshot](docs/snapshot/index.html) of a generated AutoCMS webpage
+from an actual test.
 
 AutoCMS is not officially an acronym for anything, but you may think of it 
 as Automatic Cluster Monitoring System. 

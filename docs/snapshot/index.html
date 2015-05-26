@@ -1,0 +1,90 @@
+<html><head>
+<title>T2_US_Vanderbilt Site Test: CMSSW Skim Test</title>
+<link rel="stylesheet" type="text/css" href="autocms.css"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body>
+<div class="page-header-box">
+T2_US_Vanderbilt Site Test: CMSSW Skim Test<div class="timestamp">Tue May 26 16:25:02 2015 (CDT)</div>
+<div class="version">AutoCMS version 3.0</div>
+</div>
+<hr style="clear:both;"/>
+<div class="plotbox" style="max-width:48%;">
+<div class="plotbox-header">Successful job running and waiting times (last 24 hours):</div>
+<img src="runtime.png" />
+</div>
+<div class="plotbox" style="max-width:48%;">
+<div class="plotbox-header">Successful job running and waiting times (last 24 hours, log scaled):</div>
+<img src="runtimelog.png" />
+</div>
+<hr style="clear:both;"/>
+<div class="plotbox" style="max-width:48%;">
+<div class="plotbox-header">Recent job statistics (trailing 3 hours):</div>
+<img src="stats.png" />
+<div style="padding:0.5em">Full test statistics <a href="statistics.csv">CSV file</a>.<br /><br />
+Statistics plot for last <a href="stats_month.png">month</a> and <a href="stats_year.png">year</a>.</div>
+</div>
+<div class="plotbox" style="max-width:48%;">
+<div class="plotbox-header">Running Times by Number of SLURM jobs on the Node:</div>
+<img src="nodejob.png" />
+</div>
+<hr style="clear:both;"/>
+<div class="textbox" style="max-width:100%;">
+<div class="textbox-header">Test Description:</div><br /><br />
+The purpose of the autocms test is to provide an internal test which closely approximates the behavior of an actual CMS job submitted through the computing grid, but is submitted internally and is completely independent from the grid software stack. This allows us to potentially separate problems related to the gird from problems with our internal software and hardware.
+<br /><br />
+Autocms jobs do not interact with CE1 or CE2, and are submitted directly to the SLURM scheduler via cron. The output of autocms jobs is staged out by calling the native LStore scripts in /usr/local/cms-stageout as is done by actual production or analysis jobs. Neither SE1 or the Grid-FTP servers (SE4, SE8, SE9, etc...) are involved in the staging out of the data.
+<br /><br />
+Currently, autocms runs a skimming job on files from the dataset /HIHighPt/HIRun2011-14Mar2014-v2/RECO, selecting a file from the dataset, analyzing the first 500 events, and storing the output of any event passing the HLT_HIDoublePhoton15_*, HLT_HIJet80_*, or HLT_HISinglePhoton40_* trigger paths. This output file is uploaded to LStore, and then deleted. 
+
+</div>
+<hr style="clear:both;"/>
+<div class="textbox" style="max-width:30%;">
+<div class="textbox-header">Recent job success rates:</div>
+<br /><br />
+Successful jobs in the last 24 hours: 1424<br />
+Failed jobs in the last 24 hours: 3<br />
+Success rate (24 hours): 99.79%<br /><br />
+Successful jobs in the last 3 hours: 164<br />
+Failed jobs in the last 3 hours: 3<br />
+Success rate (3 hours): 98.20%</div>
+<div class="textbox" style="max-width:25%;">
+<div class="textbox-header">Number of failed jobs by worker node:</div>
+<br />(previous 24 hours)<br /><br />
+<table>
+<table>
+<tr><td>1</td><td>vmp587</td></tr> 
+<tr><td>1</td><td>vmp544</td></tr> 
+<tr><td>1</td><td>vmp589</td></tr> 
+</table></div>
+<div class="textbox" style="max-width:40%;">
+<div class="textbox-header">Number of failed jobs by reason:</div>
+<br />(previous 24 hours)<br /><br />
+<table>
+<table>
+<tr><td>3</td><td>lio Upload ERROR 255</td></tr> 
+</table></div>
+<hr style="clear:both;"/>
+<div class="textbox" style="max-width:95%;">
+<div class="textbox-header">Failed jobs from the last 24  hours:</div><br />
+<br />
+<span style="font-weight:bold">Error </span>&nbsp;1:<br />
+Start time: Tue May 26 16:08:04 2015 (CDT) <br />
+Node name: vmp589 <br />
+Log file: <a href="skim_test.slurm.o2038416.log">skim_test.slurm.o2038416.log</a><br />
+Error Type: lio Upload ERROR 255<br />
+Input File: /store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/42376C7A-EFC0-E311-9BF9-FA163EF29B93.root<br />
+<br />
+<span style="font-weight:bold">Error </span>&nbsp;2:<br />
+Start time: Tue May 26 16:07:02 2015 (CDT) <br />
+Node name: vmp544 <br />
+Log file: <a href="skim_test.slurm.o2038407.log">skim_test.slurm.o2038407.log</a><br />
+Error Type: lio Upload ERROR 255<br />
+Input File: /store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/22504A9B-F7C0-E311-A40F-FA163E20455A.root<br />
+<br />
+<span style="font-weight:bold">Error </span>&nbsp;3:<br />
+Start time: Tue May 26 16:06:03 2015 (CDT) <br />
+Node name: vmp587 <br />
+Log file: <a href="skim_test.slurm.o2038403.log">skim_test.slurm.o2038403.log</a><br />
+Error Type: lio Upload ERROR 255<br />
+Input File: /store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root<br />
+</div>
+</body></html>

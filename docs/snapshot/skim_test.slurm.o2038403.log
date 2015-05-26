@@ -1,0 +1,324 @@
+AutoCMS: timestamp_start 1432674363
+SKIM_TEST: Beginning at Tue May 26 16:06:03 CDT 2015
+AutoCMS: worker node vmp587
+
+
+
+
+*****************************************************
+*
+* Setting up enviornment
+*
+*****************************************************
+
+
+
+
+Set SCRAM_ARCH to slc6_amd64_gcc472
+
+
+
+
+*****************************************************
+*
+* Checking Input File
+*
+*****************************************************
+
+
+
+
+AutoCMS: input file /store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+-------------------------------------
+Running lio-inspection on /store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+7325419274448694441: Inspecting file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+7325419274448694441: Cache segment maps to child 5465653800488194606
+7325419274448694441: segment information: cache used_size=6599439864
+5465653800488194606: jerase segment maps to child 4768475053105938856
+5465653800488194606: segment information: method=cauchy_good data_devs=6 parity_devs=3 chunk_size=16384  used_size=9901580436 magic_cksum=1 write_errors=0 mode=1
+5465653800488194606: Inspecting child segment...
+4768475053105938856: segment information: n_devices=9 n_shift=0 chunk_size=16388  used_size=9901580436 total_size=9901580436 mode=1
+4768475053105938856: Checking row: (0, 9901580435, 9901580436)   Stripe: (0, 67132)
+4768475053105938856:     dev=0 rcap=ibp://cms-depot27.vampire:6714/2441#bke5BQHfCyk2igX5RjHh77++wJE7FqMb/8486839817043478004/READ
+4768475053105938856:     dev=1 rcap=ibp://cms-depot21.vampire:6714/2232#9+RrYkUIRQe8gzIoh2dX-XUxFFC+u3Km/14987515315513762503/READ
+4768475053105938856:     dev=2 rcap=ibp://cms-depot20.vampire:6714/2194#7vSo-JP1d+Z9speR8KZMMQOmwo5b-+gt/4534495812002052976/READ
+4768475053105938856:     dev=3 rcap=ibp://cms-depot40.vampire:6714/2932#-K2q16N7N9ZKE8vblfb+EFWhFUnAeaPF/11796554114041611775/READ
+4768475053105938856:     dev=4 rcap=ibp://cms-depot16.vampire:6714/2058#VZkkAJcNqL2hVxTvpv3cTKuQUQvXfgXF/9114641509378348564/READ
+4768475053105938856:     dev=5 rcap=ibp://cms-depot41.vampire:6714/2975#kxsK8sy1XFXqdB2pYKJHmu-y6tSaPDdw/15017033958776214879/READ
+4768475053105938856:     dev=6 rcap=ibp://cms-depot14.vampire:6714/1993#qWgeWlre4dJ7gBq-MXsHq6IecKB2ehqW/9094613140101848527/READ
+4768475053105938856:     dev=7 rcap=ibp://cms-depot30.vampire:6714/2562#w0N7E5QElPiboloj65BYroMZXsr5IaLZ/15422427738824413865/READ
+4768475053105938856:     dev=8 rcap=ibp://cms-depot37.vampire:6714/2829#tCO+pbRhfJ7kROBjjiwENaCw+GLA-J4p/7657147008564763782/READ
+4768475053105938856:     slun_row_size_check: 0 0 0 0 0 0 0 0 0
+4768475053105938856:     slun_row_placement_check: 0 0 0 0 0 0 0 0 0
+4768475053105938856: status: SUCCESS (0 max dev/row lost, 0 lost, 0 repaired, 0 need(s) moving, 0 moved)
+5465653800488194606: status: SUCCESS (0 devices, -1 stripes)
+Success with file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+--------------------------------------------------------------------
+Submitted: 1   Success: 1   Fail: 0
+-------------------------------------
+
+
+
+
+*****************************************************
+*
+* Setting up SCRAM environment
+*
+*****************************************************
+
+
+
+
+SKIM_TEST: SCRAM Enviornment setup from /cvmfs OK
+
+
+
+
+*****************************************************
+*
+* Making tmp working directory and testing tmp filesystem
+*
+*****************************************************
+
+
+
+
+SKIM_TEST: touch in directory /tmp/appelte1-2038403 OK
+
+
+
+
+*****************************************************
+*
+* Setting up CMSSW project area
+*
+*****************************************************
+
+
+
+
+WARNING: In non-interactive mode release checks e.g. deprecated releases, production architectures are disabled.
+SKIM_TEST: CMSSW project area setup OK
+
+
+
+
+*****************************************************
+*
+* Initializing CMSSW runtime environment and copying python configuration
+*
+*****************************************************
+
+
+
+
+Evaluating 'scramv1 runtime -sh'
+Copying /home/appelte1/autocms/AutoCMS/skim_test/skimTestIvars.py to current directory
+
+
+
+
+*****************************************************
+*
+* Running CMSSW Skim Job
+*
+*****************************************************
+
+
+
+
+
+Current system load:
+
+[7l----total-cpu-usage---- -dsk/total- -net/total- ---paging-- ---system--
+usr sys idl wai hiq siq| read  writ| recv  send|  in   out | int   csw 
+ 24   1  68   6   0   0| 257k  316k|   0     0 |2063B 4991B|6966  3358 
+ 38   0  56   6   0   0|   0     0 |5562k  528k|   0     0 |  10k 6962 
+ 20   0  73   6   0   0|   0  1380k|9804k  127k|   0     0 |4335  1185 
+ 19   2  73   5   0   0|   0   608k|1201k   21k|   0     0 |4891  2674 
+ 19   0  75   6   0   0|   0     0 | 896k   10k|   0     0 |4070  1165 
+ 18   1  75   6   0   0|   0     0 | 874k   13k|   0     0 |4332  1403 
+ 20   0  75   5   0   0|   0     0 |1697k   23k|   0     0 |6835  5761 
+ 21   1  74   3   0   0|   0  4096B|7952k  246k|   0     0 |7499  7205 
+ 19   1  74   7   0   0|   0   116k|  10M  130k|   0     0 |7132  7017 
+ 19   0  75   6   0   0|   0     0 |  10M  129k|   0     0 |5076  3003 
+ 19   1  75   6   0   0|   0     0 |4513k   57k|   0     0 |5017  2760 
+
+Number of cmsRun processes on node: 3 
+
+
+Number of SLURM jobs running on node: 5 
+
+
+
+
+BEGIN CMSSW EXECUTION: Tue May 26 16:06:17 CDT 2015
+
+
+26-May-2015 16:06:19 CDT  Initiating request to open file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+26-May-2015 16:06:23 CDT  Successfully opened file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+Begin processing the 1st record. Run 182324, Event 15932119, LumiSection 438 at 26-May-2015 16:06:51.192 CDT
+Begin processing the 101st record. Run 182324, Event 15959992, LumiSection 438 at 26-May-2015 16:07:35.082 CDT
+Begin processing the 201st record. Run 182324, Event 15962116, LumiSection 438 at 26-May-2015 16:08:02.405 CDT
+Begin processing the 301st record. Run 182324, Event 15946070, LumiSection 438 at 26-May-2015 16:08:38.775 CDT
+Begin processing the 401st record. Run 182324, Event 15957000, LumiSection 438 at 26-May-2015 16:09:01.988 CDT
+26-May-2015 16:09:37 CDT  Closed file /cms/store/hidata/HIRun2011/HIHighPt/RECO/14Mar2014-v2/00023/444F1AEC-F6C0-E311-8639-FA163EC5CF40.root
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 fileAction           -s file_close                             1        1
+    2 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 fileAction           PostEndRun                        
+    2 fileAction           pre-events       pre-events       
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+System                  3                   3
+
+
+
+END CMSSW EXECUTION: Tue May 26 16:09:38 CDT 2015
+
+
+
+Number of cmsRun processes on node: 3 
+
+
+Number of SLURM jobs running on node: 5 
+
+AutoCMS: Number of other cmsRun processes 3.00000000000000000000
+AutoCMS: Number of jobs assigned to this node 5.00000000000000000000
+
+Current system load:
+
+[7l----total-cpu-usage---- -dsk/total- -net/total- ---paging-- ---system--
+usr sys idl wai hiq siq| read  writ| recv  send|  in   out | int   csw 
+ 24   1  68   6   0   0| 257k  316k|   0     0 |2063B 4991B|6966  3358 
+ 28   0  69   2   0   0|   0  2584k|  18M  155k|   0     0 |6592  3096 
+ 24   0  69   6   0   0|   0     0 |3594k   46k|   0     0 |5101  1436 
+ 25   1  68   6   0   0|   0     0 |1809k   28k|   0     0 |8743  7144 
+ 24   0  69   6   0   0|   0     0 |7651k  107k|   0     0 |4964   495 
+ 25   3  65   8   0   0|   0   272k| 539k   17k|   0     0 |5481  1732 
+ 25   1  68   6   0   0|   0     0 |2761k   32k|   0     0 |6269  2756 
+ 25   1  68   6   0   0|   0     0 |  12M  143k|   0     0 |  11k   11k
+ 25   1  68   6   0   0|   0     0 |9690k  128k|   0     0 |9314  9502 
+ 26   0  68   5   0   0|   0     0 |  18M  234k|   0     0 |9170  7927 
+ 28   1  67   4   0   0|   0   124k|3270k   41k|   0     0 |7176  3465 
+SKIM_TEST: CMSSW execution OK
+
+
+
+
+*****************************************************
+*
+* Checking output file and stageout scripts
+*
+*****************************************************
+
+
+
+
+Checking output file:
+-rw-r--r-- 1 appelte1 cms 262456867 May 26 16:09 hiHighPt.root
+-------------------------
+Checking Stageout scripts
+-------------------------
+Running: ls -lh /usr/local/cms-stageout/
+total 128K
+-rw-r----- 1 root     root      619 Jan 31  2013 authChanges.vandy.cfg
+drwxrwxr-x 2 root     cmsadmin 4.0K Mar 11 11:06 backup
+drwxr-xr-x 2 meloam   cms      2.0K Jun 17  2014 backup-melo
+drwxr-xr-x 2 root     root      512 Feb 20  2014 etc
+-rwxr-xr-x 1 meloam   cms      1.4K Jan 31  2013 locking_vandyCp.sh
+-rw-r--r-- 1 uscms01  cms       590 Oct 29  2011 log4j.properties
+-rwxr-xr-x 1 meloam   cms        32 Apr 17  2014 multiplex.cfg
+drwxr-xr-x 2 root     root      512 Mar 14  2014 restore
+-rw-r--r-- 1 uscms01  cms       656 Jan 31  2013 vandy.cfg
+lrwxrwxrwx 1 meloam   cms        35 Jun 17  2014 vandyCp.sh -> /usr/local/cms-stageout/vandyCp2.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 6.3K Mar 11 09:55 vandyCp2.sh
+-rwxr-xr-x 1 tacketar cms      5.1K Jan 22 17:02 vandyCpDev-alan.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 6.3K Mar 11 11:06 vandyCpDev.sh
+lrwxrwxrwx 1 meloam   cms        35 Jun 17  2014 vandyCpv2.sh -> /usr/local/cms-stageout/vandyCp2.sh
+lrwxrwxrwx 1 meloam   cms        38 Jun 17  2014 vandyMkdir.sh -> /usr/local/cms-stageout/vandyMkdir2.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 1.4K Feb  8 08:19 vandyMkdir2.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 1.4K Mar 11 11:06 vandyMkdirDev.sh
+lrwxrwxrwx 1 meloam   cms        38 Jun 17  2014 vandyMkdirv2.sh -> /usr/local/cms-stageout/vandyMkdir2.sh
+-rwxr-xr-x 1 appelte1 cmsadmin  861 Feb  8 08:19 vandyPreCheck.sh
+-rwxr-xr-x 1 sheldonp jswhep    859 Jun 27  2014 vandyPreCheck.sh~
+-rwxr-xr-x 1 appelte1 cmsadmin  861 Mar 11 11:06 vandyPreCheckDev.sh
+lrwxrwxrwx 1 meloam   cms        35 Jun 17  2014 vandyRm.sh -> /usr/local/cms-stageout/vandyRm2.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 3.7K Feb  8 08:19 vandyRm2.sh
+-rwxr-xr-x 1 tacketar cms      3.7K Jan 22 17:18 vandyRmDev-alan.sh
+-rwxr-xr-x 1 appelte1 cmsadmin 3.7K Mar 11 11:06 vandyRmDev.sh
+lrwxrwxrwx 1 meloam   cms        35 Jun 17  2014 vandyRmv2.sh -> /usr/local/cms-stageout/vandyRm2.sh
+-rw-r--r-- 1 appelte1 cms      4.7K Jan 22 10:15 vandyUtilDev.sh
+-------------------------
+Running: md5sum /usr/local/cms-stageout/vandy.cfg
+84bac4d966bdefa1dbe6e8ad04a084c5  /usr/local/cms-stageout/vandy.cfg
+Running: md5sum /usr/local/cms-stageout/vandyCp.sh
+2e48cd282bd31b9988e56768336b1e9c  /usr/local/cms-stageout/vandyCp.sh
+Running: md5sum /usr/local/cms-stageout/vandyRm.sh
+1ab13475feb2146338c502365a0aae9d  /usr/local/cms-stageout/vandyRm.sh
+-------------------------
+
+
+
+
+*****************************************************
+*
+* Uploading output file to /lio/lfs
+*
+*****************************************************
+
+
+
+
+construct output file name for upload
+Uploading to /cms/store/autocms/skim_test/testoutput_2038403_hiHighPt.root
+
+============== Begin VandyCp Log ==============
+
+
+
++++++++++++++++++++++
+Tue May 26 16:09:49 CDT 2015 Command called:
+   '/usr/local/cms-stageout/vandyCp2.sh hiHighPt.root /cms/store/autocms/skim_test/testoutput_2038403_hiHighPt.root verbose'
+ User: appelte1
+Host: vmp587
+SLURM_Job: 2038403
+Debug 0: Check if target is a directory, build correct destination path, check that target exists and destination does not
+Debug 1: Get DN from the cert
+
+Couldn't find a valid proxy.
+
+Debug 2: Test that the DN is set
+Error: no cert info
+Error: no cert info
+---------------------
+
+============== End VandyCp Log ==============
+
+AutoCMS ERROR Message: lio Upload ERROR 255
+
+
+
+
+*****************************************************
+*
+* Cleaning up /tmp and Exiting
+*
+*****************************************************
+
+
+
+
+SKIM_TEST: Ending at Tue May 26 16:09:49 CDT 2015
+AutoCMS: timestamp_end 1432674589
+AutoCMS: exit code 255
