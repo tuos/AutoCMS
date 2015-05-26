@@ -36,7 +36,7 @@ main ()
 
   echo "Usage \"autocms.sh command [testname]\" "
   echo "Please see: "
-  echo "  https://wiki.accre.vanderbilt.edu/foswiki/bin/view/VandyCMS/AutoCMS"
+  echo "  https://github.com/appeltel/AutoCMS"
   echo "for additional documentation."
 
 }
