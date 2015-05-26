@@ -126,4 +126,10 @@ maybe get a cup of coffee?
 
 ## Further Documentation
 
-Add links to additional docs...
+* [Creating and Running Tests](docs/tests.md)
+
+* [Customizing AutoCMS Reporting](docs/custom.md)
+
+* [Troubleshooting](docs/troubleshooting.md)
+
+* [Vanderbilt Site Instructions](docs/vanderbilt.md)
