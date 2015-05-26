@@ -7,7 +7,7 @@ and monitoring the results of arbitrarily complex test jobs to a computing
 cluster. 
 
 AutoCMS is not officially an acronym for anything, but you may think of it 
-as Automatic Cluster Monitoring System if you like. 
+as Automatic Cluster Monitoring System. 
 
 ## Purpose and History
 
@@ -65,4 +65,65 @@ and run at indpendent intervals. None of the different
 modules write to the same file, so they may be run in parallel or in 
 principle from different nodes.
 
+## Requirements
+
+1. Linux cluster with batch scheduler system, currently only 
+[SLURM](http://slurm.schedmd.com/) is supported, tested using 
+version 14.11.6
+
+2. Python 2.7, tested using version 2.7.8
+
+3. [Pandas](http://pandas.pydata.org/) version 0.15 or later,
+tested using version 0.15.2
+
+4. User access to cron utility, a web-accessible directory with 
+write privileges, authorization to submit a small number of 
+short jobs at regular intervals.
+
+5. Rudimentary knowledge of bash
+
+## Quickstart
+
+This quickstart will guide you to set up a bare-bones example
+of the AutoCMS system running a simple mock-up of a scientific 
+application that often fails. One can then replace this mock-up
+with their own application to be tested on the cluster.
+
+1. Clone or download AutoCMS into a directory to be used as your 
+AutoCMS base directory.  
+
+2. Copy the file `autocms.cfg.bare` to `autocms.cfg`
+
+3. Using the editor of your choice, edit `autocms.cfg` to change
+the following variables:
+
+    * `AUTOCMS_BASEDIR` should be the absolute path to the directory where you have cloned the repostory
+
+    * `AUTOCMS_CONFIGFILE` should be the absolute path to the `autocms.cfg` file, including the file name itself
+
+    * `AUTOCMS_WEBDIR` should be the absolute path to a web-accessible directory where AutoCMS will create subdirectories, and manage files within those subdirectories
  
+    * `AUTOCMS_UNAME` should be your system user name that you will submit jobs to the scheduler as
+
+    * `AUTOCMS_GNAME` should be the group or account that you will use to submit jobs to the scheduler
+
+    * `AUTOCMS_SITE_NAME` should be the name of your cluster
+
+4. Run `./autocms.sh print` to produce the crontab listing needed to run the 
+bare-bones test at regular intervals, harvest the output logs, and report to 
+the web page.
+
+5. Add the printed lines to your crontab, or if you do not have an 
+active crontab, run `crontab autocms.crontab` to add the lines. Make sure
+that you are logged into the gateway node that you want AutoCMS jobs
+to be submitted from. The system is now running.
+
+6. Wait about 30 minutes for jobs to run and the webpage to be generated,
+maybe get a cup of coffee?
+
+7. Test results should be generated with the webpage available at 
+`$AUTOCMS_WEBDIR/bare_test/index.html`
+
+## Further Documentation
+
+Add links to additional docs...
