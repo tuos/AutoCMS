@@ -231,6 +231,13 @@ class AutoCMSWebpage(object):
                     self.page += '</span>'
         self.page += '</div>\n'
 
+    def add_job_zero_long(self, header):
+        """Display 0 Long running job"""
+        self.page += '<div class="textbox" style="max-width:95%;">\n'
+        self.page += ('<div class="textbox-header">'
+                      '{0}</div><br />\n'.format(header))
+        self.page += '</div>\n'
+
     def add_job_listing(self, records, header, itemheader, **attr_desc):
         """Display information a list of JobRecords.
 

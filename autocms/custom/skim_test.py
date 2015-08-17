@@ -125,9 +125,12 @@ def produce_webpage(records, testname, config):
     webpage.add_failures_by_reason(40, 24)
     webpage.add_divider()
     webpage.add_failed_job_listing(24,input_file='Input File')
+    webpage.add_divider()
     long_running_jobs = [job for job in recent_successes if
                          job.run_time() >
                          int(config['SKIMTEST_RUNTIME_WARNING'])]
+    if not long_running_jobs: 
+       webpage.add_job_zero_long('Long running jobs in the last 24 hours: 0')
     if long_running_jobs:
        webpage.add_job_listing(long_running_jobs,
                                'Long running jobs from the last 24 hours:',
