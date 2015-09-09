@@ -133,11 +133,11 @@ def produce_webpage(records, testname, config):
        webpage.add_job_zero_long('Long running jobs in the last 24 hours: 0')
     if long_running_jobs:
        webpage.add_job_listing(long_running_jobs,
-                               'Long running jobs from the last 24 hours:',
+                               'Long running jobs from the last 24 hours: ',
                                'Warning', input_file='Input File')
     if config['AUTOCMS_PRINT_SUCCESS'] == 'TRUE':
         webpage.add_job_listing(recent_successes,
-                                'Successful jobs in the last 24 hours:',
+                                'Successful jobs in the last 24 hours: ',
                                 'Success', input_file='Input File')
     webpage.end_page()
     webpage.write_page()

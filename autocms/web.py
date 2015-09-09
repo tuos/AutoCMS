@@ -259,8 +259,9 @@ class AutoCMSWebpage(object):
             return
         self.logs_to_copy += [job.logfile for job in records]
         self.page += '<div class="textbox" style="max-width:95%;">\n'
+        job_counts_in_the_records = sum(1 for job in records)
         self.page += ('<div class="textbox-header">'
-                      '{0}</div><br />\n'.format(header))
+                      '{0} {1}</div><br />\n'.format(header, job_counts_in_the_records))
         records.sort(key=lambda x: x.start_time, reverse=True)
         for counter, job in enumerate(records):
             self.page += '<br />\n'
@@ -298,7 +299,7 @@ class AutoCMSWebpage(object):
         records_to_print = [job for job in self.records if
                             job.completed and job.start_time > min_time
                             and not job.is_success()]
-        header = 'Failed jobs from the last {0}  hours:'.format(hours)
+        header = 'Failed jobs from the last {0}  hours: '.format(hours)
         itemheader = '<span style="font-weight:bold">Error </span>'
         self.add_job_listing(records_to_print, header, itemheader,
                              error_string='Error Type', **attr_desc)
