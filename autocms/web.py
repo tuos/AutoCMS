@@ -272,7 +272,8 @@ class AutoCMSWebpage(object):
                       'style="max-width:{0}%;">\n'.format(width))
         self.page += ('<div class="textbox-header">'
                       'Current running jobs on {0}:</div>\n'.format(time.ctime()))
-        cmd = ('squeue -h --user=tuos --account=cms_stage2')
+        cmd = ('squeue -h --user={0} --account={1}'.format(self.config['AUTOCMS_UNAME'],
+                                                           self.config['AUTOCMS_GNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         output = result.communicate()[0].splitlines()
         runningjobs = 0
@@ -292,7 +293,8 @@ class AutoCMSWebpage(object):
                       'style="max-width:{0}%;">\n'.format(width))
         self.page += ('<div class="textbox-header">'
                       'Current pending jobs on {0}:</div>\n'.format(time.ctime()))
-        cmd = ('squeue -h --user=tuos --account=cms_stage2')
+        cmd = ('squeue -h --user={0} --account={1}'.format(self.config['AUTOCMS_UNAME'],
+                                                           self.config['AUTOCMS_GNAME']))
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         output = result.communicate()[0].splitlines()
         pendingjobs = 0
