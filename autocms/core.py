@@ -1,6 +1,6 @@
 """Common functions and classes for AutoCMS components."""
 
-__version__ = '3.0.3'
+__version__ = '3.0.4'
 
 import re
 import os
