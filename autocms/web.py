@@ -6,6 +6,7 @@ import re
 import shutil
 import importlib
 import subprocess
+import datetime
 
 from .stats import load_stats
 from .core import (load_records, __version__)
@@ -283,8 +284,12 @@ class AutoCMSWebpage(object):
         self.page += ("<br />\nNumber of running jobs: {0}".format(runningjobs))
         for i in range(0, len(output)):
           if output[i].split()[4] == 'R':
-            self.page += ("<br />\nJob {0} has been running on {1} for "
-                          "{2}. ".format(output[i].split()[0], output[i].split()[7], output[i].split()[5]))
+            if len(output[i].split()[5]) > 5:
+              self.page += ("<br />\nJob {0} has been running on {1} for "
+                            "{2}.".format(output[i].split()[0], output[i].split()[7], output[i].split()[5]))
+            else:
+              self.page += ("<br />\nJob {0} has been running on {1} for "
+                            "00:{2}.".format(output[i].split()[0], output[i].split()[7], output[i].split()[5]))
         self.page += '</div>\n'
 
     def add_currentpending_jobs(self, width):
@@ -304,7 +309,12 @@ class AutoCMSWebpage(object):
         self.page += ("<br />\nNumber of pending jobs: {0}".format(pendingjobs))
         for i in range(0, len(output)):
           if output[i].split()[4] == 'PD':
-            self.page += ("<br />\nJob {0} is pending.".format(output[i].split()[0]))
+            cmdpending = ('sacct -j {0} -o submit -X --noheader'.format(output[i].split()[0]))
+            resultpending = subprocess.Popen(cmdpending, shell=True, stdout=subprocess.PIPE)
+            outputpending = resultpending.communicate()[0].splitlines()
+            epochtime = int(time.mktime(time.strptime(outputpending[0][:-1], "%Y-%m-%dT%H:%M:%S")))
+            timediff = str(datetime.timedelta(seconds=int(time.time()) - epochtime))
+            self.page += ("<br />\nJob {0} has been pending for {1}.".format(output[i].split()[0], timediff))
         self.page += '</div>\n'
 
     def add_job_zero_long(self, header):
